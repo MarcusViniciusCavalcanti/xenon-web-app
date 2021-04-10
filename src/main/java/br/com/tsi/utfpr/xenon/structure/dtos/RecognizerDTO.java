@@ -21,30 +21,12 @@ public class RecognizerDTO {
         recognizerDTO.setTax(tax);
 
         if (car != null) {
-            var model = car.getModel();
-            var lastAccess = car.getLastAccess() == null ? LocalDateTime.now() : car.getLastAccess();
-            var id = car.getUser().getId();
-            var name = car.getUser().getName();
-            var type = car.getUser().getTypeUser().name();
-            var accessNumber = car.getUser().getAccessNumber();
-            var authorized = car.getUser().getAuthorizedAccess();
-            var plate = car.getPlate();
+            var driver = buildDriver(car);
 
-            var driver = new Driver();
-            driver.userId = id;
-            driver.carModel = model;
-            driver.plate = plate;
-            driver.lastAccess = String.format("%d/%d/%d", lastAccess.getDayOfMonth(), lastAccess.getMonthValue() + 1, lastAccess.getYear());
-            driver.lastHoursAccess = String.format("%d : %d", lastAccess.getHour(), lastAccess.getMinute());
-            driver.userName = name;
-            driver.userAvatar = "/user/avatar/" + id.toString();
-            driver.type = type;
-            driver.authorizedAccess = authorized;
-            driver.accessNumber = accessNumber;
+            adjustmentLastAccess(car, driver);
+            setInfoDriver(car, driver);
 
-            recognizerDTO.setDriver(driver);
-            recognizerDTO.setAuthorize(car.getUser().getAuthorizedAccess());
-            recognizerDTO.setIdentified(true);
+            setRecognizer(car, recognizerDTO, driver);
         } else {
             recognizerDTO.setIdentified(false);
         }
@@ -52,8 +34,41 @@ public class RecognizerDTO {
         return recognizerDTO;
     }
 
+    private static void setRecognizer(CarResultDTO car, RecognizerDTO recognizerDTO, Driver driver) {
+        recognizerDTO.setDriver(driver);
+        recognizerDTO.setAuthorize(car.getUser().getAuthorizedAccess());
+        recognizerDTO.setIdentified(true);
+    }
+
+    private static void setInfoDriver(CarResultDTO car, Driver driver) {
+        driver.userName = car.getUser().getName();
+        driver.userAvatar = "/user/avatar/" + driver.userId.toString();
+        driver.type = car.getUser().getTypeUser().name();
+        driver.authorizedAccess = car.getUser().getAuthorizedAccess();
+        driver.accessNumber = car.getUser().getAccessNumber();
+    }
+
+    private static void adjustmentLastAccess(CarResultDTO car, Driver driver) {
+        var lastAccess =
+            car.getLastAccess() == null ? LocalDateTime.now() : car.getLastAccess();
+        driver.lastAccess = String
+            .format("%d/%d/%d", lastAccess.getDayOfMonth(), lastAccess.getMonthValue() + 1,
+                lastAccess.getYear());
+        driver.lastHoursAccess =
+            String.format("%d : %d", lastAccess.getHour(), lastAccess.getMinute());
+    }
+
+    private static Driver buildDriver(CarResultDTO car) {
+        var driver = new Driver();
+        driver.userId = car.getUser().getId();
+        driver.carModel = car.getModel();
+        driver.plate = car.getPlate();
+        return driver;
+    }
+
     @Data
     public static class Driver {
+
         private Long userId;
         private String userName;
         private String type;

@@ -1,0 +1,11 @@
+checks:
+  method-complexity:
+    config:
+      threshold: 15
+
+exclude_patterns:
+  - ".gradle/"
+  - ".mvn/"
+  - "src/main/resources/db/"
+  - "src/main/resources/db/static/"
+  - "src/test/resources/"

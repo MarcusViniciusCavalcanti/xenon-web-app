@@ -23,3 +23,10 @@ spring:
           time_zone: UTC
         use_sql_comments: false
         format_sql: false
+
+logging:
+  level:
+    root: warn
+    com.memorynotfound: INFO
+    org.springframework.web: INFO
+    org.springframework.security: INFO

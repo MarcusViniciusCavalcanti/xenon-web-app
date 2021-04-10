@@ -1,10 +1,14 @@
 language: java
-jdk: oraclejdk11
+jdk: openjdk11
 
 addons:
   code_climate:
     repo_token:
-      secure: c1fd785a7763e3b7f2dbd501e4e2d96580509ad046df1600620e0183601da2bf
+      secure: 94fbb3d97a20da4fb8ed717ced0578ee1e66b8f65ec5d0b7cfda120756488d54
+
+env:
+  global:
+    - CC_TEST_REPORTER_ID=$CODECLIMATE_REPO_TOKEN
 
 before_script:
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
