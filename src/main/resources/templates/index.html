@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="pt-br"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{shared/layout}" th:with="activeMenu='user-show'"
+>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+</head>
+<body>
+
+<div layout:fragment="content" th:remove="tag">
+    <h1>Teste de segurança</h1>
+</div>
+</body>
+</html>

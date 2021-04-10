@@ -1,0 +1,11 @@
+xenon:
+  configurations:
+    themeleaf:
+      cache: false
+    datasource:
+      driver: org.postgresql.Driver
+      url: jdbc:postgresql://localhost:5432/xenon
+      username: xenon
+      password: xenon
+    avatar:
+      url:
