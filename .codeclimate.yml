@@ -10,3 +10,4 @@ exclude_patterns:
   - "**/vendor/"
   - "src/test/resources/"
   - "**/sql/*.sql"
+  - "**/test/"
