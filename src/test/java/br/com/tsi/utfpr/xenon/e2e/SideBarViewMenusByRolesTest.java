@@ -1,5 +1,7 @@
 package br.com.tsi.utfpr.xenon.e2e;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import br.com.tsi.utfpr.xenon.e2e.utils.GetElementDom;
 import com.gargoylesoftware.htmlunit.html.DomNode;
 import java.io.IOException;
@@ -50,7 +52,7 @@ public class SideBarViewMenusByRolesTest extends AbstractEndToEndTest {
         Collections.sort(listAdmin);
         Collections.sort(listItemsVisible);
 
-        Assertions.assertEquals(listAdmin, listItemsVisible);
+        assertEquals(listAdmin, listItemsVisible);
     }
 
     @Test
@@ -70,7 +72,7 @@ public class SideBarViewMenusByRolesTest extends AbstractEndToEndTest {
         Collections.sort(listOperator);
         Collections.sort(listItemsVisible);
 
-        Assertions.assertEquals(listOperator, listItemsVisible);
+        assertEquals(listOperator, listItemsVisible);
     }
 
     @Test
@@ -83,7 +85,7 @@ public class SideBarViewMenusByRolesTest extends AbstractEndToEndTest {
 
         Collections.sort(listItemsVisible);
 
-        Assertions.assertEquals(listOperator, listItemsVisible);
+        assertEquals(listOperator, listItemsVisible);
     }
 
     @Override
