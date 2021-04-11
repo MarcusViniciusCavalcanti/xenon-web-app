@@ -1,11 +1,16 @@
 package br.com.tsi.utfpr.xenon.e2e.utils;
 
 import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlListItem;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlUnorderedList;
 import java.io.IOException;
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import lombok.Setter;
 
 public class GetElementDom {
@@ -69,11 +74,21 @@ public class GetElementDom {
         return element;
     }
 
+    public List<DomElement> getListChildSpan(String attribute, String valueAttribute) {
+        var xPath = String.format("//span[@%s='%s']", attribute, valueAttribute);
+        return element.getByXPath(xPath);
+    }
+
     public HtmlPage getHtmlPage() {
         return htmlPage;
     }
 
     public HtmlPage redirectOnClick() throws IOException {
         return element.click();
+    }
+
+    public GetElementDom executeAssertion(Consumer<HtmlElement> assertion) {
+        assertion.accept(element);
+        return instance;
     }
 }
