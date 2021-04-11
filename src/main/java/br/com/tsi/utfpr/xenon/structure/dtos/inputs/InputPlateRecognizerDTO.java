@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class )
+@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class InputPlateRecognizerDTO {
 
     private String uuid;
@@ -24,7 +24,7 @@ public class InputPlateRecognizerDTO {
     private List<Result> results;
 
     @Data
-    @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class )
+    @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
     public static class Result {
 
         @NotEmpty
@@ -40,15 +40,17 @@ public class InputPlateRecognizerDTO {
     }
 
     @Data
-    @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class )
+    @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
     public static class Coordinate {
+
         private Float x;
         private Float y;
     }
 
     @Data
-    @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class )
+    @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
     public static class Candidate {
+
         private String plate;
         private Float confidence;
         private Integer matchesTemplate;
