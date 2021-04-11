@@ -11,15 +11,13 @@
 	<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Arimo:400,700,400italic">
 
 	<link rel="stylesheet" type="text/css" th:href="@{/vendor/css/fonts/linecons/css/linecons.css}">
-	<link rel="stylesheet" type="text/css"
-				th:href="@{/vendor/css/fonts/fontawesome/css/font-awesome.min.css}">
+	<link rel="stylesheet" type="text/css" th:href="@{/vendor/css/fonts/fontawesome/css/font-awesome.min.css}">
 	<link rel="stylesheet" type="text/css" th:href="@{/vendor/css/bootstrap.css}">
 	<link rel="stylesheet" type="text/css" th:href="@{/vendor/css/xenon-core.css}">
 	<link rel="stylesheet" type="text/css" th:href="@{/vendor/css/xenon-forms.css}">
 	<link rel="stylesheet" type="text/css" th:href="@{/vendor/css/xenon-components.css}">
 	<link rel="stylesheet" type="text/css" th:href="@{/vendor/css/xenon-skins.css}">
 	<link rel="stylesheet" type="text/css" th:href="@{/css/custom.css}">
-	<link rel="stylesheet" th:href="@{/js/jquery-1.11.1.min.js}" type="text/css">
 
 	<script th:src="@{/vendor/js/jquery-1.11.1.min.js}"></script>
 
@@ -38,8 +36,25 @@
 		<div class="col-sm-6">
 			<!--    error container    -->
 			<div class="errors-container">
-				<div th:if="${param.error}" class="alert alert-danger text-center">
-					Usuário ou senha invalido!
+				<div th:if="${param.error}"
+						 th:with="errorMsg=${session['SPRING_SECURITY_LAST_EXCEPTION'].message}"
+						 class="alert alert-danger text-center">
+					<div th:switch="${errorMsg}">
+						<span th:case="'User account has expired'">
+							Conta <strong>expirada</strong> por favor contate o administrador do sistema.
+						</span>
+						<span th:case="'User account is locked'">
+							Conta <strong>bloqueada</strong> por favor contate o administrador do sistema.
+						</span>
+						<span th:case="'User credentials have expired'">
+							Credenciais <strong>expiradas</strong>, verifique no <strong>e-mail cadastrado</strong> a resolução.
+						</span>
+						<span th:case="'User is disabled'">
+							Usuário <strong>desativado</strong> por favor contate o administrador do sistema.
+						</span>
+						<span th:case="*">Username ou senha <strong>inválidos!</strong></span>
+					</div>
+
 				</div>
 			</div>
 
