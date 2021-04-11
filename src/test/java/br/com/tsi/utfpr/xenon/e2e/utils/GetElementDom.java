@@ -4,6 +4,7 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlListItem;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.html.HtmlUnorderedList;
 import java.io.IOException;
 import lombok.Setter;
 
@@ -23,6 +24,12 @@ public class GetElementDom {
         return instance;
     }
 
+    public static GetElementDom start(HtmlPage page) {
+        instance = new GetElementDom();
+        instance.setHtmlPage(page);
+        return instance;
+    }
+
     public GetElementDom navigation(String parentElement, String attribute, String valueAttribute) {
         String xPath = String.format("//%s[@%s='%s']", parentElement, attribute, valueAttribute);
         element = htmlPage.getFirstByXPath(xPath);
@@ -30,35 +37,27 @@ public class GetElementDom {
     }
 
     public GetElementDom getChildUl(String attribute, String valueAttribute) {
-        element = getUl(attribute, valueAttribute);
+        String xPath = String.format("//ul[@%s='%s']", attribute, valueAttribute);
+        element = element.<HtmlUnorderedList>getFirstByXPath(xPath);
         return instance;
     }
 
     public GetElementDom getChildLi(String attribute, String valueAttribute) {
-        element = getLi(attribute, valueAttribute);
+        String xPath = String.format("//li[@%s='%s']", attribute, valueAttribute);
+        element = element.<HtmlListItem>getFirstByXPath(xPath);
         return instance;
     }
 
     public GetElementDom getChildAnchor(String attribute, String valueAttribute) {
-        element = getAnchor(attribute, valueAttribute);
+        String xPath = String.format("//a[@%s='%s']", attribute, valueAttribute);
+        element = element.getFirstByXPath(xPath);
         return instance;
     }
 
-    public HtmlElement getUl(String attribute, String valueAttribute) {
-        String xPath = String.format("//ul[@%s='%s']", attribute, valueAttribute);
-        return element;
-    }
-
-    public HtmlElement getLi(String attribute, String valueAttribute) {
-        String xPath = String.format("//li[@%s='%s']", attribute, valueAttribute);
-        element = element.<HtmlListItem>getFirstByXPath(xPath);
-        return element;
-    }
-
-    public HtmlElement getAnchor(String attribute, String valueAttribute) {
-        String xPath = String.format("//a[@%s='%s']", attribute, valueAttribute);
+    public GetElementDom getDiv(String attribute, String valueAttribute) {
+        var xPath = String.format("//div[@%s='%s']", attribute, valueAttribute);
         element = element.getFirstByXPath(xPath);
-        return element;
+        return instance;
     }
 
     public GetElementDom setAttributeInElement(String attribute, String valueAttribute) {

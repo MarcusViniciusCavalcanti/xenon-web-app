@@ -10,16 +10,18 @@
 
 	<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Arimo:400,700,400italic">
 
-	<link rel="stylesheet" type="text/css" th:href="@{/css/fonts/linecons/css/linecons.css}">
-	<link rel="stylesheet" type="text/css" th:href="@{/css/fonts/fontawesome/css/font-awesome.min.css}">
-	<link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.css}">
-	<link rel="stylesheet" type="text/css" th:href="@{/css/xenon-core.css}">
-	<link rel="stylesheet" type="text/css" th:href="@{/css/xenon-forms.css}">
-	<link rel="stylesheet" type="text/css" th:href="@{/css/xenon-components.css}">
-	<link rel="stylesheet" type="text/css" th:href="@{/css/xenon-skins.css}">
+	<link rel="stylesheet" type="text/css" th:href="@{/vendor/css/fonts/linecons/css/linecons.css}">
+	<link rel="stylesheet" type="text/css"
+				th:href="@{/vendor/css/fonts/fontawesome/css/font-awesome.min.css}">
+	<link rel="stylesheet" type="text/css" th:href="@{/vendor/css/bootstrap.css}">
+	<link rel="stylesheet" type="text/css" th:href="@{/vendor/css/xenon-core.css}">
+	<link rel="stylesheet" type="text/css" th:href="@{/vendor/css/xenon-forms.css}">
+	<link rel="stylesheet" type="text/css" th:href="@{/vendor/css/xenon-components.css}">
+	<link rel="stylesheet" type="text/css" th:href="@{/vendor/css/xenon-skins.css}">
 	<link rel="stylesheet" type="text/css" th:href="@{/css/custom.css}">
+	<link rel="stylesheet" th:href="@{/js/jquery-1.11.1.min.js}" type="text/css">
 
-	<script th:src="@{/js/jquery-1.11.1.min.js}"></script>
+	<script th:src="@{/vendor/js/jquery-1.11.1.min.js}"></script>
 
 	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 	<!--[if lt IE 9]>
@@ -35,10 +37,19 @@
 	<div class="row">
 		<div class="col-sm-6">
 			<!--    error container    -->
-			<div class="errors-container"></div>
+			<div class="errors-container">
+				<div th:if="${param.error}" class="alert alert-danger text-center">
+					Usuário ou senha invalido!
+				</div>
+			</div>
 
 			<!--      content      -->
-			<form method="post" th:action="@{/login}" role="form" id="login" class="login-form fade-in-effect">
+			<form name="form-login"
+						method="post"
+						th:action="@{/login}"
+						role="form"
+						id="login"
+						class="login-form fade-in-effect">
 
 				<div class="login-header">
 					<a href="#" class="logo">
@@ -82,15 +93,15 @@
 	</div>
 </div>
 
-<script th:src="@{/js/bootstrap.min.js}"></script>
-<script th:src="@{/js/TweenMax.min.js}"></script>
-<script th:src="@{/js/resizeable.js}"></script>
-<script th:src="@{/js/joinable.js}"></script>
+<script th:src="@{/vendor/js/bootstrap.min.js}"></script>
+<script th:src="@{/vendor/js/TweenMax.min.js}"></script>
+<script th:src="@{/vendor/js/resizeable.js}"></script>
+<script th:src="@{/vendor/js/joinable.js}"></script>
 <script th:src="@{/js/xenon-api.js}"></script>
-<script th:src="@{/js/xenon-toggles.js}"></script>
-<script th:src="@{/js/jquery-validate/jquery.validate.min.js}"></script>
-<script th:src="@{/js/toastr/toastr.min.js}"></script>
-<script th:src="@{/js/xenon-custom.js}"></script>
+<script th:src="@{/vendor/js/xenon-toggles.js}"></script>
+<script th:src="@{/vendor/js/jquery-validate/jquery.validate.min.js}"></script>
+<script th:src="@{/vendor/js/toastr/toastr.min.js}"></script>
+<script th:src="@{/vendor/js/xenon-custom.js}"></script>
 <script th:src="@{/js/login/login.js}"></script>
 
 </body>

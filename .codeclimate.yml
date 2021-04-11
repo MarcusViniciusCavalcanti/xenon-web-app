@@ -7,5 +7,6 @@ exclude_patterns:
   - ".gradle/"
   - ".mvn/"
   - "src/main/resources/db/"
-  - "src/main/resources/db/static/"
+  - "**/vendor/"
   - "src/test/resources/"
+  - "**/sql/*.sql"
