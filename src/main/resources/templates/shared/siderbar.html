@@ -41,57 +41,7 @@
 					</header>
 
 					<ul id="main-menu" class="main-menu">
-						<!--/*@thymesVar id="activeMenu" type="java.lang.String"*/-->
-						<li th:classappend="${activeMenu.equals('dashboard')} ? 'opened active' : ''" >
-							<a th:href="@{/reconhecimentos}">
-								<i class="linecons-cog"></i>
-								<span class="title">Dashboard</span>
-							</a>
-						</li>
-						<li th:classappend="${activeMenu.equals('recognize')} ? 'opened' : ''">
-							<a th:href="@{/reconhecimentos}">
-								<i class="linecons-desktop"></i>
-								<span class="title">Acessos</span>
-							</a>
-							<ul>
-								<li th:classappend="${activeMenu.equals('recognize')} ? 'active' : ''">
-									<a th:href="@{/reconhecimentos}">
-										<span class="title">Reconhecimentos</span>
-									</a>
-								</li>
-							</ul>
-						</li>
-						<li id="users" th:classappend="${#request.getServletPath().contains('/usuarios') ? 'opened active' : ''}">
-							<a th:href="@{/usuarios}">
-								<i class="linecons-user"></i>
-								<span class="title">Usuários</span>
-							</a>
-							<ul>
-								<li id="users_all" th:classappend="${#request.getServletPath().endsWith('/usuarios') ? 'active' : ''}">
-									<a th:href="@{/usuarios}">
-										<span class="title">Todos</span>
-									</a>
-								</li>
-								<li id="users_new" th:classappend="${#request.getServletPath().endsWith('/novo') ? 'active' : ''}">
-									<a th:href="@{/usuarios/novo}">
-										<span class="title">Novo</span>
-									</a>
-								</li>
-							</ul>
-						</li>
-						<li id="config" th:classappend="${#request.getServletPath() == '/configuracoes' ? 'opened active' : ''}">
-							<a th:href="@{/configuracoes}">
-								<i class="linecons-desktop"></i>
-								<span class="title">Configurações</span>
-							</a>
-							<ul>
-								<li id="config_setter" th:classappend="${#request.getServletPath() == '/configuracoes' ? 'active' : ''}">
-									<a th:href="@{/configuracoes}">
-										<span class="title">Ajustar</span>
-									</a>
-								</li>
-							</ul>
-						</li>
+						<th:block th:include="shared/menus-items :: menus-items" />
 					</ul>
 
 				</div>

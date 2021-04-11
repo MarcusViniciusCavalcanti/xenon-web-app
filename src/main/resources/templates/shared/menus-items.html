@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<body>
+  <!--/*@thymesVar id="activeMenu" type="java.lang.String"*/-->
+  <th:block th:fragment="menus-items">
+    <li id="dashboard" th:classappend="${activeMenu.equals('dashboard')} ? 'opened active' : ''" >
+      <a th:href="@{/reconhecimentos}">
+        <i class="linecons-cog"></i>
+        <span class="title">Dashboard</span>
+      </a>
+    </li>
+    <li id="recognizer-menu-item" sec:authorize="hasRole('OPERATOR')"
+        th:classappend="${activeMenu.equals('recognize')} ? 'opened' : ''">
+      <a th:href="@{/reconhecimentos}">
+        <i class="linecons-desktop"></i>
+        <span class="title">Acessos</span>
+      </a>
+      <ul>
+        <li th:classappend="${activeMenu.equals('recognize')} ? 'active' : ''">
+          <a th:href="@{/reconhecimentos}">
+            <span class="title">Reconhecimentos</span>
+          </a>
+        </li>
+      </ul>
+    </li>
+    <li id="users" sec:authorize="hasRole('OPERATOR')"
+        th:classappend="${#request.getServletPath().contains('/usuarios') ? 'opened active' : ''}">
+      <a th:href="@{/usuarios}">
+        <i class="linecons-user"></i>
+        <span class="title">Usuários</span>
+      </a>
+      <ul>
+        <li th:classappend="${#request.getServletPath().endsWith('/usuarios') ? 'active' : ''}"
+            id="users_all" >
+          <a th:href="@{/usuarios}">
+            <span class="title">Todos usuários</span>
+          </a>
+        </li>
+        <li id="users_new"
+            sec:authorize="hasRole('ADMIN')"
+            th:classappend="${#request.getServletPath().endsWith('/novo') ? 'active' : ''}">
+          <a th:href="@{/usuarios/novo}">
+            <span class="title">Novo usuário</span>
+          </a>
+        </li>
+      </ul>
+    </li>
+    <li id="config" sec:authorize="hasRole('ADMIN')"
+        th:classappend="${#request.getServletPath() == '/configuracoes' ? 'opened active' : ''}">
+      <a th:href="@{/configuracoes}">
+        <i class="linecons-desktop"></i>
+        <span class="title">Configurações</span>
+      </a>
+      <ul>
+        <li id="config_setter" th:classappend="${#request.getServletPath() == '/configuracoes' ? 'active' : ''}">
+          <a th:href="@{/configuracoes}">
+            <span class="title">Ajuste fino</span>
+          </a>
+        </li>
+      </ul>
+    </li>
+  </th:block>
+</body>
+</html>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 	<body>
 		<th:block th:fragment="navbar">
 			<nav class="navbar user-info-navbar"  role="navigation">
@@ -149,7 +149,7 @@
 						</a>
 
 						<ul class="dropdown-menu user-profile-menu list-unstyled">
-							<li>
+							<li sec:authorize="hasRole('ADMIN')">
 								<a href="#settings">
 									<i class="fa-wrench"></i>
 									Configurações

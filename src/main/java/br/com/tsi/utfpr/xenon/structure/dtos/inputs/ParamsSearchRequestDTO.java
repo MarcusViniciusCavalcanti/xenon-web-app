@@ -6,6 +6,7 @@ import org.springframework.util.StringUtils;
 
 @Data
 public class ParamsSearchRequestDTO {
+
     public static final String DEFAULT_SORT_DIRECT = "ASC";
     public static final String DEFAULT_SORT_PROPERTY = "name";
     public static final Boolean DEFAULT_ENABLED = Boolean.TRUE;

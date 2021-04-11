@@ -9,9 +9,9 @@ public enum TypeModeSystem {
     @JsonCreator
     public static TypeModeSystem fromString(String value) {
         return Stream.of(TypeModeSystem.values())
-                .filter(valueEnum -> valueEnum.name().equals(value))
-                .findFirst()
-                .orElse(null);
+            .filter(valueEnum -> valueEnum.name().equals(value))
+            .findFirst()
+            .orElse(null);
 
     }
 }

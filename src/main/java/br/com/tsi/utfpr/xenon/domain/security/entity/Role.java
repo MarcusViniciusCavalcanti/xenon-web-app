@@ -1,6 +1,5 @@
 package br.com.tsi.utfpr.xenon.domain.security.entity;
 
-import br.com.tsi.utfpr.xenon.structure.dtos.RoleDTO;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -25,11 +24,4 @@ public class Role implements Serializable {
     @Column(name = "description", nullable = false)
     private String description;
 
-    public RoleDTO createDto() {
-        return RoleDTO.builder()
-            .id(id)
-            .description(description)
-            .name(name)
-            .build();
-    }
 }
