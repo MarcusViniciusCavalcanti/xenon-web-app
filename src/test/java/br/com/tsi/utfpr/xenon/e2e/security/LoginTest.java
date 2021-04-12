@@ -1,7 +1,8 @@
-package br.com.tsi.utfpr.xenon.e2e;
+package br.com.tsi.utfpr.xenon.e2e.security;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import br.com.tsi.utfpr.xenon.e2e.AbstractEndToEndTest;
 import br.com.tsi.utfpr.xenon.e2e.utils.GetElementDom;
 import br.com.tsi.utfpr.xenon.e2e.utils.InsertFormDom;
 import java.io.IOException;
@@ -62,7 +63,7 @@ public class LoginTest extends AbstractEndToEndTest {
     }
 
     @Override
-    WebApplicationContext getWebApplicationContext() {
+    protected WebApplicationContext getWebApplicationContext() {
         return webApplicationContext;
     }
 

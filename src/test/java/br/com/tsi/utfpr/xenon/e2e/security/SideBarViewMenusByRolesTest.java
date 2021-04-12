@@ -1,7 +1,8 @@
-package br.com.tsi.utfpr.xenon.e2e;
+package br.com.tsi.utfpr.xenon.e2e.security;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import br.com.tsi.utfpr.xenon.e2e.AbstractEndToEndTest;
 import br.com.tsi.utfpr.xenon.e2e.utils.GetElementDom;
 import com.gargoylesoftware.htmlunit.html.DomNode;
 import java.io.IOException;
@@ -9,7 +10,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,7 +89,7 @@ public class SideBarViewMenusByRolesTest extends AbstractEndToEndTest {
     }
 
     @Override
-    WebApplicationContext getWebApplicationContext() {
+    protected WebApplicationContext getWebApplicationContext() {
         return webApplicationContext;
     }
 

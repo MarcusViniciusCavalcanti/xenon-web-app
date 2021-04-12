@@ -24,15 +24,15 @@
       </ul>
     </li>
     <li id="users" sec:authorize="hasRole('OPERATOR')"
-        th:classappend="${#request.getServletPath().contains('/usuarios') ? 'opened active' : ''}">
-      <a th:href="@{/usuarios}">
+        th:classappend="${#request.getServletPath().contains('/usuarios/todos') ? 'opened active' : ''}">
+      <a th:href="@{/usuarios/todos}">
         <i class="linecons-user"></i>
         <span class="title">Usuários</span>
       </a>
       <ul>
-        <li th:classappend="${#request.getServletPath().endsWith('/usuarios') ? 'active' : ''}"
-            id="users_all" >
-          <a th:href="@{/usuarios}">
+        <li th:classappend="${#request.getServletPath().endsWith('/usuarios/todos') ? 'active' : ''}"
+            id="users_all">
+          <a th:href="@{/usuarios/todos}">
             <span class="title">Todos usuários</span>
           </a>
         </li>

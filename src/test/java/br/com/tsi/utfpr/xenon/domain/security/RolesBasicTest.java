@@ -1,15 +1,12 @@
 package br.com.tsi.utfpr.xenon.domain.security;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import br.com.tsi.utfpr.xenon.domain.security.entity.Role;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.stream.Collectors;
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -21,7 +21,7 @@ public abstract class AbstractEndToEndTest {
     private static final int TIMEOUT_MILLIS = 5000 * 2;
     protected WebClient webClient;
 
-    abstract WebApplicationContext getWebApplicationContext();
+    protected abstract WebApplicationContext getWebApplicationContext();
 
     @BeforeEach
     public void setup() {
@@ -38,5 +38,9 @@ public abstract class AbstractEndToEndTest {
         webClient.getOptions().setRedirectEnabled(true);
         webClient.getOptions().setCssEnabled(true);
         webClient.waitForBackgroundJavaScript(TIMEOUT_MILLIS);
+    }
+
+    protected static String getDefaultFormatTitle(String title) {
+        return String.format("UTFPR - Xenon - %s", title);
     }
 }
