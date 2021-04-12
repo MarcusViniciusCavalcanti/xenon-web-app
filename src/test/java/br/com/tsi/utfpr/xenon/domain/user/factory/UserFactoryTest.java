@@ -30,6 +30,7 @@ class UserFactoryTest {
     private static final long ID = 1L;
     private static final LocalDate DATE = LocalDate.now();
     private static final TypeUser TYPE_USER = TypeUser.SERVICE;
+    private static final String TRANSLATE_TYPE_USER = "Servidor";
     private static final int NUMBER_ACCESS = 100;
     private static final String MOCK_USERNAME_COM_BR = "mock@username.com.br";
     private static final String PASSWORD = "1234567";
@@ -60,6 +61,8 @@ class UserFactoryTest {
 
         assertEquals(MOCK_USER_TEST, userDto.getName());
         assertEquals(ID, userDto.getId());
+        assertEquals(TYPE_USER.name(), userDto.getTypeUser().name());
+        assertEquals(TRANSLATE_TYPE_USER, userDto.getTypeUser().getTranslaterName());
 
         var accessCardDto = userDto.getAccessCard();
         assertEquals(MOCK_USERNAME_COM_BR, accessCardDto.getUsername());
@@ -100,6 +103,8 @@ class UserFactoryTest {
 
         assertEquals(MOCK_USER_TEST, userDto.getName());
         assertEquals(ID, userDto.getId());
+        assertEquals(TYPE_USER.name(), userDto.getTypeUser().name());
+        assertEquals(TRANSLATE_TYPE_USER, userDto.getTypeUser().getTranslaterName());
 
         var accessCardDto = userDto.getAccessCard();
         assertEquals(MOCK_USERNAME_COM_BR, accessCardDto.getUsername());

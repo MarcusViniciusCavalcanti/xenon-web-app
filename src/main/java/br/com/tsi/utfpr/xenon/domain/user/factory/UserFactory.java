@@ -2,6 +2,7 @@ package br.com.tsi.utfpr.xenon.domain.user.factory;
 
 import br.com.tsi.utfpr.xenon.domain.security.factory.AccessCardFactory;
 import br.com.tsi.utfpr.xenon.domain.user.entity.User;
+import br.com.tsi.utfpr.xenon.structure.dtos.TypeUserDTO;
 import br.com.tsi.utfpr.xenon.structure.dtos.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ public class UserFactory {
             .name(user.getName())
             .accessCard(accessCardDto)
             .car(carFactory.createCarDto(user))
+            .typeUser(TypeUserDTO.valueOf(user.getTypeUser().name()))
             .build();
     }
 }
