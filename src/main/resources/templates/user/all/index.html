@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-br"
+      layout:decorate="~{shared/layout}"
+      th:with="activeMenu='user-show'"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Todos Usuários</title>
+</head>
+<body>
+<div layout:fragment="content" th:remove="tag">
+  <div class="page-title">
+
+    <div class="title-env">
+      <h1 class="title">Usuários</h1>
+      <p class="description">Exibição uma lista de todos usuários.</p>
+    </div>
+    <div class="breadcrumb-env">
+      <th:block layout:fragment="bradcrumb">
+        <ol class="breadcrumb bc-2">
+          <li>
+            <a th:href="@{/home}"><i class="fa-home"></i>Home</a>
+          </li>
+          <li>
+            <a th:href="@{/usuarios/todos}">Usuários</a>
+          </li>
+          <li class="active">
+            <strong>Todos</strong>
+          </li>
+        </ol>
+      </th:block>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Adjustable Responsive Table</h3>
+        </div>
+
+
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
