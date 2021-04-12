@@ -99,6 +99,14 @@
             <version>3.0.4.RELEASE</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
+        <dependency>
+            <artifactId>commons-lang3</artifactId>
+            <groupId>org.apache.commons</groupId>
+            <version>3.12.0</version>
+        </dependency>
+
+
         <!--    testes    -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
