@@ -24,6 +24,8 @@ public class UserFactory {
             .accessCard(accessCardDto)
             .car(carFactory.createCarDto(user))
             .typeUser(TypeUserDTO.valueOf(user.getTypeUser().name()))
+            .numberAccess(user.getNumberAccess())
+            .authorisedAcces(user.getAuthorisedAccess())
             .build();
     }
 }

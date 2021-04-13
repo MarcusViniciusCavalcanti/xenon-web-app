@@ -63,6 +63,8 @@ class UserFactoryTest {
         assertEquals(ID, userDto.getId());
         assertEquals(TYPE_USER.name(), userDto.getTypeUser().name());
         assertEquals(TRANSLATE_TYPE_USER, userDto.getTypeUser().getTranslaterName());
+        assertTrue(userDto.getAuthorisedAcces());
+        assertEquals(NUMBER_ACCESS, userDto.getNumberAccess());
 
         var accessCardDto = userDto.getAccessCard();
         assertEquals(MOCK_USERNAME_COM_BR, accessCardDto.getUsername());
@@ -105,6 +107,8 @@ class UserFactoryTest {
         assertEquals(ID, userDto.getId());
         assertEquals(TYPE_USER.name(), userDto.getTypeUser().name());
         assertEquals(TRANSLATE_TYPE_USER, userDto.getTypeUser().getTranslaterName());
+        assertTrue(userDto.getAuthorisedAcces());
+        assertEquals(NUMBER_ACCESS, userDto.getNumberAccess());
 
         var accessCardDto = userDto.getAccessCard();
         assertEquals(MOCK_USERNAME_COM_BR, accessCardDto.getUsername());

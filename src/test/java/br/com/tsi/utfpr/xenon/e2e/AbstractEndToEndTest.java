@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.htmlunit.MockMvcWebClientBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -20,12 +21,13 @@ public abstract class AbstractEndToEndTest {
 
     private static final int TIMEOUT_MILLIS = 5000 * 2;
     protected WebClient webClient;
+    protected MockMvc mockMvc;
 
     protected abstract WebApplicationContext getWebApplicationContext();
 
     @BeforeEach
     public void setup() {
-        var mockMvc = MockMvcBuilders
+        mockMvc = MockMvcBuilders
             .webAppContextSetup(getWebApplicationContext())
             .apply(springSecurity())
             .build();

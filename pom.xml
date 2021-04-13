@@ -106,7 +106,6 @@
             <version>3.12.0</version>
         </dependency>
 
-
         <!--    testes    -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -177,6 +176,11 @@
                             <dataFile>target/jacoco.exec</dataFile>
                             <!-- Sets the output directory for the code coverage report. -->
                             <outputDirectory>target/jacoco-ut</outputDirectory>
+                            <excludes>
+                                <exclude>br/com/tsi/utfpr/xenon/domain/**/entity/*_.class</exclude>
+                                <exclude>br/com/tsi/utfpr/xenon/domain/**/config/*.class</exclude>
+                                <exclude>br/com/tsi/utfpr/xenon/config/*.class</exclude>
+                            </excludes>
                         </configuration>
                     </execution>
                 </executions>

@@ -33,16 +33,62 @@
   </div>
 
   <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-12">
       <div class="panel panel-default">
         <div class="panel-heading">
           <h3 class="panel-title">Adjustable Responsive Table</h3>
+
+          <div class="panel-options">
+            <a href="#" data-toggle="reload">
+              <i class="fa-rotate-right"></i>
+            </a>
+          </div>
         </div>
 
+        <div class="panel-body">
+          <div class="table-responsive"
+               data-pattern="priority-columns"
+               data-focus-btn-icon="fa-asterisk"
+               data-sticky-table-header="true"
+               data-add-display-all-btn="true"
+               data-add-focus-btn="true">
+            <table cellspacing="0" class="table table-small-font table-bordered table-striped">
+              <thead>
+                <tr>
+                  <th>id</th>
+                  <th data-priority="1">Nome</th>
+                  <th data-priority="1">Login</th>
+                  <th data-priority="1">Placa do carro</th>
+                  <th data-priority="1">Modelo do carro</th>
+                  <th data-priority="1">Tipo de usuário</th>
+                  <th data-priority="1">Conta bloqueada?</th>
+                  <th data-priority="1">Conta ativa?</th>
+                </tr>
+              </thead>
+              <tbody>
+              </tbody>
+            </table>
+          </div>
 
+          <ul class="pagination">
+            <li><a href="#"><i class="fa-angle-left"></i></a></li>
+            <li><a href="#">1</a></li>
+            <li class="active"><a href="#">2</a></li>
+            <li><a href="#">3</a></li>
+            <li class="disabled"><a href="#">4</a></li>
+            <li><a href="#">5</a></li>
+            <li><a href="#">6</a></li>
+            <li><a href="#"><i class="fa-angle-right"></i></a></li>
+          </ul>
+
+        </div>
+        </div>
       </div>
     </div>
   </div>
-</div>
+
+  <th:block layout:fragment="scripts">
+    <script th:src="@{/js/user/user.js}"></script>
+  </th:block>
 </body>
 </html>

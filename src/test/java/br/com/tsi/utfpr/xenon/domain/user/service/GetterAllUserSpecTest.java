@@ -3,6 +3,7 @@ package br.com.tsi.utfpr.xenon.domain.user.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertLinesMatch;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import br.com.tsi.utfpr.xenon.domain.security.entity.Role;
 import br.com.tsi.utfpr.xenon.domain.user.entity.TypeUser;
@@ -49,6 +50,8 @@ class GetterAllUserSpecTest {
         assertEquals(1, users.size());
         assertEquals("beltrano_disable_account@user.com", user.getAccessCard().getUsername());
         assertEquals(LocalDate.of(YEAR, MONTH, DAY_OF_MONTH), user.getAccessCard().getCreatedAt());
+        assertNotNull(user.getAccessCard().getId());
+        assertEquals(LocalDate.of(YEAR, MONTH, DAY_OF_MONTH), user.getAccessCard().getUpdatedAt());
         assertEquals(LocalDate.of(YEAR, MONTH, DAY_OF_MONTH), user.getCreatedAt());
         assertEquals(LocalDate.of(YEAR, MONTH, DAY_OF_MONTH), user.getUpdatedAt());
         assertEquals("Beltrano conta desativada", user.getName());
@@ -78,6 +81,7 @@ class GetterAllUserSpecTest {
         assertEquals(1, users.size());
         assertEquals("beltrano_expired_account@user.com", user.getAccessCard().getUsername());
         assertEquals(LocalDate.of(YEAR, MONTH, DAY_OF_MONTH), user.getAccessCard().getCreatedAt());
+        assertNotNull(user.getAccessCard().getId());
         assertEquals(LocalDate.of(YEAR, MONTH, DAY_OF_MONTH), user.getCreatedAt());
         assertEquals(LocalDate.of(YEAR, MONTH, DAY_OF_MONTH), user.getUpdatedAt());
         assertEquals("Beltrano conta exipirada", user.getName());
@@ -100,6 +104,7 @@ class GetterAllUserSpecTest {
         assertEquals(1, users.size());
         assertEquals("beltrano_admin@admin.com", user.getAccessCard().getUsername());
         assertEquals(LocalDate.of(YEAR, MONTH, DAY_OF_MONTH), user.getAccessCard().getCreatedAt());
+        assertNotNull(user.getAccessCard().getId());
         assertEquals(LocalDate.of(YEAR, MONTH, DAY_OF_MONTH), user.getCreatedAt());
         assertEquals(LocalDate.of(YEAR, MONTH, DAY_OF_MONTH), user.getUpdatedAt());
         assertEquals("Beltrano Admin", user.getName());

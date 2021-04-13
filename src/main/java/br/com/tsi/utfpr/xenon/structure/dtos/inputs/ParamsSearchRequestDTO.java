@@ -1,10 +1,13 @@
 package br.com.tsi.utfpr.xenon.structure.dtos.inputs;
 
 import java.util.Objects;
-import lombok.Data;
-import org.springframework.util.StringUtils;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
 
-@Data
+@Setter
+@NoArgsConstructor
 public class ParamsSearchRequestDTO {
 
     public static final String DEFAULT_SORT_DIRECT = "ASC";
@@ -17,9 +20,16 @@ public class ParamsSearchRequestDTO {
     private int size;
     private String sortDirection;
     private String sort;
+
+    @Getter
     private String name;
+
+    @Getter
     private String profile;
+
+    @Getter
     private String type;
+
     private Boolean enabled;
 
     public int getOrDefaultPage() {

@@ -12,5 +12,7 @@ public class UserDto {
     private final AccessCardDTO accessCard;
     private final CarDto car;
     private final TypeUserDTO typeUser;
+    private final Integer numberAccess;
+    private final Boolean authorisedAcces;
 
 }
