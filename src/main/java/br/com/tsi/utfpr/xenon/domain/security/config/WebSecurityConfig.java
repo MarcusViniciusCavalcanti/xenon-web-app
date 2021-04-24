@@ -37,7 +37,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .and().headers().frameOptions().sameOrigin()
             .and()
             .authorizeRequests()
-            .antMatchers(HttpMethod.POST, SEND_PLATE).permitAll()
+            .antMatchers(HttpMethod.POST,
+                SEND_PLATE,
+                "/registry",
+                "/validate-token",
+                "/validate-plate",
+                "/registry-students").permitAll()
+            .antMatchers(HttpMethod.GET, "/novo-registro").permitAll()
             .antMatchers(HttpMethod.GET, "/access-denied-public").permitAll()
             .and()
             .authorizeRequests()

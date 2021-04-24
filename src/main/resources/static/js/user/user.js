@@ -1,20 +1,23 @@
+$(document).ready(function () {
+  disablePanel();
+  executeGetAllUser()
+})
+
 const $body = $('body');
 const $panel = $body.find('.panel')
 
-$body.on('click', '.panel a[data-toggle="reload"]', function(ev) {
+$body.on('click', '.panel a[data-toggle="reload"]', function (ev) {
   ev.preventDefault();
   disablePanel();
   executeGetAllUser();
 });
 
-(function () {
-  disablePanel();
-  executeGetAllUser()
-})();
-
 function executeGetAllUser(params) {
+  const queryParams = params ? params : '';
   $.ajax({
-    url: `/users/all${params ? params : ''}`,
+    async: true,
+    url: '/users/all' + queryParams,
+    dataType: 'json',
     success: function (result) {
       renderItems(result);
     },
@@ -41,20 +44,31 @@ function enablePanel() {
 function renderItems(users) {
   console.log(users)
   const $tbody = $panel.find('tbody');
+  let $thTag = '';
   users.content.forEach(function (value) {
-    $tbody.append(`
-      <tr>
-        <th>${value.id}</span></th>
-        <td>${value.name}</td>
-        <td>${value.accessCard.username}</td>
-        <td>${value.car ? value.car.plate : 'Não Cadastrado'}</td>
-        <td>${value.car ? value.car.model : 'Não Cadastrado'}</td>
-        <td>${translateType(value.typeUser)}</td>
-        <td>${value.accessCard.accountNonLocked ? 'Não' : 'Sim'}</td>
-        <td>${value.accessCard.enabled ? 'Não' : 'Sim'}</td>
-      </tr>
-    `);
+    let $tr = '<tr class="user_item">';
+    let plate = 'Não informado'
+    let model = 'Não informado'
+
+    if (value.car) {
+      plate = value.car.plate;
+      model = value.car.model;
+    }
+
+    $tr += '<th>' + value.id + '</th>';
+    $tr += '<td>' + value.name + '</td>';
+    $tr += '<td>' + value.accessCard.username + '</td>';
+    $tr += '<td>' + plate + '</td>';
+    $tr += '<td>' + model + '</td>';
+    $tr += '<td>' + translateType(value.typeUser) + '</td>';
+    $tr += '<td>' + value.accessCard.accountNonLocked ? 'Não' : 'Sim' + '</td>';
+    $tr += '<td>' + value.accessCard.enabled ? 'Não' : 'Sim' + '</td>';
+    $tr += '</tr>';
+
+    $thTag += $tr;
   });
+
+  $tbody.html($thTag)
 }
 
 function renderPagination() {
@@ -63,10 +77,14 @@ function renderPagination() {
 
 function translateType(type) {
   switch (type) {
-    case "SERVICE": return 'Servidor';
-    case "STUDENTS": return 'Estudante';
-    case "SPEAKER": return 'Palestrante';
-    default: return 'Não Informado'
+    case 'SERVICE':
+      return 'Servidor';
+    case 'STUDENTS':
+      return 'Estudante';
+    case 'SPEAKER':
+      return 'Palestrante';
+    default:
+      return 'Não Informado'
   }
 }
 
