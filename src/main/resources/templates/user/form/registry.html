@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<body>
+  <th:block th:fragment="registry">
+    <form id="registry_students"
+          role="form"
+          th:object="${input}">
+      <!--/*@thymesVar id="token" type="java.lang.String"*/-->
+      <div th:if="${param?.token}">
+        <input th:value="${param?.token}" th:field="*{tokenRegistry}" hidden>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-group">
+            <label class="control-label" for="input_full_name">Nome Completo</label>
+            <input class="form-control"
+                   data-message-required="Campo obrigatório"
+                   data-validate="required"
+                   id="input_full_name"
+                   th:field="*{name}"
+                   placeholder="Seu nome completo"/>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label class="control-label" for="input_model_car">Modelo do
+              Carro</label>
+            <input class="form-control"
+                   data-message-required="Campo obrigatório"
+                   data-validate="required"
+                   id="input_model_car"
+                   th:field="*{modelCar}"
+                   placeholder="Inclua o modelo do carro Ex.: Gol"/>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="form-group plate">
+            <label class="control-label" for="input_plate_car">Placa do
+              Carro</label>
+            <input class="form-control"
+                   data-message-required="Campo obrigatório"
+                   data-validate="required"
+                   id="input_plate_car"
+                   th:field="*{plateCar}"
+                   placeholder="Ex.: ABC1234 ou ABC1A23"/>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-group">
+            <label class="control-label" for="email">E-mail</label>
+            <!--/*@thymesVar id="email" type="java.lang.String"*/-->
+            <input class="form-control"
+                   th:disabled="${param?.email}"
+                   th:value="${param?.email}"
+                   id="email"
+                   th:field="*{email}"
+                   data-message-required="Campo inválido"
+                   data-validate="required,email"/>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label class="control-label">Escolha sua senha</label>
+
+            <div class="input-group">
+              <div class="input-group-addon">
+                <i class="linecons-lock"></i>
+              </div>
+
+              <input class="form-control" data-message-required="Campo obrigatório"
+                     data-validate="required" id="input_password"
+                     th:field="*{password}" placeholder="Inclua uma senha"
+                     type="password"/>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="form-group">
+            <label class="control-label">Confirme</label>
+
+            <div class="input-group">
+              <div class="input-group-addon">
+                <i class="linecons-lock"></i>
+              </div>
+
+              <input class="form-control"
+                     data-message-equal-to="Senha não coincidem."
+                     data-validate="required,equalTo[#input_password]"
+                     id="input_password_confirm"
+                     th:field="*{confirmPassword}"
+                     placeholder="Confirme sua senha" type="password"/>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <button class="btn btn-success btn-icon" type="submit">
+          <i class="fa-check"></i>
+          <span>Enviar</span>
+        </button>
+      </div>
+    </form>
+  </th:block>
+</body>
+</html>

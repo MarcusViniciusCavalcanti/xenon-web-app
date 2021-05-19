@@ -9,4 +9,5 @@ import org.springframework.stereotype.Repository;
 public interface AccessCardRepository extends JpaRepository<AccessCard, Long> {
 
     Optional<AccessCard> findByUsername(String username);
+
 }

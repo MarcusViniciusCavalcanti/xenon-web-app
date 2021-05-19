@@ -7,6 +7,7 @@ import br.com.tsi.utfpr.xenon.domain.user.entity.TypeUser;
 import br.com.tsi.utfpr.xenon.domain.user.entity.User;
 import br.com.tsi.utfpr.xenon.structure.dtos.TypeUserDto;
 import br.com.tsi.utfpr.xenon.structure.dtos.UserDto;
+import br.com.tsi.utfpr.xenon.structure.dtos.inputs.InputNewStudent;
 import br.com.tsi.utfpr.xenon.structure.dtos.inputs.InputUserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,20 +35,51 @@ public class UserFactory {
     }
 
     public User createUser(InputUserDto inputUser) {
-        var user = new User();
-        user.setName(inputUser.getName());
-        user.setTypeUser(TypeUser.valueOf(inputUser.getType().name()));
-        user.setAuthorisedAccess(inputUser.isAuthorizedAccess());
+        var user = createUserNew(
+            inputUser.getName(),
+            inputUser.getType().name(),
+            inputUser.isAuthorizedAccess()
+        );
 
-        if (isNotEmpty(inputUser.getCarModel()) && isNotEmpty(inputUser.getCarPlate())) {
-            var car =
-                carFactory.createCarToUser(inputUser.getCarPlate(), inputUser.getCarModel(), user);
-            user.setCar(car);
-        }
-
+        configureCar(inputUser.getCarModel(), inputUser.getCarPlate(), user);
         var accessCard = accessCardFactory.createAccessCardToUser(inputUser, user);
         user.setAccessCard(accessCard);
 
         return user;
+    }
+
+    public User createTypeStudent(InputNewStudent inputNewStudent) {
+        var user = createUserNew(
+            inputNewStudent.getName(),
+            TypeUser.STUDENTS.name(),
+            Boolean.FALSE
+        );
+
+        var car = carFactory.createCarToUser(inputNewStudent.getPlateCar(), inputNewStudent.getModelCar(), user);
+        user.setCar(car);
+        var accessCard = accessCardFactory.createAccessCardActiveStudentsRole(
+            inputNewStudent.getEmail(),
+            inputNewStudent.getPassword(),
+            user
+        );
+        user.setAccessCard(accessCard);
+
+        return user;
+    }
+
+    private User createUserNew(String name, String type, Boolean authorisedAccess) {
+        var user = new User();
+        user.setName(name);
+        user.setTypeUser(TypeUser.valueOf(type));
+        user.setAuthorisedAccess(authorisedAccess);
+
+        return user;
+    }
+
+    private void configureCar(String carModel, String carPlate, User user) {
+        if (isNotEmpty(carModel) && isNotEmpty(carPlate)) {
+            var car = carFactory.createCarToUser(carPlate, carModel, user);
+            user.setCar(car);
+        }
     }
 }

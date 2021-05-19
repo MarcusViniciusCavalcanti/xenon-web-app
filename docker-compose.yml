@@ -9,3 +9,7 @@ services:
       POSTGRES_PASSWORD: xenon
       POSTGRES_USER: xenon
       POSTGRES_DB: xenon
+  redis:
+    image: library/redis:alpine
+    ports:
+      - 6379:6379

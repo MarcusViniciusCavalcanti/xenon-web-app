@@ -1,15 +1,10 @@
 package br.com.tsi.utfpr.xenon.domain.user.service;
 
-
 import br.com.tsi.utfpr.xenon.domain.user.entity.User;
 import br.com.tsi.utfpr.xenon.structure.data.BasicSpecification;
 import javax.validation.constraints.NotNull;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Component;
 
-@Component
-@Qualifier(UserSpecifications.QUALIFIER_GET_ALL_SPEC)
 public class GetterAllUserSpec implements BasicSpecification<User, ParametersGetAllSpec> {
 
     @Override

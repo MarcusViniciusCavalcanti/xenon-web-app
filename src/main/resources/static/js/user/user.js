@@ -42,7 +42,6 @@ function enablePanel() {
 }
 
 function renderItems(users) {
-  console.log(users)
   const $tbody = $panel.find('tbody');
   let $thTag = '';
   users.content.forEach(function (value) {
@@ -69,10 +68,6 @@ function renderItems(users) {
   });
 
   $tbody.html($thTag)
-}
-
-function renderPagination() {
-
 }
 
 function translateType(type) {

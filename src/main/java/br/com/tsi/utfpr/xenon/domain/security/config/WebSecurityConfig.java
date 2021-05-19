@@ -22,8 +22,14 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private static final String SEND_PLATE = "/send/plate/**";
-    private final LoggingAccessDeniedHandler accessDeniedHandler;
+    private static final String NOVO_REGISTRO = "/novo-registro";
+    private static final String VALIDAR_TOKEN = "/validar-token";
+    private static final String VALIDE_TOKEN = "/valide-token";
+    private static final String VALIDATE_PLATE = "/validate-plate";
+    private static final String CADASTRO_ESTUDANTE = "/cadastro-estudante";
+    private static final String REGISTRY_STUDENTS = "/registry-students";
 
+    private final LoggingAccessDeniedHandler accessDeniedHandler;
     private final UserDetailsService userDetailsService;
 
     @Bean
@@ -39,12 +45,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .authorizeRequests()
             .antMatchers(HttpMethod.POST,
                 SEND_PLATE,
-                "/registry",
-                "/validate-token",
-                "/validate-plate",
-                "/registry-students").permitAll()
-            .antMatchers(HttpMethod.GET, "/novo-registro").permitAll()
-            .antMatchers(HttpMethod.GET, "/access-denied-public").permitAll()
+                NOVO_REGISTRO,
+                VALIDE_TOKEN,
+                VALIDATE_PLATE,
+                REGISTRY_STUDENTS).permitAll()
+            .antMatchers(HttpMethod.GET,
+                NOVO_REGISTRO,
+                CADASTRO_ESTUDANTE,
+                VALIDAR_TOKEN).permitAll()
+            .antMatchers(HttpMethod.GET,
+                "/access-denied-public",
+                "/error/usuario-cadastrado"
+            ).permitAll()
             .and()
             .authorizeRequests()
             .antMatchers("/js/**", "/css/**", "/images/**", "/headless-content.js.map",

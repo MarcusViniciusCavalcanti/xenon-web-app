@@ -9,10 +9,13 @@ import lombok.Data;
 public class InputNewStudent {
 
     @NotBlank
+    private String tokenRegistry;
+
+    @NotBlank
     @Size(min = 10, max = 255)
     private String name;
 
-    @Pattern(regexp = "^[A-Za-z0-9._%+-]+@alunos.utfpr.edu.br.com$")
+    @Pattern(regexp = "^[A-Za-z0-9._%+-]+@alunos.utfpr.edu.br$")
     private String email;
 
     @NotBlank

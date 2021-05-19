@@ -9,3 +9,17 @@ xenon:
       password: xenon
     avatar:
       url:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+    email:
+      host: smtp.mailtrap.io
+      port: 2525
+      protocol: smtp
+      username: bf7ca5083ad731
+      password: 72fa20f0eeceb5
+      auth: false
+      tls:
+        enable: true
+        required: true
+

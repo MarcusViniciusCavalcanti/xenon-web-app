@@ -1,5 +1,6 @@
 package br.com.tsi.utfpr.xenon.domain.user.factory;
 
+import br.com.tsi.utfpr.xenon.domain.user.entity.Car;
 import br.com.tsi.utfpr.xenon.domain.user.entity.User;
 import br.com.tsi.utfpr.xenon.structure.dtos.CarDto;
 import org.springframework.stereotype.Component;
@@ -15,5 +16,14 @@ public class CarFactory {
             .plate(car.getPlate())
             .build())
             .orElse(null);
+    }
+
+    public Car createCarToUser(String plate, String model, User user) {
+        var car = new Car();
+        car.setUser(user);
+        car.setPlate(plate);
+        car.setModel(model);
+
+        return car;
     }
 }

@@ -2,7 +2,10 @@ package br.com.tsi.utfpr.xenon.e2e;
 
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 
+import com.gargoylesoftware.htmlunit.BrowserVersion;
+import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
 import com.gargoylesoftware.htmlunit.WebClient;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -34,12 +37,19 @@ public abstract class AbstractEndToEndTest {
 
         webClient = MockMvcWebClientBuilder
             .mockMvcSetup(mockMvc)
+            .withDelegate(new WebClient(BrowserVersion.CHROME ))
             .build();
 
-        webClient.getOptions().setJavaScriptEnabled(true);
+        webClient.getOptions().setWebSocketEnabled(true);
         webClient.getOptions().setRedirectEnabled(true);
         webClient.getOptions().setCssEnabled(true);
         webClient.waitForBackgroundJavaScript(TIMEOUT_MILLIS);
+        webClient.setAjaxController(new NicelyResynchronizingAjaxController());
+    }
+
+    @AfterEach
+    public void tearDown() {
+        webClient.close();
     }
 
     protected static String getDefaultFormatTitle(String title) {

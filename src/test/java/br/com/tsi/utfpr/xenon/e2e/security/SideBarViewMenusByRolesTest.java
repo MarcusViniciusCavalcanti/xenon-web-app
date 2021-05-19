@@ -77,7 +77,7 @@ public class SideBarViewMenusByRolesTest extends AbstractEndToEndTest {
 
     @Test
     @DisplayName("Deve exibir menus para Motorista")
-    @WithUserDetails(value = "beltrano_user@udrt.com", userDetailsServiceBeanName = "userDetailsServiceImpl")
+    @WithUserDetails(value = "beltrano_user@alunos.utfpr.edu.br", userDetailsServiceBeanName = "userDetailsServiceImpl")
     void shouldHaveViewMenusDrive() throws IOException {
         var listOperator = List.of(DASHBOARD);
 

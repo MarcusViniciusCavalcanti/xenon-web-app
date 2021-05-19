@@ -1,6 +1,8 @@
 package br.com.tsi.utfpr.xenon.e2e.users;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -11,7 +13,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import br.com.tsi.utfpr.xenon.e2e.AbstractEndToEndTest;
 import br.com.tsi.utfpr.xenon.e2e.utils.GetElementDom;
+import com.gargoylesoftware.htmlunit.html.DomNode;
 import java.io.IOException;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +35,13 @@ public class FeatureAllUserTest extends AbstractEndToEndTest {
     private static final String URL_USUARIOS_TODOS = "http://localhost:8080/usuarios/todos";
     private static final String ATTRIBUTE_ID = "id";
     private static final String ATTRIBUTE_CLASS = "class";
+    private static final int ID_OPERATOR = 154;
+    private static final int ID_ADMIN = 153;
+    private static final String BELTRANO_ADMIN = "Beltrano Admin";
+    private static final String BELTRANO_OPERADOR = "Beltrano Operador";
+    private static final String BELTRANO = "Beltrano";
+    private static final int ID_STUDENT = 1;
+
     @Autowired
     private WebApplicationContext webApplicationContext;
 
@@ -86,9 +97,9 @@ public class FeatureAllUserTest extends AbstractEndToEndTest {
             .andExpect(jsonPath("content", hasSize(3)))
             .andExpect(jsonPath("totalElements", is(3)))
             .andExpect(jsonPath("totalPages", is(1)))
-            .andExpect(jsonPath("content[*].id", containsInAnyOrder(1, 154, 153)))
+            .andExpect(jsonPath("content[*].id", containsInAnyOrder(ID_STUDENT, ID_OPERATOR, ID_ADMIN)))
             .andExpect(jsonPath("content[*].name",
-                containsInAnyOrder("Beltrano", "Beltrano Admin", "Beltrano Operador")))
+                containsInAnyOrder(BELTRANO, BELTRANO_ADMIN, BELTRANO_OPERADOR)))
             .andExpect(jsonPath("content[*].numberAccess",
                 containsInAnyOrder(1693228998, 144412489, 99101783)))
             .andExpect(jsonPath("content[*].typeUser",
@@ -99,7 +110,7 @@ public class FeatureAllUserTest extends AbstractEndToEndTest {
             .andExpect(jsonPath("content[*].accessCard.credentialsNonExpired", matcherAllTrue))
             .andExpect(jsonPath("content[*].accessCard.enabled", matcherAllTrue))
             .andExpect(jsonPath("content[*].accessCard.username",
-                containsInAnyOrder("beltrano_user@udrt.com", "beltrano_admin@admin.com",
+                containsInAnyOrder("beltrano_user@alunos.utfpr.edu.br", "beltrano_admin@admin.com",
                     "beltrano_operator@operator.com")))
             .andExpect(
                 jsonPath("content[*].accessCard.roles[*].name",
@@ -114,6 +125,69 @@ public class FeatureAllUserTest extends AbstractEndToEndTest {
                         DESCRIPTION_OPERATOR,
                         DESCRIPTION_DRIVER,
                         DESCRIPTION_OPERATOR)));
+    }
+
+    @Test
+    @DisplayName("Deve retonar page de usuário com filtro de nome")
+    @WithUserDetails(value = "beltrano_admin@admin.com", userDetailsServiceBeanName = "userDetailsServiceImpl")
+    void shouldReturnUserWithFilterName() throws Exception {
+        mockMvc.perform(get("/users/all?name=admin").contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("content", hasSize(1)))
+            .andExpect(jsonPath("totalElements", is(1)))
+            .andExpect(jsonPath("totalPages", is(1)))
+            .andExpect(jsonPath("content[*].id", hasItem(ID_ADMIN)))
+            .andExpect(jsonPath("content[*].name", hasItem(BELTRANO_ADMIN)));
+    }
+
+    @Test
+    @DisplayName("Deve retonar page de usuário com filtro de tipo")
+    @WithUserDetails(value = "beltrano_admin@admin.com", userDetailsServiceBeanName = "userDetailsServiceImpl")
+    void shouldReturnUserWithFilterType() throws Exception {
+        mockMvc.perform(get("/users/all?type=SERVICE").contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("content", hasSize(2)))
+            .andExpect(jsonPath("totalElements", is(2)))
+            .andExpect(jsonPath("totalPages", is(1)))
+            .andExpect(jsonPath("content[*].id", containsInAnyOrder(ID_OPERATOR, ID_ADMIN)))
+            .andExpect(jsonPath("content[*].name",
+                containsInAnyOrder(BELTRANO_ADMIN, BELTRANO_OPERADOR)));
+    }
+
+    @Test
+    @DisplayName("Deve retonar page de usuário com filtro de Perfil")
+    @WithUserDetails(value = "beltrano_admin@admin.com", userDetailsServiceBeanName = "userDetailsServiceImpl")
+    void shouldReturnUserWithFilterProfile() throws Exception {
+        mockMvc.perform(get("/users/all?profile=OPERATOR").contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("content", hasSize(2)))
+            .andExpect(jsonPath("totalElements", is(2)))
+            .andExpect(jsonPath("totalPages", is(1)))
+            .andExpect(jsonPath("content[*].id",
+                containsInAnyOrder(ID_OPERATOR, ID_ADMIN)))
+            .andExpect(jsonPath("content[*].name",
+                containsInAnyOrder(BELTRANO_ADMIN, BELTRANO_OPERADOR)));
+    }
+
+    @Test
+    @DisplayName("Deve conter na tabela de usuários dos usuários cadastrados")
+    @WithUserDetails(value = "beltrano_admin@admin.com", userDetailsServiceBeanName = "userDetailsServiceImpl")
+    void shouldVerifyPageUsers() throws IOException {
+        var domElements = GetElementDom.start(webClient, URL_USUARIOS_TODOS)
+            .navigation("table", "class", "table table-small-font table-bordered table-striped")
+            .getTbody("id", "user_table_list")
+            .awaitPage(300)
+            .getListElement("class", "user_item");
+
+        var listTextVisible = domElements.stream()
+            .map(DomNode::getVisibleText)
+            .collect(Collectors.toList());
+
+        assertThat(listTextVisible, containsInAnyOrder(
+            "1 Beltrano beltrano_user@alunos.utfpr.edu.br Não informado Não informado Estudante",
+            "153 Beltrano Admin beltrano_admin@admin.com Não informado Não informado Servidor",
+            "154 Beltrano Operador beltrano_operator@operator.com Não informado Não informado Servidor"
+        ));
     }
 
     @Override

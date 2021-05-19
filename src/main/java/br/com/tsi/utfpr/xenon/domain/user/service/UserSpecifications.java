@@ -7,16 +7,14 @@ import br.com.tsi.utfpr.xenon.domain.user.entity.User;
 import br.com.tsi.utfpr.xenon.domain.user.entity.User_;
 import java.util.Locale;
 import java.util.Objects;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.domain.Specification;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class UserSpecifications {
 
-    public static final String QUALIFIER_GET_ALL_SPEC = "QUALIFIER_GET_ALL_SPEC";
     private static final String WILD_CARD = "%";
+
+    private UserSpecifications() {}
 
     public static Specification<User> nameOrUsernameContains(String value) {
         if (StringUtils.isBlank(value)) {

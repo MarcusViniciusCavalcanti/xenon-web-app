@@ -1,15 +1,25 @@
 package br.com.tsi.utfpr.xenon.domain.security.factory;
 
+import br.com.tsi.utfpr.xenon.domain.security.entity.AccessCard;
+import br.com.tsi.utfpr.xenon.domain.security.service.RoleService;
 import br.com.tsi.utfpr.xenon.domain.user.entity.User;
 import br.com.tsi.utfpr.xenon.structure.FactoryException;
 import br.com.tsi.utfpr.xenon.structure.dtos.AccessCardDTO;
 import br.com.tsi.utfpr.xenon.structure.dtos.RoleDTO;
+import br.com.tsi.utfpr.xenon.structure.dtos.TypeUserDto;
+import br.com.tsi.utfpr.xenon.structure.dtos.inputs.InputUserDto;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class AccessCardFactory {
+
+    private final RoleService roleService;
 
     public AccessCardDTO createAccessCardDto(User user) {
         var accessCard = user.getAccessCard();
@@ -38,5 +48,56 @@ public class AccessCardFactory {
             .enabled(accessCard.isEnabled())
             .roles(rolesDto)
             .build();
+    }
+
+    public AccessCard createAccessCardToUser(InputUserDto inputUserDto, User user) {
+        var newAccessCard = createNewAccessCard(
+            inputUserDto.getUsername(),
+            inputUserDto.getPassword(),
+            user
+        );
+
+        configureAccess(
+            newAccessCard,
+            inputUserDto.isAccountNonLocked(),
+            inputUserDto.isAccountNonExpired(),
+            inputUserDto.isEnabled(),
+            inputUserDto.isCredentialsNonExpired()
+        );
+
+        var roles =
+            roleService.verifyAndGetRoleBy(inputUserDto.getType(), inputUserDto.getAuthorities());
+        newAccessCard.setRoles(roles);
+
+        return newAccessCard;
+    }
+
+    public AccessCard createAccessCardActiveStudentsRole(String email, String pass, User user) {
+        var newAccessCard = createNewAccessCard(email, pass, user);
+
+        configureAccess(newAccessCard, Boolean.TRUE, Boolean.TRUE, Boolean.TRUE, Boolean.TRUE);
+        var roles =
+            roleService.verifyAndGetRoleBy(TypeUserDto.STUDENTS, List.of(1L));
+        newAccessCard.setRoles(roles);
+
+        return newAccessCard;
+    }
+
+    private AccessCard createNewAccessCard(String email, String pass, User user) {
+        var newAccessCard = new AccessCard();
+
+        newAccessCard.setUsername(email);
+        newAccessCard.setPassword(pass);
+        newAccessCard.setUser(user);
+
+        return newAccessCard;
+    }
+
+    private void configureAccess(AccessCard accessCard, boolean isAccountNonLocked,
+        boolean isAccountNonExpired, boolean isEnabled, boolean isCredentialsNonExpired) {
+        accessCard.setAccountNonLocked(isAccountNonLocked);
+        accessCard.setAccountNonExpired(isAccountNonExpired);
+        accessCard.setEnabled(isEnabled);
+        accessCard.setCredentialsNonExpired(isCredentialsNonExpired);
     }
 }

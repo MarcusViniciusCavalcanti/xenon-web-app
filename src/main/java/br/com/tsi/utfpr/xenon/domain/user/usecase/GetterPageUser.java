@@ -1,16 +1,14 @@
 package br.com.tsi.utfpr.xenon.domain.user.usecase;
 
+import br.com.tsi.utfpr.xenon.domain.user.config.bean.SpecificationConfiguration;
 import br.com.tsi.utfpr.xenon.domain.user.entity.User;
 import br.com.tsi.utfpr.xenon.domain.user.factory.UserFactory;
 import br.com.tsi.utfpr.xenon.domain.user.repository.UserRepository;
 import br.com.tsi.utfpr.xenon.domain.user.service.ParametersGetAllSpec;
-import br.com.tsi.utfpr.xenon.domain.user.service.UserSpecifications;
 import br.com.tsi.utfpr.xenon.structure.data.BasicSpecification;
 import br.com.tsi.utfpr.xenon.structure.dtos.UserDto;
 import br.com.tsi.utfpr.xenon.structure.dtos.inputs.ParamsSearchRequestDTO;
 import java.util.stream.Collectors;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -19,17 +17,25 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class GetterPageUser {
 
     private final UserRepository userRepository;
     private final UserFactory userFactory;
-
-    @Qualifier(UserSpecifications.QUALIFIER_GET_ALL_SPEC)
     private final BasicSpecification<User, ParametersGetAllSpec> getterAllUserSpec;
 
+    public GetterPageUser(
+        UserRepository userRepository,
+        UserFactory userFactory,
+        @Qualifier(SpecificationConfiguration.QUALIFIER_GET_ALL_SPEC)
+            BasicSpecification<User, ParametersGetAllSpec> getterAllUserSpec) {
+        this.userRepository = userRepository;
+        this.userFactory = userFactory;
+        this.getterAllUserSpec = getterAllUserSpec;
+    }
+
     public Page<UserDto> getAllUserByFilter(ParamsSearchRequestDTO params) {
-        var sort = Sort.by(Sort.Direction.fromString(params.getOrDefaultSortDirection()), params.getOrDefaultSort());
+        var sort = Sort.by(Sort.Direction.fromString(params.getOrDefaultSortDirection()),
+            params.getOrDefaultSort());
         var pageable = PageRequest.of(params.getOrDefaultPage(), params.getOrDefaultSize(), sort);
         var paramsSpec = ParametersGetAllSpec.builder()
             .name(params.getName())

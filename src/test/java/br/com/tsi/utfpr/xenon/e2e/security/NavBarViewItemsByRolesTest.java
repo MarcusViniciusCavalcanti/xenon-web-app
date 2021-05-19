@@ -42,7 +42,7 @@ public class NavBarViewItemsByRolesTest extends AbstractEndToEndTest {
 
     @Test
     @DisplayName("Deve exibir menu configuraçoes para Motorista")
-    @WithUserDetails(value = "beltrano_user@udrt.com", userDetailsServiceBeanName = "userDetailsServiceImpl")
+    @WithUserDetails(value = "beltrano_user@alunos.utfpr.edu.br", userDetailsServiceBeanName = "userDetailsServiceImpl")
     void shouldHaveViewDropdownDrive() throws IOException {
         assertionBaseDropdown(Arrays.asList(PROFILE, LOGOUT));
     }

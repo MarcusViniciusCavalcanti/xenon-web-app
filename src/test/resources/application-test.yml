@@ -1,3 +1,6 @@
+server:
+  port: 8080
+
 xenon:
   configurations:
     themeleaf:
@@ -9,8 +12,15 @@ xenon:
       password: xenon
     avatar:
       url:
+    redis:
+      host: localhost
+      port: 6370
 
 spring:
+  data:
+    redis:
+      repositories:
+        enabled: false
   jpa:
     database: H2
     show-sql: false

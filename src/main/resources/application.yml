@@ -20,6 +20,19 @@ xenon:
       password: ~
     avatar:
       url: ~
+    redis:
+      host: ~
+      port: 0
+    email:
+      host: ~
+      port: 0
+      protocol: ~
+      username: ~
+      password: ~
+      auth: false
+      tls:
+        enable: false
+        required: false
 
 # Base configuration app
 spring:
@@ -57,3 +70,18 @@ spring:
     initialization-mode: always
     jpa:
       show-sql: true
+  mail:
+    host: ${xenon.configurations.email.host}
+    username: ${xenon.configurations.email.username}
+    password: ${xenon.configurations.email.password}
+    properties:
+      email:
+        transport:
+          protocol: ${xenon.configurations.email.protocol}
+        smtp:
+          port: ${xenon.configurations.email.port}
+          auth: ${xenon.configurations.email.auth}
+          starttls:
+            enable: ${xenon.configurations.email.tls.enable}
+            required: ${xenon.configurations.email.tls.required}
+

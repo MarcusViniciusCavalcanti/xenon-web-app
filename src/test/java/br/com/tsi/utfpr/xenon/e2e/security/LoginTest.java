@@ -49,7 +49,7 @@ public class LoginTest extends AbstractEndToEndTest {
 
     @ParameterizedTest
     @ValueSource(strings = {
-        "beltrano_user@udrt.com", "beltrano_admin@admin.com", "beltrano_operator@operator.com"
+        "beltrano_user@alunos.utfpr.edu.br", "beltrano_admin@admin.com", "beltrano_operator@operator.com"
     })
     @DisplayName("Deve logar com sucesso")
     void shouldHaveLoggingSuccessfully(String username) throws IOException {

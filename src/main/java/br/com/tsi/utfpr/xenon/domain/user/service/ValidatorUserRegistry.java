@@ -2,13 +2,13 @@ package br.com.tsi.utfpr.xenon.domain.user.service;
 
 import br.com.tsi.utfpr.xenon.domain.security.entity.AccessCard;
 import br.com.tsi.utfpr.xenon.domain.security.repository.AccessCardRepository;
+import br.com.tsi.utfpr.xenon.domain.user.exception.RegistrationException;
 import br.com.tsi.utfpr.xenon.domain.user.exception.UsernameException;
+import br.com.tsi.utfpr.xenon.domain.user.repository.UserRepository;
 import br.com.tsi.utfpr.xenon.structure.dtos.ResultCheckerDto;
 import br.com.tsi.utfpr.xenon.structure.dtos.ResultCheckerDto.Result;
 import br.com.tsi.utfpr.xenon.structure.dtos.ResultUsernameCheckerDto;
-import br.com.tsi.utfpr.xenon.structure.dtos.TypeUserDto;
-import br.com.tsi.utfpr.xenon.structure.dtos.inputs.InputEmailDto;
-import br.com.tsi.utfpr.xenon.structure.dtos.inputs.InputUserDto;
+import br.com.tsi.utfpr.xenon.structure.dtos.inputs.InputNewStudent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -19,10 +19,9 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class ValidatorUserRegistry {
 
-    private static final String MESSAGE_ERROR_DOES_NOT_BELONGS_UTFPR_DOMAIN =
-        "E-mail não pertence ao dominio da UTFPR";
-    private static final String MESSAGE_ERROR_USER_EXIST = "Usuário já existe";
+    private static final String MESSAGE_ERROR_USER_EXIST = "Usuário já cadastrado";
     private static final ExampleMatcher USERNAME_MATCHER;
+    private static final String PLATE_EXIST = "Placa %s já cadastrada para outro usuário";
 
     static {
         USERNAME_MATCHER = ExampleMatcher.matching()
@@ -39,40 +38,26 @@ public class ValidatorUserRegistry {
     }
 
     private final AccessCardRepository accessCardRepository;
+    private final UserRepository userRepository;
 
-    public void validateToToken(String email) {
+    public void validateToInclude(String email) {
         checkUsernameExist(email);
     }
 
-    public void check(InputUserDto inputUserDto) {
-        if (inputUserDto.getType() == TypeUserDto.STUDENTS) {
-            var result = verifyInApiService(inputUserDto.getUsername());
+    public void validateToRegistry(InputNewStudent input) {
+        checkUsernameExist(input.getEmail());
+        checkPlate(input.getPlateCar());
+    }
 
-            if (result.getResult().getValue() == Result.USER_CANNOT_BE_REGISTERED) {
-                throw new UsernameException(result);
-            }
+    public void checkPlate(String plate) {
+        if (userRepository.existsUserByCarPlate(plate)) {
+            throw new RegistrationException(String.format(PLATE_EXIST, plate));
         }
     }
 
-    public ResultUsernameCheckerDto check(InputEmailDto username) {
-        return verifyInApiService(username.getValue());
-    }
-
-    // TODO: 1# verifica na utfpr se existe o usuário
-    private ResultUsernameCheckerDto verifyInApiService(String username) {
-        return ResultUsernameCheckerDto.builder()
-            .result(ResultCheckerDto.builder()
-                .value(Result.USER_CAN_BE_REGISTERED)
-                .reason(MESSAGE_ERROR_DOES_NOT_BELONGS_UTFPR_DOMAIN)
-                .build())
-            .username(username)
-            .build();
-    }
-
-
-    private void checkUsernameExist(String username) {
+    private void checkUsernameExist(String email) {
         var probe = new AccessCard();
-        probe.setUsername(username);
+        probe.setUsername(email);
         var example = Example.of(probe, USERNAME_MATCHER);
 
         var exist = accessCardRepository.exists(example);
@@ -83,10 +68,11 @@ public class ValidatorUserRegistry {
                     .value(Result.USER_CAN_BE_REGISTERED)
                     .reason(MESSAGE_ERROR_USER_EXIST)
                     .build())
-                .username(username)
+                .username(email)
                 .build();
 
             throw new UsernameException(resultChecker);
         }
     }
+
 }
