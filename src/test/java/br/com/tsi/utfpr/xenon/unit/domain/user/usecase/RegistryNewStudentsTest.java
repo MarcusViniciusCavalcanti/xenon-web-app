@@ -3,18 +3,16 @@ package br.com.tsi.utfpr.xenon.unit.domain.user.usecase;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.timeout;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 import br.com.tsi.utfpr.xenon.domain.user.aggregator.EmailSenderAdapter;
 import br.com.tsi.utfpr.xenon.domain.user.aggregator.Token;
 import br.com.tsi.utfpr.xenon.domain.user.aggregator.TokenAdapter;
+import br.com.tsi.utfpr.xenon.domain.user.entity.User;
 import br.com.tsi.utfpr.xenon.domain.user.exception.TokenException;
 import br.com.tsi.utfpr.xenon.domain.user.exception.UsernameException;
+import br.com.tsi.utfpr.xenon.domain.user.factory.UserFactory;
+import br.com.tsi.utfpr.xenon.domain.user.repository.UserRepository;
 import br.com.tsi.utfpr.xenon.domain.user.service.ValidatorUserRegistry;
 import br.com.tsi.utfpr.xenon.domain.user.usecase.RegistryNewStudents;
 import br.com.tsi.utfpr.xenon.domain.user.usecase.ValidateToken;
@@ -42,6 +40,12 @@ class RegistryNewStudentsTest {
 
     @Mock
     private ValidateToken validateToken;
+
+    @Mock
+    private UserFactory userFactory;
+
+    @Mock
+    private UserRepository userRepository;
 
     @InjectMocks
     private RegistryNewStudents registryNewStudents;
@@ -86,11 +90,11 @@ class RegistryNewStudentsTest {
 
         doThrow(TokenException.class)
             .when(validateToken)
-            .validateRegistry(eq(input.getEmail()), eq(input.getTokenRegistry()));
+            .validateRegistry(eq(input.getEmail()), eq(input.getToken()));
 
         assertThrows(TokenException.class, () -> registryNewStudents.registry(input));
 
-        verify(validateToken).validateRegistry(eq(input.getEmail()), eq(input.getTokenRegistry()));
+        verify(validateToken).validateRegistry(eq(input.getEmail()), eq(input.getToken()));
     }
 
     @Test
@@ -100,7 +104,7 @@ class RegistryNewStudentsTest {
 
         doNothing()
             .when(validateToken)
-            .validateRegistry(eq(input.getEmail()), eq(input.getTokenRegistry()));
+            .validateRegistry(eq(input.getEmail()), eq(input.getToken()));
 
         doThrow(UsernameException.class)
             .when(validatorUserRegistry)
@@ -108,19 +112,44 @@ class RegistryNewStudentsTest {
 
         assertThrows(UsernameException.class, () -> registryNewStudents.registry(input));
 
-        verify(validateToken).validateRegistry(eq(input.getEmail()), eq(input.getTokenRegistry()));
+        verify(validateToken).validateRegistry(eq(input.getEmail()), eq(input.getToken()));
         verify(validatorUserRegistry).validateToRegistry(eq(input));
+    }
+
+    @Test
+    @DisplayName("Deve salvar estudante com sucesso")
+    void shouldSaveStudents() {
+        var input = createInput();
+        var user = new User();
+
+        doNothing()
+                .when(validateToken)
+                .validateRegistry(eq(input.getEmail()), eq(input.getToken()));
+
+        doNothing()
+                .when(validatorUserRegistry)
+                .validateToRegistry(eq(input));
+
+        when(userFactory.createTypeStudent(eq(input))).thenReturn(user);
+        when(userRepository.save(any(User.class))).thenReturn(user);
+
+        registryNewStudents.registry(input);
+
+        verify(validateToken).validateRegistry(eq(input.getEmail()), eq(input.getToken()));
+        verify(validatorUserRegistry).validateToRegistry(eq(input));
+        verify(userFactory).createTypeStudent(eq(input));
+        verify(userRepository).save(any(User.class));
     }
 
     private InputNewStudent createInput() {
         var input = new InputNewStudent();
         input.setEmail("email");
         input.setPlateCar("plate");
-        input.setTokenRegistry("token");
+        input.setToken("token");
         input.setPassword("pass");
         input.setConfirmPassword("pass");
         input.setName("name");
-        input.setTokenRegistry("token");
+        input.setToken("token");
         return input;
     }
 

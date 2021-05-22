@@ -13,6 +13,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -20,6 +21,8 @@ import org.springframework.stereotype.Component;
 public class AccessCardFactory {
 
     private final RoleService roleService;
+
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public AccessCardDTO createAccessCardDto(User user) {
         var accessCard = user.getAccessCard();
@@ -87,7 +90,7 @@ public class AccessCardFactory {
         var newAccessCard = new AccessCard();
 
         newAccessCard.setUsername(email);
-        newAccessCard.setPassword(pass);
+        newAccessCard.setPassword(bCryptPasswordEncoder.encode(pass));
         newAccessCard.setUser(user);
 
         return newAccessCard;

@@ -3,11 +3,15 @@
 <body>
   <th:block th:fragment="registry">
     <form id="registry_students"
+          name="registry-user"
+          class="validate"
           role="form"
+          method="post"
+          th:action="@{/cadastre-novo-estudante}"
           th:object="${input}">
       <!--/*@thymesVar id="token" type="java.lang.String"*/-->
-      <div th:if="${param?.token}">
-        <input th:value="${param?.token}" th:field="*{tokenRegistry}" hidden>
+      <div th:if="${param?.token}" th:with="token=${param?.token} ">
+        <input th:value="${token}" th:field="*{token}" type="hidden">
       </div>
 
       <div class="row">
@@ -59,7 +63,7 @@
             <label class="control-label" for="email">E-mail</label>
             <!--/*@thymesVar id="email" type="java.lang.String"*/-->
             <input class="form-control"
-                   th:disabled="${param?.email}"
+                   th:readonly="${param?.email}"
                    th:value="${param?.email}"
                    id="email"
                    th:field="*{email}"
@@ -98,6 +102,7 @@
 
               <input class="form-control"
                      data-message-equal-to="Senha não coincidem."
+                     data-message-required="Campo obrigatório"
                      data-validate="required,equalTo[#input_password]"
                      id="input_password_confirm"
                      th:field="*{confirmPassword}"

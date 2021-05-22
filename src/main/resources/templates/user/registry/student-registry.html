@@ -15,10 +15,15 @@
         <div class="panel panel-default panel-headerless">
 
           <div class="panel-body layout-variants">
-            <!--/*@thymesVar id="error" type="org.springframework.validation.FieldError"*/-->
-            <div th:if="${error}" class="errors-container">
-              <div class="alert alert-danger text-center">
-                <span id="message_error">E-mail inválido <strong>Revise as informações e tente novamente!</strong></span>
+            <div th:if="${errors}" class="errors-container">
+              <div class="alert alert-danger">
+                <ul class="error-list">
+                  <li th:if="${name}" th:text="'Nome - Campo contém error verifique'"></li>
+                  <li th:if="${modelCar}" th:text="'Modelo do carro - Campo contém error verifique'"></li>
+                  <li th:if="${plateCar}" th:text="'Placa do carro -  Campo contém error verifique'"></li>
+                  <li th:if="${email}" th:text="'E-mail - E-mail deve ser o institucional'"></li>
+                  <li th:if="${password}" th:text=" 'Senha -  Campo contém error verifique'"></li>
+                </ul>
               </div>
             </div>
 

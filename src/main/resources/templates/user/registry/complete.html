@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt-br"
+      layout:decorate="~{/user/registry/registry}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>UTFPR - Xenon</title>
+</head>
+<body>
+<div layout:fragment="content-registry" th:remove="tag">
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-8 col-md-offset-2">
+        <div class="panel panel-default panel-headerless">
+
+          <div class="panel-body layout-variants">
+            <!--/*@thymesVar id="error" type="org.springframework.validation.FieldError"*/-->
+            <div th:if="${error}" class="errors-container">
+              <div class="alert alert-danger text-center">
+                <span id="message_error">E-mail inválido <strong>Revise as informações e tente novamente!</strong></span>
+              </div>
+            </div>
+
+            <h3>Cadastro completado com sucesso! <span>Clique <a th:href="@{/login}"> para acessar o sistema.</a></span></h3>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

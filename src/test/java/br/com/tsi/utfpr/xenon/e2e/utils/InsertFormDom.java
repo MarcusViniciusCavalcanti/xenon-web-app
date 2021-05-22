@@ -19,6 +19,10 @@ public class InsertFormDom {
     @Setter
     private HtmlPage htmlPage;
 
+    private InsertFormDom(WebClient webClient) {
+        this.webClient = webClient;
+    }
+
     public InsertFormDom insertForm(String name) {
         formName = name;
         form = htmlPage.getFormByName(name);
@@ -50,8 +54,8 @@ public class InsertFormDom {
     }
 
     public static InsertFormDom init(WebClient client, String url) throws IOException {
-        instance = new InsertFormDom();
-        var htmlPage = client.<HtmlPage>getPage(url);
+        instance = new InsertFormDom(client);
+        var htmlPage = instance.webClient.<HtmlPage>getPage(url);
         instance.setHtmlPage(htmlPage);
         return instance;
     }

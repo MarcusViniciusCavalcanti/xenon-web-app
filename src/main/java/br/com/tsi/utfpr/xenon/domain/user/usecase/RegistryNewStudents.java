@@ -31,10 +31,11 @@ public class RegistryNewStudents {
     }
 
     public void registry(InputNewStudent inputNewStudent) {
-        validateToken.validateRegistry(inputNewStudent.getEmail(), inputNewStudent.getTokenRegistry());
+        validateToken.validateRegistry(inputNewStudent.getEmail(), inputNewStudent.getToken());
         validatorUserRegistry.validateToRegistry(inputNewStudent);
 
         var user = userFactory.createTypeStudent(inputNewStudent);
+        userRepository.save(user);
     }
 
     private void executeProcess(String email) {

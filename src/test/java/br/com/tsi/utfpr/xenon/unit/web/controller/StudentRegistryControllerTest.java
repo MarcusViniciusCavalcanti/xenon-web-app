@@ -177,9 +177,25 @@ class StudentRegistryControllerTest {
         when(bindingResult.hasErrors()).thenReturn(Boolean.TRUE);
         studentRegistryController.registryNewStudent(new InputNewStudent(), bindingResult, redirectAttributes);
 
-        verify(bindingResult).getFieldError();
+        verify(bindingResult).hasErrors();
+        verify(bindingResult).getFieldErrors();
         verify(redirectAttributes).addFlashAttribute(eq("errors"), any());
         verify(redirectAttributes).addAttribute(eq("token"), any());
         verify(redirectAttributes).addAttribute(eq("email"), any());
+    }
+
+    @Test
+    @DisplayName("Deve cadastrar novo estudante e redirecionar para login")
+    void shouldRegistryUser() {
+        var input = new InputNewStudent();
+        when(bindingResult.hasErrors()).thenReturn(Boolean.FALSE);
+        doNothing().when(registryStudentsApplicationService).registryNewStudent(input);
+
+        var redirect = studentRegistryController.registryNewStudent(input, bindingResult, redirectAttributes);
+
+        verify(registryStudentsApplicationService).registryNewStudent(input);
+        verify(bindingResult).hasErrors();
+
+        assertEquals("redirect:/complete", redirect);
     }
 }

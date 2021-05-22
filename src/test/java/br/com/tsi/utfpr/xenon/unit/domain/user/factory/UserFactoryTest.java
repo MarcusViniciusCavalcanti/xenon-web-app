@@ -148,7 +148,7 @@ class UserFactoryTest {
     @DisplayName("Deve criar e retonar um usuário do tipo estudante")
     void shouldReturnUserStudent() {
         var input = new InputNewStudent();
-        input.setTokenRegistry("token");
+        input.setToken("token");
         input.setPassword(PASSWORD);
         input.setConfirmPassword(PASSWORD);
         input.setEmail(MOCK_USERNAME_COM_BR);

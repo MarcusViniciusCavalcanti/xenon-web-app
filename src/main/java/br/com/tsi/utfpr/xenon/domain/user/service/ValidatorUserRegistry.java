@@ -50,7 +50,7 @@ public class ValidatorUserRegistry {
     }
 
     public void checkPlate(String plate) {
-        if (userRepository.existsUserByCarPlate(plate)) {
+        if (Boolean.TRUE.equals(userRepository.existsUserByCarPlate(plate))) {
             throw new RegistrationException(String.format(PLATE_EXIST, plate));
         }
     }

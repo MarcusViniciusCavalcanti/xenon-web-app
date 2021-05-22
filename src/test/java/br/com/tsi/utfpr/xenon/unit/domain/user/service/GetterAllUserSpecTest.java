@@ -89,6 +89,8 @@ class GetterAllUserSpecTest {
         assertEquals("Beltrano conta exipirada", user.getName());
         assertEquals(TypeUser.STUDENTS, user.getTypeUser());
         assertFalse(user.getAccessCard().isAccountNonExpired());
+
+        spec.toString();
     }
 
     @Test
