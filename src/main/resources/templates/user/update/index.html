@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-br"
+      layout:decorate="~{shared/layout}"
+      th:with="activeMenu='user-show'"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" th:href="@{/vendor/js/select2/select2.css}" type="text/css">
+  <link rel="stylesheet" th:href="@{/vendor/js/select2/select2-bootstrap.css}" type="text/css">
+  <title>Atualizar Usuário</title>
+</head>
+<body>
+<div layout:fragment="content" th:remove="tag">
+  <div class="page-title">
+
+    <div class="title-env">
+      <h1 class="title">Editar</h1>
+      <p class="description">Formulário para atualizar novo usuário</p>
+    </div>
+
+    <div class="breadcrumb-env">
+      <th:block layout:fragment="bradcrumb">
+        <ol class="breadcrumb bc-2">
+          <li>
+            <a th:href="@{/home}"><i class="fa-home"></i>Home</a>
+          </li>
+          <li>
+            <a th:href="@{/usuarios/todos}">Usuários</a>
+          </li>
+          <li class="active">
+            <strong>Atualizar Usuários</strong>
+          </li>
+        </ol>
+      </th:block>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Forumlário de atualização</h3>
+        </div>
+
+        <div class="panel-body">
+          <div class="panel-body layout-variants">
+            <div class="errors-container" th:if="${errors}">
+              <div class="alert alert-danger">
+                <ul class="error-list">
+                  <li th:if="${name}" th:text="'Nome - Campo contém error, verifique'"></li>
+                  <li th:if="${username}" th:text="'E-mail - Campo contém error, verifique'"></li>
+                  <li th:if="${type}"
+                      th:text="'Tipo do Usuário -  Campo contém error, verifique'"></li>
+                  <li th:if="${authorities}"
+                      th:text="'Perfil do usuário- Campo contém error, verifique'"></li>
+                </ul>
+              </div>
+            </div>
+
+            <!--/*@thymesVar id="input" type="br.com.tsi.utfpr.xenon.structure.dtos.inputs.InputUserDto"*/-->
+            <form id="form_update_user"
+                  method="post"
+                  novalidate
+                  role="for1"
+                  th:action="@{/usuarios/editar}"
+                  th:object="${input}">
+
+              <th:block th:replace="user/form/user-form :: userForm"/>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<th:block layout:fragment="scripts">
+  <script th:src="@{/vendor/js/jquery-ui/jquery-ui.min.js}"></script>
+  <script th:src="@{/vendor/js/jquery-validate/jquery.validate.min.js}"></script>
+  <script th:src="@{/vendor/js/multiselect/js/jquery.multi-select.js}"></script>
+  <script th:src="@{/vendor/js/select2/select2.min.js}"></script>
+  <script th:src="@{/vendor/js/selectboxit/jquery.selectBoxIt.min.js}"></script>
+  <script th:src="@{/js/user/userForm.js}"></script>
+</th:block>
+</body>

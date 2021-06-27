@@ -16,4 +16,6 @@ public class CarDto {
 
     private final LocalDateTime lastAccess;
 
+    private final String document;
+
 }

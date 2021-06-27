@@ -9,6 +9,7 @@ import br.com.tsi.utfpr.xenon.structure.dtos.ResultCheckerDto;
 import br.com.tsi.utfpr.xenon.structure.dtos.ResultCheckerDto.Result;
 import br.com.tsi.utfpr.xenon.structure.dtos.ResultUsernameCheckerDto;
 import br.com.tsi.utfpr.xenon.structure.dtos.inputs.InputNewStudent;
+import br.com.tsi.utfpr.xenon.structure.dtos.inputs.InputUserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -42,6 +43,11 @@ public class ValidatorUserRegistry {
 
     public void validateToInclude(String email) {
         checkUsernameExist(email);
+    }
+
+    public void validateToRegistry(InputUserDto input) {
+        checkUsernameExist(input.getUsername());
+        checkPlate(input.getCarPlate());
     }
 
     public void validateToRegistry(InputNewStudent input) {

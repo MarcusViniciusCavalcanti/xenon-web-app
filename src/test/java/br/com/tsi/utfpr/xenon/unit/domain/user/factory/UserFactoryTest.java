@@ -22,17 +22,23 @@ import br.com.tsi.utfpr.xenon.structure.dtos.inputs.InputUserDto;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @SpringBootTest(classes = {
     AccessCardFactory.class,
     UserFactory.class,
     CarFactory.class,
-    RoleService.class
+    RoleService.class,
+    BCryptPasswordEncoder.class
 })
 @DisplayName("Test - Unidade - UserFactory")
 class UserFactoryTest {
@@ -58,6 +64,8 @@ class UserFactoryTest {
     private static final LocalDateTime LOCAL_DATE_TIME = LocalDateTime.now();
     private static final String MODEL_CAR = "Model Car";
     private static final String PLATE_CAR = "Plate Car";
+    public static final String AVATAR = "avatar";
+    private static final int STATUS_REGISTRY = 100;
 
     @Autowired
     private UserFactory userFactory;
@@ -77,6 +85,8 @@ class UserFactoryTest {
         assertEquals(TRANSLATE_TYPE_USER, userDto.getTypeUser().getTranslaterName());
         assertTrue(userDto.getAuthorisedAcces());
         assertEquals(NUMBER_ACCESS, userDto.getNumberAccess());
+        assertEquals(STATUS_REGISTRY, userDto.getStatusRegistry());
+        assertNull(userDto.getCar());
     }
 
     @Test
@@ -93,6 +103,8 @@ class UserFactoryTest {
         assertEquals(TRANSLATE_TYPE_USER, userDto.getTypeUser().getTranslaterName());
         assertTrue(userDto.getAuthorisedAcces());
         assertEquals(NUMBER_ACCESS, userDto.getNumberAccess());
+        assertEquals(STATUS_REGISTRY, userDto.getStatusRegistry());
+        assertEquals(AVATAR, userDto.getAvatar());
 
         var carDto = userDto.getCar();
         assertEquals(MODEL_CAR, carDto.getModel());
@@ -101,12 +113,10 @@ class UserFactoryTest {
         assertEquals(LOCAL_DATE_TIME, carDto.getLastAccess());
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("providerArgsWithoutCar")
     @DisplayName("Deve criar e retonar um usuário sem carro cadastrado")
-    void shouldReturnUserWithoutCar() {
-        var input = createInputUserDto();
-        input.setCarModel(MODEL_CAR);
-
+    void shouldReturnUserWithoutCar(InputUserDto input) {
         var driverRole = createRole(ID_ROLE_DRIVE, ROLE_DRIVER, DESCRIPTION_ROLE_DRIVER);
 
         when(roleRepository.findAllById(anyList())).thenReturn(List.of(driverRole));
@@ -117,6 +127,9 @@ class UserFactoryTest {
         assertNull(user.getId());
         assertEquals(TYPE_USER_STUDENTS.name(), user.getTypeUser().name());
         assertNull(user.getNumberAccess());
+        assertNull(user.getStatusRegistry());
+        assertNull(user.getAvatar());
+        assertNull(user.getCar());
     }
 
     @Test
@@ -136,6 +149,8 @@ class UserFactoryTest {
         assertNull(user.getId());
         assertEquals(TYPE_USER_STUDENTS.name(), user.getTypeUser().name());
         assertNull(user.getNumberAccess());
+        assertNull(user.getStatusRegistry());
+        assertNull(user.getAvatar());
 
         var car = user.getCar();
         assertEquals(MODEL_CAR, car.getModel());
@@ -166,6 +181,8 @@ class UserFactoryTest {
         assertNull(user.getId());
         assertEquals(TYPE_USER_STUDENTS.name(), user.getTypeUser().name());
         assertNull(user.getNumberAccess());
+        assertNull(user.getStatusRegistry());
+        assertNull(user.getAvatar());
 
         var car = user.getCar();
         assertEquals(MODEL_CAR, car.getModel());
@@ -195,6 +212,8 @@ class UserFactoryTest {
         mockUser.setTypeUser(TYPE_USER_SERVICE);
         mockUser.setAuthorisedAccess(Boolean.TRUE);
         mockUser.setNumberAccess(NUMBER_ACCESS);
+        mockUser.setStatusRegistry(STATUS_REGISTRY);
+        mockUser.setAvatar(AVATAR);
 
         return mockUser;
     }
@@ -244,7 +263,7 @@ class UserFactoryTest {
         return operatorRole;
     }
 
-    private InputUserDto createInputUserDto() {
+    private static InputUserDto createInputUserDto() {
         var input = new InputUserDto();
         input.setUsername(MOCK_USERNAME_COM_BR);
         input.setName(MOCK_USER_TEST);
@@ -260,5 +279,15 @@ class UserFactoryTest {
         input.setAuthorities(TypeUser.STUDENTS.getAllowedProfiles());
 
         return input;
+    }
+
+    private static Stream<Arguments> providerArgsWithoutCar() {
+        var input1 = createInputUserDto();
+        input1.setCarModel(MODEL_CAR);
+
+        var input2 = createInputUserDto();
+        input2.setCarPlate(PLATE_CAR);
+
+        return Stream.of(Arguments.of(input1, input2));
     }
 }

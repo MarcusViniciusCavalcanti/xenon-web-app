@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<body>
+<th:block th:fragment="userForm">
+  <div class="row">
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="control-label" for="input_full_name">Nome Completo</label>
+        <input class="form-control"
+               data-message-required="Campo obrigatório"
+               data-validate="required"
+               id="input_full_name"
+               placeholder="Seu nome completo"
+               th:field="*{name}"/>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="control-label" for="email">E-mail</label>
+        <input class="form-control"
+               data-message-required="Campo inválido"
+               data-validate="required,email"
+               id="email"
+               th:field="*{username}"/>
+      </div>
+    </div>
+  </div>
+
+  <hr/>
+  <h4>Informações do carro</h4>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="control-label" for="input_model_car">Modelo do Carro</label>
+        <input class="form-control"
+               data-message-required="Campo obrigatório"
+               data-validate="required"
+               id="input_model_car"
+               placeholder="Inclua o modelo do carro Ex.: Gol"
+               th:field="*{carModel}"/>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="form-group plate">
+        <label class="control-label" for="input_plate_car">Placa do Carro</label>
+        <input class="form-control"
+               data-message-required="Campo obrigatório"
+               data-validate="required"
+               id="input_plate_car"
+               placeholder="Ex.: ABC1234 ou ABC1A23"
+               th:field="*{carPlate}"/>
+
+      </div>
+    </div>
+  </div>
+
+  <hr/>
+  <h4>Informações Conta</h4>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="control-label" for="type_user">Tipo do Usuário</label>
+        <select class="form-control required" data-validate="required" id="type_user"
+                th:field="*{type}">
+          <!--/*@thymesVar id="typeUser" type="br.edu.utfpr.tsi.utfparking.web.constants.TypesUser"*/-->
+          <option
+              th:each="typeUser : ${T(br.com.tsi.utfpr.xenon.structure.dtos.TypeUserDto).values()}"
+              th:text="${typeUser.translaterName}"
+              th:value="${typeUser}">
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="form-group">
+        <label class="control-label">Perfil</label>
+        <select class="form-control" id="user_roles" multiple th:field="*{authorities}">
+          <option th:value="null"></option>
+          <option th:each="role : ${roles}"
+                  th:text="${role.description}"
+                  th:value="${role.id}">
+          </option>
+
+        </select>
+
+      </div>
+    </div>
+
+    <div class="col-md-12">
+      <div class="form-group">
+        <label class="control-label" for="user_enabled">Conta Autorizada para acesso</label>
+        <div class="form-block">
+          <input class="iswitch iswitch-secondary" id="user_enabled_authorized"
+                 th:checked="${input.authorizedAccess}" type="checkbox">
+          <span class="text-gray">Ativa ou desativa o acesso do usuário ao estacionamento<strong> Desmarque caso queria bloquear a acesso do usuário</strong></span>
+        </div>
+        <label class="control-label" for="user_enabled">Conta Ativa</label>
+        <div class="form-block">
+          <input class="iswitch iswitch-secondary" id="user_enabled" th:checked="${input.enabled}"
+                 type="checkbox">
+          <span class="text-gray">Ativa ou desativa a conta do usuário<strong> Marque caso queria ativar a conta do usuário</strong></span>
+        </div>
+
+        <label class="control-label">Bloqueada</label>
+        <div class="form-block">
+          <input class="iswitch iswitch-danger" th:checked="${input.accountNonLocked}"
+                 type="checkbox">
+          <span class="text-gray">Bloqueia ou desbloqueia a conta do usuário<strong> Desmarque caso queria bloquear o usuário</strong></span>
+        </div>
+
+        <label class="control-label">Expirada</label>
+        <div class="form-block">
+          <input class="iswitch iswitch-danger" th:checked="${input.accountNonExpired}"
+                 type="checkbox">
+          <span class="text-gray">Expira a conta do usuário<strong> Cuidado desmarcar este estado o sistema apagara a conta do usuário, na próxima verificação</strong></span>
+        </div>
+
+        <label class="control-label">Credenciais expiradas</label>
+        <div class="form-block">
+          <input class="iswitch iswitch-warning" th:checked="${input.credentialsNonExpired}"
+                 type="checkbox">
+          <span class="text-gray">Expira o login e senha do usuário<strong> Desmarque caso que o usuário renove suas credenciais</strong></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <button class="btn btn-success btn-icon" type="submit">
+      <i class="fa-check"></i>
+      <span>Enviar</span>
+    </button>
+  </div>
+</th:block>
+</body>
+</html>

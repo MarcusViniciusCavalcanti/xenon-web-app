@@ -3,7 +3,13 @@ package br.com.tsi.utfpr.xenon.unit.domain.user.usecase;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.timeout;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import br.com.tsi.utfpr.xenon.domain.user.aggregator.EmailSenderAdapter;
 import br.com.tsi.utfpr.xenon.domain.user.aggregator.Token;
@@ -80,7 +86,7 @@ class RegistryNewStudentsTest {
 
         verify(validatorUserRegistry).validateToInclude(email);
         verify(tokenAdapter, timeout(MILLIS_300)).saveToken(any(Token.class), anyLong());
-        verify(emailSenderAdapter, timeout(MILLIS_300)).sendMail(any(Token.class));
+        verify(emailSenderAdapter, timeout(MILLIS_300)).sendMailToken(any(Token.class));
     }
 
     @Test

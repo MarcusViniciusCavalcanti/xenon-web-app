@@ -4,6 +4,8 @@ import br.com.tsi.utfpr.xenon.application.service.RegistryStudentsApplicationSer
 import br.com.tsi.utfpr.xenon.structure.dtos.inputs.InputEmailDto;
 import br.com.tsi.utfpr.xenon.structure.dtos.inputs.InputNewStudent;
 import br.com.tsi.utfpr.xenon.structure.dtos.inputs.InputValidateTokenDto;
+import java.util.Objects;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +15,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import javax.validation.Valid;
-import java.util.Objects;
 
 @Slf4j
 @Controller
@@ -36,14 +35,16 @@ public class StudentRegistryController {
 
     @GetMapping("/novo-registro")
     public ModelAndView newRegistry(ModelAndView modelAndView, InputEmailDto inputEmailDto) {
+        log.info("Execute request to /novo-registro");
         modelAndView.setViewName("user/registry/email-registry");
         modelAndView.addObject(INPUT_EMAIL, inputEmailDto);
         return modelAndView;
     }
 
-    @PostMapping(value = "/novo-registro")
+    @PostMapping("/incluir-registro")
     public String includeNewRegistry(@Valid InputEmailDto emailDto, BindingResult result,
-                                     RedirectAttributes redirectAttributes) {
+        RedirectAttributes redirectAttributes) {
+        log.info("Execute request to /novo-registro");
         if (result.hasErrors()) {
             redirectAttributes.addFlashAttribute(ERROR, result.getFieldError(EMAIL));
             return REDIRECT_NOVO_REGISTRO;
@@ -57,6 +58,7 @@ public class StudentRegistryController {
 
     @GetMapping("/validar-token")
     public ModelAndView validateToken(InputValidateTokenDto inputToken, ModelAndView modelAndView) {
+        log.info("Execute request to /validar-token");
         if (Objects.isNull(inputToken.getEmail()) || inputToken.getEmail().isEmpty()) {
             return new ModelAndView(REDIRECT_NOVO_REGISTRO);
         }
@@ -70,7 +72,9 @@ public class StudentRegistryController {
     }
 
     @PostMapping(value = "/valide-token")
-    public String validateToken(@Valid InputValidateTokenDto inputToken, BindingResult result, RedirectAttributes redirectAttributes) {
+    public String validateToken(@Valid InputValidateTokenDto inputToken, BindingResult result,
+        RedirectAttributes redirectAttributes) {
+        log.info("Execute request to /valide-token");
         redirectAttributes.addAttribute(EMAIL, inputToken.getEmail());
 
         if (result.hasErrors()) {
@@ -85,17 +89,23 @@ public class StudentRegistryController {
     }
 
     @GetMapping("/cadastro-estudante")
-    public ModelAndView registryStudent(ModelAndView modelAndView, InputNewStudent inputNewStudent) {
+    public ModelAndView registryStudent(ModelAndView modelAndView,
+        InputNewStudent inputNewStudent) {
+        log.info("Execute request to /cadastro-estudante");
         modelAndView.setViewName("user/registry/student-registry");
         modelAndView.addObject("input", inputNewStudent);
         return modelAndView;
     }
 
     @PostMapping("/cadastre-novo-estudante")
-    public String registryNewStudent(@Valid InputNewStudent inputNewStudent, BindingResult result, RedirectAttributes redirectAttributes) {
+    public String registryNewStudent(@Valid InputNewStudent inputNewStudent, BindingResult result,
+        RedirectAttributes redirectAttributes) {
+        log.info("Execute request to /cadastre-novo-estudante");
         if (result.hasErrors()) {
-            redirectAttributes.addFlashAttribute("errors", "Campos com errors verifique e tente novamente");
-            result.getFieldErrors().forEach(fieldError -> redirectAttributes.addFlashAttribute(fieldError.getField(), fieldError));
+            redirectAttributes
+                .addFlashAttribute("errors", "Campos com errors verifique e tente novamente");
+            result.getFieldErrors().forEach(fieldError -> redirectAttributes
+                .addFlashAttribute(fieldError.getField(), fieldError));
 
             redirectAttributes.addAttribute(TOKEN, inputNewStudent.getToken());
             redirectAttributes.addAttribute(EMAIL, inputNewStudent.getEmail());
@@ -109,12 +119,14 @@ public class StudentRegistryController {
 
     @GetMapping("/concluido")
     public ModelAndView complete(ModelAndView modelAndView) {
+        log.info("Execute request to /concluido");
         modelAndView.setViewName("/user/registry/complete.html");
         return modelAndView;
     }
 
     @GetMapping("/error/usuario-cadastrado")
     public ModelAndView userExist(ModelAndView modelAndView) {
+        log.info("Execute request to /error/usuario-cadastrado");
         modelAndView.setViewName(ERROR_REGISTRY);
         return modelAndView;
     }

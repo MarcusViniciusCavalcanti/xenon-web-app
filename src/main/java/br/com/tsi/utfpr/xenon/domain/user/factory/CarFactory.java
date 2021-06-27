@@ -14,6 +14,7 @@ public class CarFactory {
             .lastAccess(car.getLastAccess())
             .model(car.getModel())
             .plate(car.getPlate())
+            .document(car.getDocument())
             .build())
             .orElse(null);
     }

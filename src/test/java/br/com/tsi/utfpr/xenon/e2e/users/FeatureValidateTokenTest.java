@@ -26,7 +26,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 @DisplayName("Test - e2e - Funcionalidade estudante validando token")
 @SpringBootTest(classes = TestRedisConfiguration.class)
-public class FeatureValidateTokenTest extends AbstractEndToEndTest {
+class FeatureValidateTokenTest extends AbstractEndToEndTest {
 
     private static final String TOKEN_VALIDATE = "token-validate";
     private static final String ATTRIBUTE_CLASS = "class";

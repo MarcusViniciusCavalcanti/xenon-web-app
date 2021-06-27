@@ -28,6 +28,9 @@ public class Car {
     @Column(name = "model", nullable = false)
     private String model;
 
+    @Column(name = "document")
+    private String document;
+
     @OneToOne(cascade = CascadeType.REMOVE)
     @MapsId
     @JoinColumn(name = "id")

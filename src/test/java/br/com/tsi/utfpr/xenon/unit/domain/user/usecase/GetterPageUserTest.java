@@ -15,7 +15,7 @@ import br.com.tsi.utfpr.xenon.domain.user.service.ParametersGetAllSpec;
 import br.com.tsi.utfpr.xenon.domain.user.usecase.GetterPageUser;
 import br.com.tsi.utfpr.xenon.structure.data.BasicSpecification;
 import br.com.tsi.utfpr.xenon.structure.dtos.UserDto;
-import br.com.tsi.utfpr.xenon.structure.dtos.inputs.ParamsSearchRequestDTO;
+import br.com.tsi.utfpr.xenon.structure.dtos.inputs.ParamsSearchRequestDto;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -47,7 +47,7 @@ class GetterPageUserTest {
     @DisplayName("Deve retonar com suceseo Page com lista de usuários")
     void shouldReturnAllUserByFilter() {
         var mockSpecifications = mock(Specification.class);
-        var params = new ParamsSearchRequestDTO();
+        var params = new ParamsSearchRequestDto();
         var userPage = mock(Page.class);
 
         when(getterAllUserSpec.filterBy(any(ParametersGetAllSpec.class)))

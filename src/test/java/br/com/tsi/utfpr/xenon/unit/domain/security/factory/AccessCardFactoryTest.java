@@ -10,13 +10,15 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import br.com.tsi.utfpr.xenon.domain.security.entity.AccessCard;
 import br.com.tsi.utfpr.xenon.domain.security.entity.Role;
 import br.com.tsi.utfpr.xenon.domain.security.exception.AuthoritiesNotAllowedException;
 import br.com.tsi.utfpr.xenon.domain.security.factory.AccessCardFactory;
-import br.com.tsi.utfpr.xenon.domain.security.repository.RoleRepository;
 import br.com.tsi.utfpr.xenon.domain.security.service.RoleService;
 import br.com.tsi.utfpr.xenon.domain.user.entity.TypeUser;
 import br.com.tsi.utfpr.xenon.domain.user.entity.User;
@@ -30,11 +32,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Test - Unidade - AccessCardFactory")
@@ -62,6 +61,9 @@ class AccessCardFactoryTest {
 
     @Mock
     private RoleService roleService;
+
+    @Mock
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @InjectMocks
     private AccessCardFactory accessCardFactory;
@@ -161,11 +163,12 @@ class AccessCardFactoryTest {
 
         when(roleService.verifyAndGetRoleBy(eq(input.getType()), eq(input.getAuthorities())))
             .thenReturn(createListRoles());
+        when(bCryptPasswordEncoder.encode(any())).thenReturn("encoder");
 
         var accessCard = accessCardFactory.createAccessCardToUser(input, user);
 
         assertEquals(input.getUsername(), accessCard.getUsername());
-        assertEquals(input.getPassword(), accessCard.getPassword());
+        assertEquals("encoder", accessCard.getPassword());
         assertEquals(user, accessCard.getUser());
 
         assertTrue(accessCard.isAccountNonExpired());

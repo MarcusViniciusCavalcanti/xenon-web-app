@@ -4,8 +4,10 @@ import br.com.tsi.utfpr.xenon.domain.security.entity.Role;
 import br.com.tsi.utfpr.xenon.domain.security.exception.AuthoritiesNotAllowedException;
 import br.com.tsi.utfpr.xenon.domain.security.repository.RoleRepository;
 import br.com.tsi.utfpr.xenon.domain.user.entity.TypeUser;
+import br.com.tsi.utfpr.xenon.structure.dtos.RoleDTO;
 import br.com.tsi.utfpr.xenon.structure.dtos.TypeUserDto;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,5 +32,15 @@ public class RoleService {
         }
 
         return roleRepository.findAllById(authorities);
+    }
+
+    public List<RoleDTO> getAll() {
+        return roleRepository.findAll().stream()
+            .map(role -> RoleDTO.builder()
+                .id(role.getId())
+                .name(role.getName())
+                .description(role.getDescription())
+                .build())
+            .collect(Collectors.toList());
     }
 }

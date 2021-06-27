@@ -1,61 +1,61 @@
 <!DOCTYPE html>
-<html lang="pt-br" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<!--suppress HtmlFormInputWithoutLabel -->
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
 <body>
-  <th:block th:fragment="registry">
-    <form id="registry_students"
-          name="registry-user"
-          class="validate"
-          role="form"
-          method="post"
-          th:action="@{/cadastre-novo-estudante}"
-          th:object="${input}">
-      <!--/*@thymesVar id="token" type="java.lang.String"*/-->
-      <div th:if="${param?.token}" th:with="token=${param?.token} ">
-        <input th:value="${token}" th:field="*{token}" type="hidden">
-      </div>
+<th:block th:fragment="registry">
+  <!--/*@thymesVar id="input" type="br.com.tsi.utfpr.xenon.structure.dtos.inputs.InputNewStudent"*/-->
+  <form class="validate"
+        id="registry_students"
+        method="post"
+        name="registry-user"
+        role="form"
+        th:action="@{/cadastre-novo-estudante}"
+        th:object="${input}">
+    <!--/*@thymesVar id="token" type="java.lang.String"*/-->
+    <div th:if="${param?.token}" th:with="token=${param?.token} ">
+      <input th:field="*{token}" th:value="${token}" type="hidden">
+    </div>
 
-      <div class="row">
-        <div class="col-md-12">
-          <div class="form-group">
-            <label class="control-label" for="input_full_name">Nome Completo</label>
-            <input class="form-control"
-                   data-message-required="Campo obrigatório"
-                   data-validate="required"
-                   id="input_full_name"
-                   th:field="*{name}"
-                   placeholder="Seu nome completo"/>
-          </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="form-group">
+          <label class="control-label" for="input_full_name">Nome Completo</label>
+          <input class="form-control"
+                 data-message-required="Campo obrigatório"
+                 data-validate="required"
+                 id="input_full_name"
+                 placeholder="Seu nome completo"
+                 th:field="*{name}"/>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label class="control-label" for="input_model_car">Modelo do Carro</label>
+          <input class="form-control"
+                 data-message-required="Campo obrigatório"
+                 data-validate="required"
+                 id="input_model_car"
+                 placeholder="Inclua o modelo do carro Ex.: Gol"
+                 th:field="*{modelCar}"/>
         </div>
       </div>
 
-      <div class="row">
-        <div class="col-md-6">
-          <div class="form-group">
-            <label class="control-label" for="input_model_car">Modelo do
-              Carro</label>
-            <input class="form-control"
-                   data-message-required="Campo obrigatório"
-                   data-validate="required"
-                   id="input_model_car"
-                   th:field="*{modelCar}"
-                   placeholder="Inclua o modelo do carro Ex.: Gol"/>
-          </div>
-        </div>
+      <div class="col-md-6">
+        <div class="form-group plate">
+          <label class="control-label" for="input_plate_car">Placa do Carro</label>
+          <input class="form-control"
+                 data-message-required="Campo obrigatório"
+                 data-validate="required"
+                 id="input_plate_car"
+                 placeholder="Ex.: ABC1234 ou ABC1A23"
+                 th:field="*{plateCar}"/>
 
-        <div class="col-md-6">
-          <div class="form-group plate">
-            <label class="control-label" for="input_plate_car">Placa do
-              Carro</label>
-            <input class="form-control"
-                   data-message-required="Campo obrigatório"
-                   data-validate="required"
-                   id="input_plate_car"
-                   th:field="*{plateCar}"
-                   placeholder="Ex.: ABC1234 ou ABC1A23"/>
-
-          </div>
         </div>
       </div>
+    </div>
 
       <div class="row">
         <div class="col-md-12">

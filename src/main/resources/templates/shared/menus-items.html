@@ -24,7 +24,7 @@
       </ul>
     </li>
     <li id="users" sec:authorize="hasRole('OPERATOR')"
-        th:classappend="${#request.getServletPath().contains('/usuarios/todos') ? 'opened active' : ''}">
+        th:classappend="${#request.getServletPath().contains('/usuarios') ? 'opened active' : ''}">
       <a th:href="@{/usuarios/todos}">
         <i class="linecons-user"></i>
         <span class="title">Usuários</span>

@@ -53,6 +53,12 @@ public class User implements Serializable {
     @Column(name = "authorised_access")
     private Boolean authorisedAccess = Boolean.TRUE;
 
+    @Column(name = "status_registry")
+    private Integer statusRegistry;
+
+    @Column(name = "avatar")
+    private String avatar;
+
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Car car;
 

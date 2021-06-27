@@ -31,6 +31,8 @@ public class UserFactory {
             .typeUser(TypeUserDto.valueOf(user.getTypeUser().name()))
             .numberAccess(user.getNumberAccess())
             .authorisedAcces(user.getAuthorisedAccess())
+            .statusRegistry(user.getStatusRegistry())
+            .avatar(user.getAvatar())
             .build();
     }
 
@@ -55,7 +57,8 @@ public class UserFactory {
             Boolean.FALSE
         );
 
-        var car = carFactory.createCarToUser(inputNewStudent.getPlateCar(), inputNewStudent.getModelCar(), user);
+        var car = carFactory
+            .createCarToUser(inputNewStudent.getPlateCar(), inputNewStudent.getModelCar(), user);
         user.setCar(car);
         var accessCard = accessCardFactory.createAccessCardActiveStudentsRole(
             inputNewStudent.getEmail(),

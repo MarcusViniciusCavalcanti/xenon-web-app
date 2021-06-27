@@ -32,6 +32,7 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Test - Unidade - AccessCardFactory")
@@ -65,13 +66,17 @@ class AccessCardFactoryTest {
     @Mock
     private RoleService roleService;
 
+    @Mock
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
     @InjectMocks
     private AccessCardFactory accessCardFactory;
 
     @Test
     @DisplayName("Deve lançar exception na criação do dto quando AccessCard do usuário esta nulo")
     void shouldThrowsExceptionWhenAccessCardIsNull() {
-        var exception = assertThrows(FactoryException.class, () -> accessCardFactory.createAccessCardDto(new User()));
+        var exception = assertThrows(FactoryException.class,
+            () -> accessCardFactory.createAccessCardDto(new User()));
         assertEquals(ERROR_MSG_ACCESS_CARD_IS_NULL, exception.getMessage());
     }
 

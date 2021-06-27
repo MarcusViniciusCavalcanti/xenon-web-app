@@ -4,14 +4,16 @@ import java.util.Objects;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
 
 @Setter
 @NoArgsConstructor
-public class ParamsSearchRequestDTO {
+@ToString
+public class ParamsSearchRequestDto {
 
-    public static final String DEFAULT_SORT_DIRECT = "ASC";
-    public static final String DEFAULT_SORT_PROPERTY = "name";
+    public static final String DEFAULT_SORT_DIRECT = "DESC";
+    public static final String DEFAULT_SORT_PROPERTY = "createdAt";
     public static final Boolean DEFAULT_ENABLED = Boolean.TRUE;
     public static final int DEFAULT_PAGE_NUMBER = 0;
     public static final int DEFAULT_SIZE_ELEMENT = 5;

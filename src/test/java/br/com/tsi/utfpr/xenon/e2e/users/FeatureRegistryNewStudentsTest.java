@@ -1,10 +1,13 @@
 package br.com.tsi.utfpr.xenon.e2e.users;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import br.com.tsi.utfpr.xenon.e2e.AbstractEndToEndTest;
 import br.com.tsi.utfpr.xenon.e2e.TestRedisConfiguration;
 import br.com.tsi.utfpr.xenon.e2e.utils.InsertFormDom;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
+import java.io.IOException;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -14,17 +17,15 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.web.context.WebApplicationContext;
-
-import java.io.IOException;
-import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @DisplayName("Test - e2e - Funcionalidade estudante se registrando")
 @SpringBootTest(classes = TestRedisConfiguration.class)
+@Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+    "classpath:/sql/user_default_insert.sql"})
+@Sql(executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD, scripts = {
+    "classpath:/sql/user_default_delete.sql"})
 class FeatureRegistryNewStudentsTest extends AbstractEndToEndTest {
 
     public static final String MESSAGE_ERROR = "message_error";
@@ -35,7 +36,7 @@ class FeatureRegistryNewStudentsTest extends AbstractEndToEndTest {
     private static final String EMAIL_REGISTRY = "email-registry";
     private static final String INPUT_EMAIL = "email";
     private static final String ATTRIBUTE_ID = "id";
-    public static final String VALIDAR_TOKEN = "http://localhost:8080/validar-token";
+
     @Autowired
     private WebApplicationContext webApplicationContext;
 

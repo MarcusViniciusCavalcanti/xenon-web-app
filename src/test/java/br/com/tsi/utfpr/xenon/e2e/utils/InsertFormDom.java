@@ -4,6 +4,7 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import java.io.IOException;
+import java.util.List;
 import lombok.Setter;
 
 public class InsertFormDom {
@@ -34,12 +35,28 @@ public class InsertFormDom {
         return instance;
     }
 
+    public InsertFormDom setSelect(String select, int index) {
+        form.getSelectByName(select).setSelectedIndex(index);
+        return instance;
+    }
+
+    public InsertFormDom setSelectMultiple(String select, List<? extends Number> values) {
+        var authorities = form.getSelectByName(select);
+        values.forEach(index -> authorities.setSelectedIndex(index.intValue()));
+        return instance;
+    }
+
     public HtmlPage clickSubmitButton() throws IOException {
         return form.getOneHtmlElementByAttribute("button", "type", "submit").click();
     }
 
     public InsertFormDom clickButton() throws IOException {
         htmlPage = clickSubmitButton();
+        return instance;
+    }
+
+    public InsertFormDom clickButtonType() throws IOException {
+        htmlPage = form.getOneHtmlElementByAttribute("button", "type", "button").click();
         return instance;
     }
 

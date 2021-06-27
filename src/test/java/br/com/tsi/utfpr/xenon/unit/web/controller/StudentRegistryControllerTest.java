@@ -196,6 +196,6 @@ class StudentRegistryControllerTest {
         verify(registryStudentsApplicationService).registryNewStudent(input);
         verify(bindingResult).hasErrors();
 
-        assertEquals("redirect:/complete", redirect);
+        assertEquals("redirect:/concluido", redirect);
     }
 }

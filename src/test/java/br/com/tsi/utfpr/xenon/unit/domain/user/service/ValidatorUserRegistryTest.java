@@ -14,6 +14,7 @@ import br.com.tsi.utfpr.xenon.domain.user.repository.UserRepository;
 import br.com.tsi.utfpr.xenon.domain.user.service.ValidatorUserRegistry;
 import br.com.tsi.utfpr.xenon.structure.dtos.ResultCheckerDto.Result;
 import br.com.tsi.utfpr.xenon.structure.dtos.inputs.InputNewStudent;
+import br.com.tsi.utfpr.xenon.structure.dtos.inputs.InputUserDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -60,13 +61,32 @@ class ValidatorUserRegistryTest {
     @DisplayName("Deve lançar exception quando placa já existe")
     void shouldThrowsRegistrationExceptionWhenPlateExist() {
         var input = getInputNewStudent();
+        var plate = input.getPlateCar();
 
-        when(userRepository.existsUserByCarPlate(eq(input.getPlateCar()))).thenReturn(Boolean.TRUE);
+        when(accessCardRepository.exists(any())).thenReturn(Boolean.FALSE);
+        when(userRepository.existsUserByCarPlate(eq(plate))).thenReturn(Boolean.TRUE);
 
         var exception = assertThrows(
             RegistrationException.class,
             () -> validatorUserRegistry.validateToRegistry(input)
         );
+        assertEquals(ERROR_PLATE, exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("Deve lançar exception quando validação para placa do carro já existe")
+    void shouldThrowsRegistrationExceptionWhenValidationToPlateExist() {
+        var input = getInputUserDto();
+        var plate = input.getCarPlate();
+
+        when(accessCardRepository.exists(any())).thenReturn(Boolean.FALSE);
+        when(userRepository.existsUserByCarPlate(eq(plate))).thenReturn(Boolean.TRUE);
+
+        var exception = assertThrows(
+            RegistrationException.class,
+            () -> validatorUserRegistry.validateToRegistry(input)
+        );
+
         assertEquals(ERROR_PLATE, exception.getMessage());
     }
 
@@ -85,36 +105,55 @@ class ValidatorUserRegistryTest {
     }
 
     @Test
-    @DisplayName("Deve lançar exception quando validação para placa do carro já existe")
-    void shouldThrowsRegistrationExceptionWhenValidationToPlateExist() {
-        var input = getInputNewStudent();
+    @DisplayName("Deve lançar exception quando validação para email já existe")
+    void shouldThrowsRegistrationUserExceptionWhenValidationToEmailExist() {
+        var input = getInputUserDto();
 
-        when(accessCardRepository.exists(any())).thenReturn(Boolean.FALSE);
-        when(userRepository.existsUserByCarPlate(eq(input.getPlateCar()))).thenReturn(Boolean.TRUE);
-
+        when(accessCardRepository.exists(any())).thenReturn(Boolean.TRUE);
         var exception = assertThrows(
-            RegistrationException.class,
+            UsernameException.class,
             () -> validatorUserRegistry.validateToRegistry(input)
         );
 
-        assertEquals(ERROR_PLATE, exception.getMessage());
+        assertEquals(ERROR_EMAIL, exception.getMessage());
     }
 
     @Test
-    @DisplayName("Deve validar cadastro com sucesso")
-    void shouldHaveValidateRegistry() {
+    @DisplayName("Deve validar cadastro com sucesso 'registro estudante'")
+    void shouldHaveValidateRegistryStudents() {
         var input = getInputNewStudent();
 
         when(accessCardRepository.exists(any())).thenReturn(Boolean.FALSE);
-        when(userRepository.existsUserByCarPlate(eq(input.getPlateCar()))).thenReturn(Boolean.FALSE);
+        when(userRepository.existsUserByCarPlate(eq(input.getPlateCar())))
+            .thenReturn(Boolean.FALSE);
 
         assertDoesNotThrow(() -> validatorUserRegistry.validateToRegistry(input));
     }
 
-    private InputNewStudent getInputNewStudent() {
+    @Test
+    @DisplayName("Deve validar cadastro com sucesso 'registro usuário'")
+    void shouldHaveValidateRegistryUser() {
+        var input = getInputUserDto();
+
+        when(accessCardRepository.exists(any())).thenReturn(Boolean.FALSE);
+        when(userRepository.existsUserByCarPlate(eq(input.getCarPlate())))
+            .thenReturn(Boolean.FALSE);
+
+        assertDoesNotThrow(() -> validatorUserRegistry.validateToRegistry(input));
+    }
+
+    private static InputNewStudent getInputNewStudent() {
         var input = new InputNewStudent();
         input.setPlateCar("plate");
         input.setEmail("email");
+        return input;
+    }
+
+    private static InputUserDto getInputUserDto() {
+        var input = new InputUserDto();
+        input.setCarPlate("plate");
+        input.setUsername("email");
+
         return input;
     }
 }

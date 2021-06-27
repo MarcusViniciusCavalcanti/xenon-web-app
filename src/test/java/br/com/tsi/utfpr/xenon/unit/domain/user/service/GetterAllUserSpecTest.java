@@ -25,14 +25,21 @@ import org.springframework.test.context.jdbc.Sql.ExecutionPhase;
 @DisplayName("Test - Unidade - GetterAllUserSpec")
 @DataJpaTest
 @Sql(executionPhase = ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-    "classpath:/sql/user_block_insert.sql"})
+    "classpath:/sql/user_block_insert.sql",
+    "classpath:/sql/user_default_insert.sql"
+})
+
 @Sql(executionPhase = ExecutionPhase.AFTER_TEST_METHOD, scripts = {
-    "classpath:/sql/user_block_delete.sql"})
+    "classpath:/sql/user_block_delete.sql",
+    "classpath:/sql/user_default_delete.sql"})
 class GetterAllUserSpecTest {
 
-    public static final int YEAR = 2019;
-    public static final int MONTH = 10;
-    public static final int DAY_OF_MONTH = 23;
+    private static final int YEAR = 2019;
+    private static final int MONTH = 10;
+    private static final int DAY_OF_MONTH_23 = 23;
+    private static final int DAY_OF_MONTH_28 = 28;
+    private static final int DAY_OF_MONTH_05 = 5;
+    private static final int DAY_OF_MONTH_02 = 2;
     private final GetterAllUserSpec getterAllUserSpec = new GetterAllUserSpec();
 
     @Autowired
@@ -51,11 +58,12 @@ class GetterAllUserSpecTest {
 
         assertEquals(1, users.size());
         assertEquals("beltrano_disable_account@user.com", user.getAccessCard().getUsername());
-        assertEquals(LocalDate.of(YEAR, MONTH, DAY_OF_MONTH), user.getAccessCard().getCreatedAt());
+        assertEquals(LocalDate.of(YEAR, MONTH, 27), user.getAccessCard().getCreatedAt());
         assertNotNull(user.getAccessCard().getId());
-        assertEquals(LocalDate.of(YEAR, MONTH, DAY_OF_MONTH), user.getAccessCard().getUpdatedAt());
-        assertEquals(LocalDate.of(YEAR, MONTH, DAY_OF_MONTH), user.getCreatedAt());
-        assertEquals(LocalDate.of(YEAR, MONTH, DAY_OF_MONTH), user.getUpdatedAt());
+        assertEquals(LocalDate.of(YEAR, MONTH, DAY_OF_MONTH_23),
+            user.getAccessCard().getUpdatedAt());
+        assertEquals(LocalDate.of(YEAR, MONTH, 8), user.getCreatedAt());
+        assertEquals(LocalDate.of(YEAR, MONTH, DAY_OF_MONTH_23), user.getUpdatedAt());
         assertEquals("Beltrano conta desativada", user.getName());
         assertEquals(TypeUser.STUDENTS, user.getTypeUser());
         assertFalse(user.getAccessCard().isEnabled());
@@ -82,10 +90,11 @@ class GetterAllUserSpecTest {
 
         assertEquals(1, users.size());
         assertEquals("beltrano_expired_account@user.com", user.getAccessCard().getUsername());
-        assertEquals(LocalDate.of(YEAR, MONTH, DAY_OF_MONTH), user.getAccessCard().getCreatedAt());
+        assertEquals(LocalDate.of(YEAR, MONTH, DAY_OF_MONTH_28),
+            user.getAccessCard().getCreatedAt());
         assertNotNull(user.getAccessCard().getId());
-        assertEquals(LocalDate.of(YEAR, MONTH, DAY_OF_MONTH), user.getCreatedAt());
-        assertEquals(LocalDate.of(YEAR, MONTH, DAY_OF_MONTH), user.getUpdatedAt());
+        assertEquals(LocalDate.of(YEAR, MONTH, DAY_OF_MONTH_05), user.getCreatedAt());
+        assertEquals(LocalDate.of(YEAR, MONTH, DAY_OF_MONTH_23), user.getUpdatedAt());
         assertEquals("Beltrano conta exipirada", user.getName());
         assertEquals(TypeUser.STUDENTS, user.getTypeUser());
         assertFalse(user.getAccessCard().isAccountNonExpired());
@@ -107,10 +116,11 @@ class GetterAllUserSpecTest {
 
         assertEquals(1, users.size());
         assertEquals("beltrano_admin@admin.com", user.getAccessCard().getUsername());
-        assertEquals(LocalDate.of(YEAR, MONTH, DAY_OF_MONTH), user.getAccessCard().getCreatedAt());
+        assertEquals(LocalDate.of(YEAR, MONTH, DAY_OF_MONTH_02),
+            user.getAccessCard().getCreatedAt());
         assertNotNull(user.getAccessCard().getId());
-        assertEquals(LocalDate.of(YEAR, MONTH, DAY_OF_MONTH), user.getCreatedAt());
-        assertEquals(LocalDate.of(YEAR, MONTH, DAY_OF_MONTH), user.getUpdatedAt());
+        assertEquals(LocalDate.of(YEAR, MONTH, DAY_OF_MONTH_02), user.getCreatedAt());
+        assertEquals(LocalDate.of(YEAR, MONTH, DAY_OF_MONTH_23), user.getUpdatedAt());
         assertEquals("Beltrano Admin", user.getName());
         assertEquals(TypeUser.SERVICE, user.getTypeUser());
         assertLinesMatch(

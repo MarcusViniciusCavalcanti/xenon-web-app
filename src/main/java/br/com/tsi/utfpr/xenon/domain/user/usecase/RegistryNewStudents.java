@@ -44,7 +44,7 @@ public class RegistryNewStudents {
             token.generateNewToken();
             tokenAdapter.saveToken(token, 5);
 
-            emailSenderAdapter.sendMail(token);
+            emailSenderAdapter.sendMailToken(token);
         });
     }
 

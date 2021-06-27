@@ -1,17 +1,24 @@
 server:
   port: 8080
 
+junit:
+  jupiter:
+    execution:
+      parallel:
+        enabled: true
+
 xenon:
   configurations:
-    themeleaf:
+    thymeleaf:
       cache: false
     datasource:
       driver: org.h2.Driver
       url: jdbc:h2:mem:xenon;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
       username: xenon
       password: xenon
-    avatar:
-      url:
+    file:
+      avatarUrl: src/test/resources/test-file/avatar
+      documentCarUrl: src/test/resources/test-file/test-file/doc
     redis:
       host: localhost
       port: 6370
@@ -34,10 +41,3 @@ spring:
         use_sql_comments: false
         format_sql: false
 
-logging:
-  level:
-    root: OFF
-    org.jacoco.*: OFF
-    com.gargoylesoftware.*: OFF
-    br.com.tsi.utfpr.xenon: INFO
-    com.memorynotfound: OFF

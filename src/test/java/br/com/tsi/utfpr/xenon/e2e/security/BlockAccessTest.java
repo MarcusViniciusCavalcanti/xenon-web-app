@@ -21,7 +21,7 @@ import org.springframework.web.context.WebApplicationContext;
     "classpath:/sql/user_block_insert.sql"})
 @Sql(executionPhase = ExecutionPhase.AFTER_TEST_METHOD, scripts = {
     "classpath:/sql/user_block_delete.sql"})
-public class BlockAccessTest extends AbstractEndToEndTest {
+class BlockAccessTest extends AbstractEndToEndTest {
 
     private static final String HTTP_LOCALHOST_8080_LOGIN = "http://localhost:8080/login";
     private static final String FORM_LOGIN = "form-login";

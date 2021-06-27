@@ -1,16 +1,18 @@
 package br.com.tsi.utfpr.xenon.unit.structure.dto.inputs;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import br.com.tsi.utfpr.xenon.structure.dtos.inputs.ParamsSearchRequestDTO;
+import br.com.tsi.utfpr.xenon.structure.dtos.inputs.ParamsSearchRequestDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 @DisplayName("Test - Unidade - ParamsSearchRequest")
-class ParamsSearchRequestDTOTest {
+class ParamsSearchRequestDtoTest {
 
-    private static final String DEFAULT_SORT_DIRECT = "ASC";
-    private static final String DEFAULT_SORT_PROPERTY = "name";
+    private static final String DEFAULT_SORT_DIRECT = "DESC";
+    private static final String DEFAULT_SORT_PROPERTY = "createdAt";
     private static final int DEFAULT_PAGE_NUMBER = 0;
     private static final int DEFAULT_SIZE_ELEMENT = 5;
     private static final int PAGE_10 = 10;
@@ -19,7 +21,7 @@ class ParamsSearchRequestDTOTest {
     @Test
     @DisplayName("Deve valores padrões")
     void shouldReturnObjectWithDefaultValue() {
-        var paramsSearchRequestDTO = new ParamsSearchRequestDTO();
+        var paramsSearchRequestDTO = new ParamsSearchRequestDto();
 
         assertEquals(DEFAULT_PAGE_NUMBER, paramsSearchRequestDTO.getOrDefaultPage());
         assertEquals(DEFAULT_SORT_DIRECT, paramsSearchRequestDTO.getOrDefaultSortDirection());
@@ -31,7 +33,7 @@ class ParamsSearchRequestDTOTest {
     @Test
     @DisplayName("Deve valores oriundos da request")
     void shouldReturnObjectWithCustomValue() {
-        var paramsSearchRequestDTO = new ParamsSearchRequestDTO();
+        var paramsSearchRequestDTO = new ParamsSearchRequestDto();
 
         paramsSearchRequestDTO.setEnabled( Boolean.FALSE);
         var page = PAGE_10;

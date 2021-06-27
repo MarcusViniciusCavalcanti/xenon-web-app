@@ -2,7 +2,9 @@ package br.com.tsi.utfpr.xenon.unit.domain.security.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import br.com.tsi.utfpr.xenon.domain.security.entity.Role;
 import br.com.tsi.utfpr.xenon.domain.security.exception.AuthoritiesNotAllowedException;
@@ -11,6 +13,7 @@ import br.com.tsi.utfpr.xenon.domain.security.service.RoleService;
 import br.com.tsi.utfpr.xenon.structure.dtos.TypeUserDto;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -62,5 +65,16 @@ class RoleServiceTest {
         roleService.verifyAndGetRoleBy(typeUser, AUTHORITIES_DRIVER);
 
         verify(roleRepository).findAllById(eq(AUTHORITIES_DRIVER));
+    }
+
+    @Test
+    @DisplayName("Deve retornar todos as roles")
+    void shouldAllRoles() {
+        when(roleRepository.findAll()).thenReturn(List.of(new Role()));
+
+        var result = roleService.getAll();
+
+        assertEquals(1, result.size());
+        verify(roleRepository).findAll();
     }
 }

@@ -13,18 +13,30 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import br.com.tsi.utfpr.xenon.e2e.AbstractEndToEndTest;
 import br.com.tsi.utfpr.xenon.e2e.utils.GetElementDom;
+import br.com.tsi.utfpr.xenon.e2e.utils.InsertFormDom;
+import br.com.tsi.utfpr.xenon.e2e.utils.StreamUtils;
+import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.DomNode;
+import com.gargoylesoftware.htmlunit.html.HtmlElement;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.html.HtmlSelect;
 import java.io.IOException;
+import java.util.List;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.web.context.WebApplicationContext;
 
 @DisplayName("Test - e2e - Funcionalidade todos Usuários")
-public class FeatureAllUserTest extends AbstractEndToEndTest {
+@Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+    "classpath:/sql/user_default_insert.sql"})
+@Sql(executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD, scripts = {
+    "classpath:/sql/user_default_delete.sql"})
+class FeatureAllUserTest extends AbstractEndToEndTest {
 
     public static final String DESCRIPTION_ADMIN = "Perfil Administrador";
     public static final String ROLE_DRIVER = "ROLE_DRIVER";
@@ -37,10 +49,17 @@ public class FeatureAllUserTest extends AbstractEndToEndTest {
     private static final String ATTRIBUTE_CLASS = "class";
     private static final int ID_OPERATOR = 154;
     private static final int ID_ADMIN = 153;
+    private static final int ID_USER_WITH_CAR = 200;
+    private static final int ID_USER_WITHOUT_CAR = 201;
     private static final String BELTRANO_ADMIN = "Beltrano Admin";
     private static final String BELTRANO_OPERADOR = "Beltrano Operador";
+    private static final String BELTRANO_COM_CARRO = "Beltrano com carro";
+    private static final String BELTRANO_SEM_CARRO = "Beltrano sem carro";
     private static final String BELTRANO = "Beltrano";
     private static final int ID_STUDENT = 1;
+    private static final String DIV = "div";
+    private static final String TABLE = "table";
+    private static final String UL = "ul";
 
     @Autowired
     private WebApplicationContext webApplicationContext;
@@ -49,14 +68,14 @@ public class FeatureAllUserTest extends AbstractEndToEndTest {
     @DisplayName("Deve Redirecionar para Pagina de Não autorizado quando usuário operador")
     @WithUserDetails(value = "beltrano_operator@operator.com", userDetailsServiceBeanName = "userDetailsServiceImpl")
     void shouldRedirectToAccessDeniedWhenUserRolesOperator() throws IOException {
-        assertUnauthorized();
+        assertUnauthorized(URL_USUARIOS_TODOS);
     }
 
     @Test
     @DisplayName("Deve Redirecionar para Pagina de Não autorizado quando usuário motorista")
     @WithUserDetails(value = "beltrano_operator@operator.com", userDetailsServiceBeanName = "userDetailsServiceImpl")
     void shouldRedirectToAccessDeniedWhenUserRoleDriver() throws IOException {
-        assertUnauthorized();
+        assertUnauthorized(URL_USUARIOS_TODOS);
     }
 
     @Test
@@ -73,7 +92,7 @@ public class FeatureAllUserTest extends AbstractEndToEndTest {
     @WithUserDetails(value = "beltrano_admin@admin.com", userDetailsServiceBeanName = "userDetailsServiceImpl")
     void shouldHaveMenuItemActive() throws IOException {
         GetElementDom.start(webClient, URL_USUARIOS_TODOS)
-            .navigation("ul", ATTRIBUTE_ID, "main-menu")
+            .navigation(UL, ATTRIBUTE_ID, "main-menu")
             .getChildLi(ATTRIBUTE_ID, "users")
             .executeAssertion(menu -> {
                 var openedClass = menu.getAttribute(ATTRIBUTE_CLASS);
@@ -91,38 +110,54 @@ public class FeatureAllUserTest extends AbstractEndToEndTest {
     @WithUserDetails(value = "beltrano_admin@admin.com", userDetailsServiceBeanName = "userDetailsServiceImpl")
     void shouldReturnAllUser() throws Exception {
         var matcherAllTrue =
-            containsInAnyOrder(Boolean.TRUE, Boolean.TRUE, Boolean.TRUE);
+            containsInAnyOrder(Boolean.TRUE, Boolean.TRUE, Boolean.TRUE, Boolean.TRUE,
+                Boolean.TRUE);
         mockMvc.perform(get("/users/all").contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("content", hasSize(3)))
-            .andExpect(jsonPath("totalElements", is(3)))
+            .andExpect(jsonPath("content", hasSize(5)))
+            .andExpect(jsonPath("totalElements", is(5)))
             .andExpect(jsonPath("totalPages", is(1)))
-            .andExpect(jsonPath("content[*].id", containsInAnyOrder(ID_STUDENT, ID_OPERATOR, ID_ADMIN)))
+            .andExpect(jsonPath("content[*].id",
+                containsInAnyOrder(ID_STUDENT, ID_OPERATOR, ID_ADMIN, ID_USER_WITH_CAR,
+                    ID_USER_WITHOUT_CAR)))
             .andExpect(jsonPath("content[*].name",
-                containsInAnyOrder(BELTRANO, BELTRANO_ADMIN, BELTRANO_OPERADOR)))
+                containsInAnyOrder(BELTRANO, BELTRANO_ADMIN, BELTRANO_OPERADOR,
+                    BELTRANO_COM_CARRO, BELTRANO_SEM_CARRO)))
             .andExpect(jsonPath("content[*].numberAccess",
-                containsInAnyOrder(1693228998, 144412489, 99101783)))
+                containsInAnyOrder(1693228998, 144412489, 99101783, 1693228998, 144412489)))
             .andExpect(jsonPath("content[*].typeUser",
-                containsInAnyOrder("STUDENTS", "SERVICE", "SERVICE")))
-            .andExpect(jsonPath("content[*].authorisedAcces", matcherAllTrue))
+                containsInAnyOrder("STUDENTS", "SERVICE", "SERVICE", "STUDENTS",
+                    "STUDENTS")))
+            .andExpect(jsonPath("content[*].authorisedAcces",
+                containsInAnyOrder(Boolean.TRUE, Boolean.TRUE, Boolean.TRUE, Boolean.TRUE,
+                    Boolean.FALSE)))
             .andExpect(jsonPath("content[*].accessCard.accountNonExpired", matcherAllTrue))
             .andExpect(jsonPath("content[*].accessCard.accountNonLocked", matcherAllTrue))
             .andExpect(jsonPath("content[*].accessCard.credentialsNonExpired", matcherAllTrue))
             .andExpect(jsonPath("content[*].accessCard.enabled", matcherAllTrue))
             .andExpect(jsonPath("content[*].accessCard.username",
-                containsInAnyOrder("beltrano_user@alunos.utfpr.edu.br", "beltrano_admin@admin.com",
-                    "beltrano_operator@operator.com")))
+                containsInAnyOrder("beltrano_user@alunos.utfpr.edu.br",
+                    "beltrano_admin@admin.com",
+                    "beltrano_operator@operator.com", "beltrano_with_car@user.com",
+                    "beltrano_without_car@user.com")))
             .andExpect(
                 jsonPath("content[*].accessCard.roles[*].name",
-                    containsInAnyOrder(ROLE_DRIVER, ROLE_DRIVER, ROLE_ADMIN, ROLE_OPERATOR,
+                    containsInAnyOrder(ROLE_DRIVER, ROLE_DRIVER, ROLE_ADMIN,
+                        ROLE_OPERATOR,
+                        ROLE_DRIVER,
+                        ROLE_DRIVER,
                         ROLE_DRIVER,
                         ROLE_OPERATOR)))
             .andExpect(
-                jsonPath("content[*].accessCard.roles[*].id", containsInAnyOrder(1, 1, 2, 3, 1, 3)))
+                jsonPath("content[*].accessCard.roles[*].id",
+                    containsInAnyOrder(1, 1, 2, 3, 1, 3, 1, 1)))
             .andExpect(
                 jsonPath("content[*].accessCard.roles[*].description",
-                    containsInAnyOrder(DESCRIPTION_DRIVER, DESCRIPTION_DRIVER, DESCRIPTION_ADMIN,
+                    containsInAnyOrder(DESCRIPTION_DRIVER, DESCRIPTION_DRIVER,
+                        DESCRIPTION_ADMIN,
                         DESCRIPTION_OPERATOR,
+                        DESCRIPTION_DRIVER,
+                        DESCRIPTION_DRIVER,
                         DESCRIPTION_DRIVER,
                         DESCRIPTION_OPERATOR)));
     }
@@ -174,29 +209,157 @@ public class FeatureAllUserTest extends AbstractEndToEndTest {
     @WithUserDetails(value = "beltrano_admin@admin.com", userDetailsServiceBeanName = "userDetailsServiceImpl")
     void shouldVerifyPageUsers() throws IOException {
         var domElements = GetElementDom.start(webClient, URL_USUARIOS_TODOS)
-            .navigation("table", "class", "table table-small-font table-bordered table-striped")
-            .getTbody("id", "user_table_list")
+            .navigation(TABLE, ATTRIBUTE_CLASS,
+                "table table-small-font table-bordered table-striped")
+            .getTbody(ATTRIBUTE_ID, "user_table_list")
             .awaitPage(300)
-            .getListElement("class", "user_item");
+            .getListElement(ATTRIBUTE_CLASS, "user_item");
 
+        assertListContent(
+            "first page",
+            domElements,
+            "1 Beltrano beltrano_user@alunos.utfpr.edu.br Não informado Não informado Estudante Não Sim Sim \nAtualizar\nDesativar",
+            "153 Beltrano Admin beltrano_admin@admin.com Não informado Não informado Servidor Não Sim Sim \nAtualizar\nDesativar",
+            "154 Beltrano Operador beltrano_operator@operator.com Não informado Não informado Servidor Não Sim Sim \nAtualizar\nDesativar",
+            "200 Beltrano com carro beltrano_with_car@user.com ABC9801 Gol Estudante Não Sim Sim \nAtualizar\nDesativar",
+            "201 Beltrano sem carro beltrano_without_car@user.com Não informado Não informado Estudante Não Sim Não \nAtualizar\nDesativar"
+        );
+    }
+
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:/sql/user_block_insert.sql",
+        "classpath:/sql/user_default_insert.sql"
+    })
+    @Sql(executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD, scripts = {
+        "classpath:/sql/user_block_delete.sql",
+        "classpath:/sql/user_default_delete.sql"
+    })
+    @Test
+    @DisplayName("Deve navegar pelas paginas exibidas")
+    @WithUserDetails(value = "beltrano_admin@admin.com", userDetailsServiceBeanName = "userDetailsServiceImpl")
+    void shouldNavigatePage() throws IOException {
+        GetElementDom.start(webClient, URL_USUARIOS_TODOS)
+            .navigation(DIV, ATTRIBUTE_ID, "users_list")
+            .awaitPage(300)
+            .getChildUl(ATTRIBUTE_CLASS, "pagination")
+            .executeAssertion(ul -> {
+                var liList = StreamUtils.asStream(ul.getChildElements().iterator())
+                    .collect(Collectors.toList());
+
+                try {
+                    var nextPage = liList.get(1).getFirstElementChild().<HtmlPage>click();
+                    nextPage.getWebClient().waitForBackgroundJavaScript(300);
+
+                    var domElements = GetElementDom.start(nextPage)
+                        .awaitPage(300)
+                        .navigation(TABLE, ATTRIBUTE_CLASS,
+                            "table table-small-font table-bordered table-striped")
+                        .getTbody(ATTRIBUTE_ID, "user_table_list")
+                        .getListElement(ATTRIBUTE_CLASS, "user_item");
+
+                    assertListContent("first page", domElements,
+                        "154 Beltrano Operador beltrano_operator@operator.com Não informado Não informado Servidor Não Sim Sim \nAtualizar\nDesativar",
+                        "153 Beltrano Admin beltrano_admin@admin.com Não informado Não informado Servidor Não Sim Sim \nAtualizar\nDesativar",
+                        "1 Beltrano beltrano_user@alunos.utfpr.edu.br Não informado Não informado Estudante Não Sim Sim \nAtualizar\nDesativar");
+
+                    nextPage = liList.get(0).getFirstElementChild().click();
+                    nextPage.getWebClient().waitForBackgroundJavaScript(300);
+
+                    domElements = GetElementDom.start(nextPage)
+                        .awaitPage(300)
+                        .navigation(TABLE, ATTRIBUTE_CLASS,
+                            "table table-small-font table-bordered table-striped")
+                        .getTbody(ATTRIBUTE_ID, "user_table_list")
+                        .getListElement(ATTRIBUTE_CLASS, "user_item");
+
+                    assertListContent("second page", domElements,
+                        "201 Beltrano sem carro beltrano_without_car@user.com Não informado Não informado Estudante Não Sim Não \nAtualizar\nDesativar",
+                        "200 Beltrano com carro beltrano_with_car@user.com ABC9801 Gol Estudante Não Sim Sim \nAtualizar\nDesativar",
+                        "157 Beltrano credenciais expiradas beltrano_expired_credentials@user.com Não informado Não informado Estudante Não Sim Sim \nAtualizar\nDesativar",
+                        "155 Beltrano conta exipirada beltrano_expired_account@user.com Não informado Não informado Estudante Não Sim Sim \nAtualizar\nDesativar",
+                        "156 Beltrano conta bloqueada beltrano_locked_account@user.com Não informado Não informado Estudante Sim Sim Sim \nAtualizar\nDesativar");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+    }
+
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:/sql/user_block_insert.sql",
+        "classpath:/sql/user_default_insert.sql"
+    })
+    @Sql(executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD, scripts = {
+        "classpath:/sql/user_block_delete.sql",
+        "classpath:/sql/user_default_delete.sql"
+    })
+    @Test
+    @DisplayName("Deve aumentar a quantidade de elementos exibidos na tabela")
+    @WithUserDetails(value = "beltrano_admin@admin.com", userDetailsServiceBeanName = "userDetailsServiceImpl")
+    void shouldShowAmountElement() throws IOException {
+        GetElementDom.start(webClient, URL_USUARIOS_TODOS)
+            .navigation(DIV, ATTRIBUTE_ID, "users_list")
+            .awaitPage(300)
+            .getSelect(ATTRIBUTE_ID, "size_element")
+            .executeAssertion(select -> {
+                assertionElementsShow(select, 1, 8);
+                assertionElementsShow(select, 0, 5);
+            });
+    }
+
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:/sql/user_block_insert.sql",
+        "classpath:/sql/user_default_insert.sql"
+    })
+    @Sql(executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD, scripts = {
+        "classpath:/sql/user_block_delete.sql",
+        "classpath:/sql/user_default_delete.sql"
+    })
+    @Test
+    @DisplayName("Deve exibir os usuários com base no filtro")
+    @WithUserDetails(value = "beltrano_admin@admin.com", userDetailsServiceBeanName = "userDetailsServiceImpl")
+    void shouldReturnUserByFilter() throws IOException {
+        InsertFormDom.init(webClient, URL_USUARIOS_TODOS)
+            .insertForm("filter")
+            .setInputValue("search_name", "expirada")
+            .setSelect("search_profile", 1)
+            .setSelect("search_type_user", 1)
+            .clickButtonType()
+            .navigate(DIV, ATTRIBUTE_ID, "users_list")
+            .awaitPage(300L)
+            .getTbody(ATTRIBUTE_ID, "user_table_list")
+            .executeAssertion(table -> {
+                List<DomElement> elem = StreamUtils.asStream(table.getChildElements().iterator())
+                    .collect(Collectors.toList());
+
+                assertEquals(1, elem.size());
+            });
+    }
+
+    private void assertionElementsShow(HtmlElement select, int index, int expectedSize) {
+        ((HtmlSelect) select).setSelectedIndex(index);
+
+        var page = select.getHtmlPageOrNull();
+
+        var domElements = GetElementDom.start(page)
+            .awaitPage(300)
+            .navigation(TABLE, ATTRIBUTE_CLASS,
+                "table table-small-font table-bordered table-striped")
+            .getTbody(ATTRIBUTE_ID, "user_table_list")
+            .getListElement(ATTRIBUTE_CLASS, "user_item");
+
+        assertEquals(expectedSize, domElements.size());
+    }
+
+    private void assertListContent(String reason, List<DomElement> domElements, String... content) {
         var listTextVisible = domElements.stream()
             .map(DomNode::getVisibleText)
             .collect(Collectors.toList());
 
-        assertThat(listTextVisible, containsInAnyOrder(
-            "1 Beltrano beltrano_user@alunos.utfpr.edu.br Não informado Não informado Estudante",
-            "153 Beltrano Admin beltrano_admin@admin.com Não informado Não informado Servidor",
-            "154 Beltrano Operador beltrano_operator@operator.com Não informado Não informado Servidor"
-        ));
+        assertThat(reason, listTextVisible, containsInAnyOrder(content));
     }
 
     @Override
     protected WebApplicationContext getWebApplicationContext() {
         return webApplicationContext;
-    }
-
-    private void assertUnauthorized() throws IOException {
-        var unauthorizedPage = GetElementDom.start(webClient, URL_USUARIOS_TODOS).getHtmlPage();
-        assertEquals("Xenon - 403", unauthorizedPage.getTitleText());
     }
 }

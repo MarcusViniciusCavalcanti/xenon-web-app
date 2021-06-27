@@ -22,6 +22,7 @@ class CarFactoryTest {
     private static final LocalDateTime LOCAL_DATE_TIME = LocalDateTime.now();
     private static final String MODEL_CAR = "Model Car";
     private static final String PLATE_CAR = "Plate Car";
+    public static final String DOCUMENT = "document";
 
     @Autowired
     private CarFactory carFactory;
@@ -37,6 +38,7 @@ class CarFactoryTest {
         assertEquals(MODEL_CAR, carDto.getModel());
         assertEquals(PLATE_CAR, carDto.getPlate());
         assertEquals(LOCAL_DATE_TIME, carDto.getLastAccess());
+        assertEquals(DOCUMENT, carDto.getDocument());
         assertEquals(ID, carDto.getId());
     }
 
@@ -60,6 +62,7 @@ class CarFactoryTest {
         car.setModel(MODEL_CAR);
         car.setPlate(PLATE_CAR);
         car.setLastAccess(LOCAL_DATE_TIME);
+        car.setDocument(DOCUMENT);
         car.setUser(user);
 
         return car;

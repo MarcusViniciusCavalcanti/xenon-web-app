@@ -4,8 +4,11 @@ import br.com.tsi.utfpr.xenon.application.service.RegistryStudentsApplicationSer
 import br.com.tsi.utfpr.xenon.application.service.UserApplicationService;
 import br.com.tsi.utfpr.xenon.application.service.impl.RegistryStudentsApplicationServiceImpl;
 import br.com.tsi.utfpr.xenon.application.service.impl.UserApplicationServiceImpl;
+import br.com.tsi.utfpr.xenon.domain.user.usecase.GetterFiles;
 import br.com.tsi.utfpr.xenon.domain.user.usecase.GetterPageUser;
 import br.com.tsi.utfpr.xenon.domain.user.usecase.RegistryNewStudents;
+import br.com.tsi.utfpr.xenon.domain.user.usecase.RegistryUser;
+import br.com.tsi.utfpr.xenon.domain.user.usecase.UpdateUser;
 import br.com.tsi.utfpr.xenon.domain.user.usecase.ValidateToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,14 +20,23 @@ import org.springframework.context.annotation.Configuration;
 public class ApplicationServiceConfigurations {
 
     @Bean
-    public UserApplicationService userApplicationService(GetterPageUser getterPageUser) {
-        return new UserApplicationServiceImpl(getterPageUser);
+    public UserApplicationService userApplicationService(
+        GetterPageUser getterPageUser,
+        GetterFiles getterFiles,
+        RegistryUser registryUser,
+        UpdateUser updateUser) {
+
+        return new UserApplicationServiceImpl(
+            getterPageUser,
+            getterFiles,
+            registryUser,
+            updateUser
+        );
     }
 
     @Bean
     public RegistryStudentsApplicationService registryStudentsApplicationService(
-        RegistryNewStudents registryNewStudents,
-        ValidateToken validateToken) {
+        RegistryNewStudents registryNewStudents, ValidateToken validateToken) {
         return new RegistryStudentsApplicationServiceImpl(registryNewStudents, validateToken);
     }
 }

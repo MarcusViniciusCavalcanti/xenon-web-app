@@ -4,8 +4,9 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Data
-@ConfigurationProperties("xenon.configurations.avatar")
-public class AvatarProperty {
+@ConfigurationProperties("xenon.configurations.file")
+public class FilesProperty {
 
-    private String url;
+    private String avatarUrl;
+    private String documentCarUrl;
 }

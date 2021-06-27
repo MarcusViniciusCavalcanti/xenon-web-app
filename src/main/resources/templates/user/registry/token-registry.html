@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!--suppress ALL -->
 <html lang="pt-br"
       layout:decorate="~{/user/registry/registry}"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
@@ -71,7 +72,7 @@
             <span>Algo deu errado? <strong>Uma alternativa é:</strong></span>
             <form name="renew-token"
                   method="post"
-                  th:action="@{/novo-registro}"
+                  th:action="@{/incluir-registro}"
                   novalidate
                   th:object="${inputEmail}"
                   role="form">

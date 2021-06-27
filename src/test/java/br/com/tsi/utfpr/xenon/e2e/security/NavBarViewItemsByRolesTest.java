@@ -13,10 +13,15 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.web.context.WebApplicationContext;
 
 @DisplayName("Test - e2e - Exibição dropdown menu do navbar baseados nos papeis")
-public class NavBarViewItemsByRolesTest extends AbstractEndToEndTest {
+@Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+    "classpath:/sql/user_default_insert.sql"})
+@Sql(executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD, scripts = {
+    "classpath:/sql/user_default_delete.sql"})
+class NavBarViewItemsByRolesTest extends AbstractEndToEndTest {
 
     private static final String HTTP_LOCALHOST_8080_HOME = "http://localhost:8080/home";
     private static final String SETTINGS = "Configurações";

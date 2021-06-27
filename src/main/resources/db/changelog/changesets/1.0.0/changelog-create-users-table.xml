@@ -15,6 +15,8 @@
             <column name="access_card_id" type="BIGINT">
                 <constraints primaryKey="true" primaryKeyName="users_pkey"/>
             </column>
+            <column defaultValue="0" name="status_registry" type="INTEGER"/>
+            <column name="avatar" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
     <changeSet author="vinicius" id="1586309332904-2">

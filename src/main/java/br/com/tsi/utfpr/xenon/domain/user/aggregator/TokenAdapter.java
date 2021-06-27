@@ -14,7 +14,8 @@ public class TokenAdapter {
     private final RedisTemplate<String, String> redisTemplate;
 
     public void saveToken(Token token, long timeExpired) {
-        redisTemplate.opsForValue().set(token.getKey(), token.getToken(), timeExpired, TimeUnit.MINUTES);
+        redisTemplate.opsForValue()
+            .set(token.getKey(), token.getToken(), timeExpired, TimeUnit.MINUTES);
     }
 
     public Optional<String> getToken(String email) {

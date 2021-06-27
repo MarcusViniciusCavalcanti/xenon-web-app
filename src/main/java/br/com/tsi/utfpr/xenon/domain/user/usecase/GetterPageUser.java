@@ -7,7 +7,7 @@ import br.com.tsi.utfpr.xenon.domain.user.repository.UserRepository;
 import br.com.tsi.utfpr.xenon.domain.user.service.ParametersGetAllSpec;
 import br.com.tsi.utfpr.xenon.structure.data.BasicSpecification;
 import br.com.tsi.utfpr.xenon.structure.dtos.UserDto;
-import br.com.tsi.utfpr.xenon.structure.dtos.inputs.ParamsSearchRequestDTO;
+import br.com.tsi.utfpr.xenon.structure.dtos.inputs.ParamsSearchRequestDto;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -33,7 +33,7 @@ public class GetterPageUser {
         this.getterAllUserSpec = getterAllUserSpec;
     }
 
-    public Page<UserDto> getAllUserByFilter(ParamsSearchRequestDTO params) {
+    public Page<UserDto> getAllUserByFilter(ParamsSearchRequestDto params) {
         var sort = Sort.by(Sort.Direction.fromString(params.getOrDefaultSortDirection()),
             params.getOrDefaultSort());
         var pageable = PageRequest.of(params.getOrDefaultPage(), params.getOrDefaultSize(), sort);
@@ -47,10 +47,10 @@ public class GetterPageUser {
         var spec = getterAllUserSpec.filterBy(paramsSpec);
 
         var userPage = userRepository.findAll(spec, pageable);
-        var userDTOS = userPage.getContent().stream()
+        var users = userPage.getContent().stream()
             .map(userFactory::createUserDto)
             .collect(Collectors.toList());
 
-        return new PageImpl<>(userDTOS, pageable, userPage.getTotalElements());
+        return new PageImpl<>(users, pageable, userPage.getTotalElements());
     }
 }

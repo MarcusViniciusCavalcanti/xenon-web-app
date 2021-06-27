@@ -1,23 +1,25 @@
 package br.com.tsi.utfpr.xenon.e2e.security;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import br.com.tsi.utfpr.xenon.e2e.AbstractEndToEndTest;
 import br.com.tsi.utfpr.xenon.e2e.utils.GetElementDom;
 import com.gargoylesoftware.htmlunit.html.HtmlHeading2;
 import java.io.IOException;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.web.context.WebApplicationContext;
 
 @DisplayName("Test - e2e - Deve redirecionar para Acesso Negado")
-public class RedirectAccessDeniedTest extends AbstractEndToEndTest {
+@Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+    "classpath:/sql/user_default_insert.sql"})
+@Sql(executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD, scripts = {
+    "classpath:/sql/user_default_delete.sql"})
+class RedirectAccessDeniedTest extends AbstractEndToEndTest {
 
     private static final String BASE_URL = "http://localhost:8080%s";
     private static final String ATTRIBUTE_CLASS = "class";
@@ -57,7 +59,8 @@ public class RedirectAccessDeniedTest extends AbstractEndToEndTest {
             }).getHtmlPage();
 
         assertEquals("Xenon - 403", page.getTitleText());
-        assertEquals("http://localhost:8080/access-denied", page.getWebResponse().getWebRequest().getUrl().toString());
+        assertEquals("http://localhost:8080/access-denied",
+            page.getWebResponse().getWebRequest().getUrl().toString());
     }
 
     @Override

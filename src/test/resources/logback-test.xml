@@ -1,23 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-  <include resource="org/springframework/boot/logging/logback/base.xml"/>
-  <logger name="root" level="OFF"/>
+    <include resource="org/springframework/boot/logging/logback/base.xml"/>
 
-  <logger name="org.springframework" level="OFF"/>
-  <logger name="org.springframework.boot" level="OFF"/>
-  <logger name="org.springframework.web.servlet" level="OFF"/>
-  <logger name="org.springframework.boot.security" level="OFF"/>
-  <logger name="org.springframework.web.SimpLogging" level="OFF"/>
+    <logger level="INFO" name="root"/>
+    <logger level="WARN" name="com.gargoylesoftware.htmlunit.*"/>
 
-  <logger name="com.gargoylesoftware.htmlunit.*" level="OFF"/>
+    <logger level="INFO" name="br.com.tsi.utfpr.xenon.XenonApplicationTests"/>
 
-  <logger name="com.zaxxer.hikari.*" level="OFF"/>
-
-  <logger name="br.com.tsi.utfpr.xenon.XenonApplicationTests" level="OFF"/>
-
-  <logger name="org.hibernate.*" level="OFF"/>
-
-  <logger name="liquibase.changelog.ChangeSet" level="OFF"/>
-
-  <logger name="br.com.tsi.utfpr.xenon" level="INFO"/>
+    <logger level="INFO" name="br.com.tsi.utfpr.xenon"/>
 </configuration>

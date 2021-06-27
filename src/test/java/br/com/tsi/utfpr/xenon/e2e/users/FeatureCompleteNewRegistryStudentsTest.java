@@ -1,34 +1,37 @@
 package br.com.tsi.utfpr.xenon.e2e.users;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import br.com.tsi.utfpr.xenon.domain.security.repository.AccessCardRepository;
 import br.com.tsi.utfpr.xenon.domain.user.aggregator.Token;
 import br.com.tsi.utfpr.xenon.domain.user.aggregator.TokenAdapter;
-import br.com.tsi.utfpr.xenon.domain.user.repository.UserRepository;
 import br.com.tsi.utfpr.xenon.e2e.AbstractEndToEndTest;
 import br.com.tsi.utfpr.xenon.e2e.TestRedisConfiguration;
 import br.com.tsi.utfpr.xenon.e2e.utils.InsertFormDom;
 import com.gargoylesoftware.htmlunit.html.DomNode;
+import java.io.IOException;
+import java.util.UUID;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.web.context.WebApplicationContext;
-
-import java.io.IOException;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("Test - e2e - Funcionalidade estudante completar seu registro")
 @SpringBootTest(classes = TestRedisConfiguration.class)
+@Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+    "classpath:/sql/user_default_insert.sql"})
+@Sql(executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD, scripts = {
+    "classpath:/sql/user_default_delete.sql"})
 class FeatureCompleteNewRegistryStudentsTest extends AbstractEndToEndTest {
 
+    private static final String CADASTRO_ESTUDANTE = "http://localhost:8080/cadastro-estudante";
     private static final String REGISTRY_USER = "registry-user";
     private static final String DIV = "div";
     private static final String ATTRIBUTE_CLASS = "class";
-    private static final String CADASTRO_ESTUDANTE = "http://localhost:8080/cadastro-estudante";
     private static final String ATTRIBUTE_ID = "id";
 
     @Autowired
@@ -36,10 +39,6 @@ class FeatureCompleteNewRegistryStudentsTest extends AbstractEndToEndTest {
 
     @Autowired
     private AccessCardRepository accessCardRepository;
-
-    // TODO remover
-    @Autowired
-    private UserRepository userRepository;
 
     @Autowired
     private TokenAdapter tokenAdapter;
@@ -71,16 +70,18 @@ class FeatureCompleteNewRegistryStudentsTest extends AbstractEndToEndTest {
     @DisplayName("Deve exibir span com errors de validação de campos")
     void shouldShowSpanErrorValidation() throws IOException {
         var spans = InsertFormDom.init(webClient, CADASTRO_ESTUDANTE)
-                .insertForm(REGISTRY_USER)
-                .clickButton()
-                .navigate("form", ATTRIBUTE_ID, "registry_students")
-                .getListChildSpan(ATTRIBUTE_CLASS, "validate-has-error");
+            .insertForm(REGISTRY_USER)
+            .clickButton()
+            .navigate("form", ATTRIBUTE_ID, "registry_students")
+            .getListChildSpan(ATTRIBUTE_CLASS, "validate-has-error");
 
         var errors = spans.stream()
-                .map(DomNode::getVisibleText)
-                .collect(Collectors.joining(","));
+            .map(DomNode::getVisibleText)
+            .collect(Collectors.joining(","));
 
-        assertEquals("Campo obrigatório,Campo obrigatório,Campo obrigatório,Campo inválido,Campo obrigatório,Campo obrigatório", errors);
+        assertEquals(
+            "Campo obrigatório,Campo obrigatório,Campo obrigatório,Campo inválido,Campo obrigatório,Campo obrigatório",
+            errors);
     }
 
     @Test
@@ -91,21 +92,22 @@ class FeatureCompleteNewRegistryStudentsTest extends AbstractEndToEndTest {
         var modelCar = "Model Car";
         var plate = "ABC1234";
         var uuid = UUID.nameUUIDFromBytes(email.getBytes(UTF_8));
-        var key =  String.format("%s - %s", email, uuid);
+        var key = String.format("%s - %s", email, uuid);
 
         var token = new Token(key);
         token.generateNewToken();
         tokenAdapter.saveToken(token, 5L);
-        var url = CADASTRO_ESTUDANTE + "?email=alunos%40alunos.utfpr.edu.br&token=" + token.getToken();
+        var url = CADASTRO_ESTUDANTE + "?email=alunos%40alunos.utfpr.edu.br&token=" + token
+            .getToken();
 
         InsertFormDom.init(webClient, url)
-                .insertForm(REGISTRY_USER)
-                .setInputValue("name", name)
-                .setInputValue("modelCar", modelCar)
-                .setInputValue("plateCar", plate)
-                .setInputValue("password", "1234567")
-                .setInputValue("confirmPassword", "1234567")
-                .clickButton();
+            .insertForm(REGISTRY_USER)
+            .setInputValue("name", name)
+            .setInputValue("modelCar", modelCar)
+            .setInputValue("plateCar", plate)
+            .setInputValue("password", "1234567")
+            .setInputValue("confirmPassword", "1234567")
+            .clickButton();
 
         var accessCard = accessCardRepository.findByUsername("alunos@alunos.utfpr.edu.br").get();
 

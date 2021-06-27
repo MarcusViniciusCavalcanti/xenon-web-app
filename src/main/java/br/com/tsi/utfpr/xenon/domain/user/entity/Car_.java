@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
+@SuppressWarnings("ALL")
 @StaticMetamodel(Car.class)
 public class Car_ {
 
@@ -15,5 +16,6 @@ public class Car_ {
     public static volatile SingularAttribute<Car, LocalDateTime> lastAccess;
     public static volatile SingularAttribute<Car, LocalDate> createdAt;
     public static volatile SingularAttribute<Car, LocalDate> updatedAt;
+    public static volatile SingularAttribute<Car, String> document;
 
 }

@@ -11,10 +11,15 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.web.context.WebApplicationContext;
 
 @DisplayName("Test - e2e - Login")
-public class LoginTest extends AbstractEndToEndTest {
+@Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+    "classpath:/sql/user_default_insert.sql"})
+@Sql(executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD, scripts = {
+    "classpath:/sql/user_default_delete.sql"})
+class LoginTest extends AbstractEndToEndTest {
 
     private static final String HTTP_LOCALHOST_8080_LOGIN = "http://localhost:8080/login";
     private static final String FORM_LOGIN = "form-login";

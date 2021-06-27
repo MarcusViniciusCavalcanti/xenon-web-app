@@ -1,14 +1,15 @@
 xenon:
   configurations:
-    themeleaf:
+    thymeleaf:
       cache: false
     datasource:
       driver: org.postgresql.Driver
       url: jdbc:postgresql://localhost:5432/xenon
       username: xenon
       password: xenon
-    avatar:
-      url:
+    file:
+      avatarUrl: file/avatar
+      documentCarUrl: file/doc
     redis:
       host: 127.0.0.1
       port: 6379

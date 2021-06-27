@@ -21,24 +21,24 @@ public class InputUserDto {
     @Size(min = 5, max = 200, message = "O tamanho deve estar entre 5 à 200 caracteres")
     private String username;
 
-    @NotBlank(message = "Não deve ser nulo ou branco")
     private String password;
 
     @NotEmpty(message = "Lista não pode ser vazia")
     private List<Long> authorities;
 
-    @NotNull(message = "Não deve estar em branco ou não ser outros valores que não sejam: SERVICE, STUDENTS")
+    @NotNull(message =
+        "Não deve estar em branco ou não ser outros valores que não sejam: SERVICE, STUDENTS")
     private TypeUserDto type;
 
-    private boolean accountNonExpired;
+    private boolean accountNonExpired = false;
 
-    private boolean accountNonLocked;
+    private boolean accountNonLocked = false;
 
-    private boolean credentialsNonExpired;
+    private boolean credentialsNonExpired = false;
 
-    private boolean enabled;
+    private boolean enabled = true;
 
-    private boolean authorizedAccess;
+    private boolean authorizedAccess = true;
 
     private String carPlate;
 
