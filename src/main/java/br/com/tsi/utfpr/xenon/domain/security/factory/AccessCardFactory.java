@@ -4,7 +4,7 @@ import br.com.tsi.utfpr.xenon.domain.security.entity.AccessCard;
 import br.com.tsi.utfpr.xenon.domain.security.service.RoleService;
 import br.com.tsi.utfpr.xenon.domain.user.entity.User;
 import br.com.tsi.utfpr.xenon.structure.FactoryException;
-import br.com.tsi.utfpr.xenon.structure.dtos.AccessCardDTO;
+import br.com.tsi.utfpr.xenon.structure.dtos.AccessCardDto;
 import br.com.tsi.utfpr.xenon.structure.dtos.RoleDTO;
 import br.com.tsi.utfpr.xenon.structure.dtos.TypeUserDto;
 import br.com.tsi.utfpr.xenon.structure.dtos.inputs.InputUserDto;
@@ -22,9 +22,9 @@ public class AccessCardFactory {
 
     private final RoleService roleService;
 
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final BCryptPasswordEncoder passwordEncoder;
 
-    public AccessCardDTO createAccessCardDto(User user) {
+    public AccessCardDto createAccessCardDto(User user) {
         var accessCard = user.getAccessCard();
 
         if (Objects.isNull(accessCard)) {
@@ -43,7 +43,7 @@ public class AccessCardFactory {
                 .build())
             .collect(Collectors.toList());
 
-        return AccessCardDTO.builder()
+        return AccessCardDto.builder()
             .username(accessCard.getUsername())
             .accountNonExpired(accessCard.isAccountNonExpired())
             .accountNonLocked(accessCard.isAccountNonLocked())
@@ -90,7 +90,7 @@ public class AccessCardFactory {
         var newAccessCard = new AccessCard();
 
         newAccessCard.setUsername(email);
-        newAccessCard.setPassword(bCryptPasswordEncoder.encode(pass));
+        newAccessCard.setPassword(passwordEncoder.encode(pass));
         newAccessCard.setUser(user);
 
         return newAccessCard;
