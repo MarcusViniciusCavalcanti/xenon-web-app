@@ -6,6 +6,7 @@ import br.com.tsi.utfpr.xenon.structure.dtos.TypeUserDto;
 import br.com.tsi.utfpr.xenon.structure.dtos.UserDto;
 import br.com.tsi.utfpr.xenon.structure.dtos.inputs.InputUserDto;
 import br.com.tsi.utfpr.xenon.structure.dtos.inputs.ParamsSearchRequestDto;
+import br.com.tsi.utfpr.xenon.web.error.WebException;
 import br.com.tsi.utfpr.xenon.web.validations.IsAdmin;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -20,7 +21,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -100,10 +103,23 @@ public class UserController {
         return Files.readAllBytes(file.toPath());
     }
 
+    @PostMapping("/user/avatar/upload")
+    public String saveNewAvatar(@RequestParam("file") MultipartFile avatar) {
+        log.info("Execute request to /user/avatar/upload/");
+        var result = userApplicationService.saveAvatar(avatar);
+
+        if (Boolean.TRUE.equals(result)) {
+            return "redirect:/perfil";
+        }
+
+        throw new WebException(this.getClass());
+    }
+
     @IsAdmin
     @GetMapping("/usuario/atualizar/{id}")
     public ModelAndView updateUser(@PathVariable("id") Long id, ModelAndView modelAndView) {
         log.info("Execute request to /usuario/atualizar/{}", id);
+
         var input = userApplicationService.findUserUpdate(id);
         var roles = securityApplicationService.getAllRoles();
 
@@ -111,5 +127,29 @@ public class UserController {
         modelAndView.addObject("roles", roles);
         modelAndView.addObject("input", input);
         return modelAndView;
+    }
+
+    @IsAdmin
+    @PostMapping("/usuarios/atualizar/{id}")
+    public String updatedUser(@Valid InputUserDto userDto,
+        @PathVariable("id") Long id,
+        BindingResult result,
+        RedirectAttributes redirectAttributes) {
+
+        log.info("Execute request to /usuarios/atualizar");
+        if (result.hasErrors()) {
+            log.info("Execute request invalid");
+            redirectAttributes
+                .addFlashAttribute("errors", "Campos com errors verifique e tente novamente");
+            result.getFieldErrors().forEach(fieldError -> {
+                log.debug("field error: {}", fieldError);
+                redirectAttributes.addFlashAttribute(fieldError.getField(), fieldError);
+            });
+
+            return "redirect:/usuario/atualizar/" + id;
+        }
+
+        userApplicationService.updateUser(id, userDto);
+        return "redirect:/usuarios/todos";
     }
 }

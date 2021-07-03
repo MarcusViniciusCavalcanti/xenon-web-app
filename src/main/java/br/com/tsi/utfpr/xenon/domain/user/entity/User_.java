@@ -1,7 +1,7 @@
 package br.com.tsi.utfpr.xenon.domain.user.entity;
 
 import br.com.tsi.utfpr.xenon.domain.security.entity.AccessCard;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
@@ -18,6 +18,6 @@ public class User_ {
     public static volatile SingularAttribute<User, Boolean> authorisedAccess;
     public static volatile SingularAttribute<User, Integer> numberAccess;
     public static volatile SingularAttribute<User, Integer> statusRegistry;
-    public static volatile SingularAttribute<User, LocalDate> updatedAt;
-    public static volatile SingularAttribute<User, LocalDate> createdAt;
+    public static volatile SingularAttribute<User, LocalDateTime> updatedAt;
+    public static volatile SingularAttribute<User, LocalDateTime> createdAt;
 }

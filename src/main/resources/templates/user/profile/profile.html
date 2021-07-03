@@ -22,10 +22,26 @@
     <div class="row">
       <div class="col-sm-3">
         <div class="user-info-sidebar">
-          <div class="user-img">
+          <div class="user-img" id="container-img">
             <img alt="avatar do usuário"
+                 id="avatar_user"
                  class="img-cirlce img-responsive img-thumbnail"
                  th:src="@{/user/avatar/{id}(id=${#authentication.principal.user.id})}"/>
+            <div class="middle">
+              <form enctype="multipart/form-data"
+                    id="avatar_upload"
+                    name="avatar_upload"
+                    th:action="@{/user/avatar/upload/}"
+                    th:method="post">
+
+                <div class="edit-image">
+                  <label class="custom-file-upload">
+                    <input accept="image/png, image/jpeg" id="avatar" name="file" type="file"/>
+                    <i class="fa fa-cloud-upload"></i> Upload Avatar
+                  </label>
+                </div>
+              </form>
+            </div>
           </div>
 
           <div class="user-name" th:text="${user.name}">
@@ -167,5 +183,9 @@
     </div>
   </section>
 </div>
+
+<th:block layout:fragment="scripts">
+  <script th:src="@{/js/user/profile.js}"></script>
+</th:block>
 </body>
 </html>

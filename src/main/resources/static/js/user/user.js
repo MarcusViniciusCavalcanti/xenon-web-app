@@ -175,6 +175,5 @@ $('#search').click(function () {
   state.type = $('#search_type_user').val();
   state.enabled = $('#user_enabled').is(':checked') ? true : null;
 
-  console.log(state)
   executeGetAllUser();
 });

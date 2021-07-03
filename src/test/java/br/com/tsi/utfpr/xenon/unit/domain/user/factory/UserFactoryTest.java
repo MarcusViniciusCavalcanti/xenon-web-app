@@ -19,7 +19,6 @@ import br.com.tsi.utfpr.xenon.domain.user.factory.UserFactory;
 import br.com.tsi.utfpr.xenon.structure.dtos.TypeUserDto;
 import br.com.tsi.utfpr.xenon.structure.dtos.inputs.InputNewStudent;
 import br.com.tsi.utfpr.xenon.structure.dtos.inputs.InputUserDto;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Stream;
@@ -45,7 +44,7 @@ class UserFactoryTest {
 
     private static final String MOCK_USER_TEST = "Mock User Test";
     private static final long ID = 1L;
-    private static final LocalDate DATE = LocalDate.now();
+    private static final LocalDateTime DATE = LocalDateTime.now();
     private static final TypeUser TYPE_USER_SERVICE = TypeUser.SERVICE;
     private static final TypeUser TYPE_USER_STUDENTS = TypeUser.STUDENTS;
     private static final String TRANSLATE_TYPE_USER = "Servidor";

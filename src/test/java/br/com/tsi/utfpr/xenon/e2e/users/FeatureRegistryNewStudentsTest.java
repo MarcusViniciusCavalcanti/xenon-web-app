@@ -28,8 +28,9 @@ import org.springframework.web.context.WebApplicationContext;
     "classpath:/sql/user_default_delete.sql"})
 class FeatureRegistryNewStudentsTest extends AbstractEndToEndTest {
 
-    public static final String MESSAGE_ERROR = "message_error";
-    private static final String EXPECTED_MESSAGE_EMAIL_ERROR_INVALID = "Utilize o e-mail institucional, ex: ...@alunos.utfpr.edu.br";
+    private static final String MESSAGE_ERROR = "message_error";
+    private static final String EXPECTED_MESSAGE_EMAIL_ERROR_INVALID =
+        "Utilize o e-mail institucional, ex: ...@alunos.utfpr.edu.br";
     private static final String EXPECTED_MESSAGE_EMAIL_ERROR_EMPTY = "O campo deve ser preenchido";
     private static final String ATTRIBUTE_CLASS = "class";
     private static final String NOVO_REGISTRO = "http://localhost:8080/novo-registro";
@@ -42,14 +43,6 @@ class FeatureRegistryNewStudentsTest extends AbstractEndToEndTest {
 
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
-
-    private static Stream<Arguments> providerArgumentsEmailInvalid() {
-        return Stream.of(
-                Arguments.of("email@email.com", EXPECTED_MESSAGE_EMAIL_ERROR_INVALID),
-                Arguments.of("@alunos.utfpr.edu.br", EXPECTED_MESSAGE_EMAIL_ERROR_INVALID),
-                Arguments.of("", EXPECTED_MESSAGE_EMAIL_ERROR_EMPTY)
-        );
-    }
 
     @ParameterizedTest
     @MethodSource("providerArgumentsEmailInvalid")
@@ -115,9 +108,9 @@ class FeatureRegistryNewStudentsTest extends AbstractEndToEndTest {
     void shouldHaveCreateToken() throws IOException {
         var email = "testes@alunos.utfpr.edu.br";
         InsertFormDom.init(webClient, NOVO_REGISTRO)
-                .insertForm(EMAIL_REGISTRY)
-                .setInputValue(INPUT_EMAIL, email)
-                .clickButton();
+            .insertForm(EMAIL_REGISTRY)
+            .setInputValue(INPUT_EMAIL, email)
+            .clickButton();
 
         var token = redisTemplate.opsForValue().get(email);
         assertNotNull(token);
@@ -126,5 +119,13 @@ class FeatureRegistryNewStudentsTest extends AbstractEndToEndTest {
     @Override
     protected WebApplicationContext getWebApplicationContext() {
         return webApplicationContext;
+    }
+
+    private static Stream<Arguments> providerArgumentsEmailInvalid() {
+        return Stream.of(
+            Arguments.of("email@email.com", EXPECTED_MESSAGE_EMAIL_ERROR_INVALID),
+            Arguments.of("@alunos.utfpr.edu.br", EXPECTED_MESSAGE_EMAIL_ERROR_INVALID),
+            Arguments.of("", EXPECTED_MESSAGE_EMAIL_ERROR_EMPTY)
+        );
     }
 }

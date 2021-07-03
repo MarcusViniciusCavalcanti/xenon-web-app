@@ -69,7 +69,7 @@ public class AccessCardFactory {
         );
 
         var roles =
-            roleService.verifyAndGetRoleBy(inputUserDto.getType(), inputUserDto.getAuthorities());
+            roleService.verifyAndGetRoleBy(inputUserDto);
         newAccessCard.setRoles(roles);
 
         return newAccessCard;

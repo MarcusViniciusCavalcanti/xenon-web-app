@@ -7,10 +7,12 @@ import br.com.tsi.utfpr.xenon.domain.user.aggregator.Token;
 import br.com.tsi.utfpr.xenon.domain.user.aggregator.TokenAdapter;
 import br.com.tsi.utfpr.xenon.e2e.AbstractEndToEndTest;
 import br.com.tsi.utfpr.xenon.e2e.TestRedisConfiguration;
+import br.com.tsi.utfpr.xenon.e2e.utils.GetElementDom;
 import br.com.tsi.utfpr.xenon.e2e.utils.InsertFormDom;
 import com.gargoylesoftware.htmlunit.html.HtmlHeading2;
 import com.gargoylesoftware.htmlunit.html.HtmlHeading3;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
@@ -18,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -42,6 +45,7 @@ class FeatureValidateTokenTest extends AbstractEndToEndTest {
     public static final String BODY_PAGE_ERROR_ENV = "page-body page-error-env";
     public static final String ERROR_CENTERED = "page-error centered";
     public static final String EMAIL = "test@alunos.utfpr.edu.br";
+    private static final String MESSAGE_ERROR = "message_error";
 
     @Autowired
     private WebApplicationContext webApplicationContext;
@@ -164,6 +168,19 @@ class FeatureValidateTokenTest extends AbstractEndToEndTest {
         var newToken = tokenAdapter.getToken(EMAIL).get();
 
         assertNotEquals(oldToken, newToken);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"", " "})
+    @NullSource
+    @DisplayName("Deve redirecionar para página de erro quando e-mail já existe")
+    void shouldReturnEmailExist(String value) throws IOException {
+        var url = Objects.isNull(value) ?
+            "http://localhost:8080/validar-token"
+            : "http://localhost:8080/validar-token?email=" + value;
+
+        var htmlPage = GetElementDom.start(webClient, url).getHtmlPage();
+        assertEquals("- UTFPR - Xenon", htmlPage.getTitleText());
     }
 
     @Override

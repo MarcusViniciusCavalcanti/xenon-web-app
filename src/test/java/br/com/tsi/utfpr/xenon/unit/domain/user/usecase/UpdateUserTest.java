@@ -3,8 +3,13 @@ package br.com.tsi.utfpr.xenon.unit.domain.user.usecase;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -14,18 +19,23 @@ import br.com.tsi.utfpr.xenon.domain.user.entity.Car;
 import br.com.tsi.utfpr.xenon.domain.user.entity.TypeUser;
 import br.com.tsi.utfpr.xenon.domain.user.entity.User;
 import br.com.tsi.utfpr.xenon.domain.user.repository.UserRepository;
+import br.com.tsi.utfpr.xenon.domain.user.service.FileService;
 import br.com.tsi.utfpr.xenon.domain.user.usecase.UpdateUser;
-import java.time.LocalDate;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import javax.persistence.EntityNotFoundException;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mock.web.MockMultipartFile;
 
 @ExtendWith(MockitoExtension.class)
 class UpdateUserTest {
@@ -33,10 +43,8 @@ class UpdateUserTest {
     public static final String AVATAR = "avatar";
     private static final String MOCK_USER_TEST = "Mock User Test";
     private static final long ID = 1L;
-    private static final LocalDate DATE = LocalDate.now();
+    private static final LocalDateTime DATE = LocalDateTime.now();
     private static final TypeUser TYPE_USER_SERVICE = TypeUser.SERVICE;
-    private static final TypeUser TYPE_USER_STUDENTS = TypeUser.STUDENTS;
-    private static final String TRANSLATE_TYPE_USER = "Servidor";
     private static final int NUMBER_ACCESS = 100;
     private static final String MOCK_USERNAME_COM_BR = "mock@username.com.br";
     private static final String PASSWORD = "1234567";
@@ -56,6 +64,9 @@ class UpdateUserTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private FileService fileService;
 
     @InjectMocks
     private UpdateUser updateUser;
@@ -99,6 +110,72 @@ class UpdateUserTest {
         assertTrue(userUpdate.isAccountNonLocked());
         assertTrue(userUpdate.isCredentialsNonExpired());
         assertTrue(userUpdate.isEnabled());
+    }
+
+    @Test
+    @DisplayName("Deve retornar exception quando usuário não encontrado")
+    void shouldThrowsExceptionWhenUserNotFound() throws IOException {
+        when(userRepository.findById(ID)).thenReturn(Optional.empty());
+
+        var mockFile = new MockMultipartFile("file", InputStream.nullInputStream());
+
+        Assertions.assertThrows(EntityNotFoundException.class,
+            () -> updateUser.updateAvatar(ID, mockFile));
+
+        verify(fileService, never()).saveAvatar(anyLong(), any());
+        verify(userRepository, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("Deve retornar false quando não possível salvar avatar no disco")
+    void shouldThrowsExceptionWhenErrorInSaveDiskAvatar() throws IOException {
+        var user = createUserBuild();
+        var accessCard = createAccessCard(user);
+        var car = createCar(user);
+        var roles = createListRoles();
+
+        accessCard.setRoles(roles);
+        user.setAccessCard(accessCard);
+        user.setCar(car);
+
+        var multipartFile = new MockMultipartFile("file", InputStream.nullInputStream());
+
+        when(userRepository.findById(ID)).thenReturn(Optional.of(user));
+        when(fileService.saveAvatar(eq(ID), any())).thenThrow(IOException.class);
+
+        var result = updateUser.updateAvatar(user.getId(), multipartFile);
+
+        assertFalse(result);
+
+        verify(userRepository).findById(eq(ID));
+        verify(fileService).saveAvatar(eq(ID), any());
+        verify(userRepository, never()).save(user);
+    }
+
+    @Test
+    @DisplayName("Deve retornar true quando sucesso na atualização do avatar")
+    void shouldReturnTrueWhenSaveDiskAvatar() throws IOException {
+        var user = createUserBuild();
+        var accessCard = createAccessCard(user);
+        var car = createCar(user);
+        var roles = createListRoles();
+
+        accessCard.setRoles(roles);
+        user.setAccessCard(accessCard);
+        user.setCar(car);
+
+        var multipartFile = new MockMultipartFile("file", InputStream.nullInputStream());
+
+        when(userRepository.findById(ID)).thenReturn(Optional.of(user));
+        when(fileService.saveAvatar(eq(ID), any())).thenReturn(Path.of("file"));
+
+        var result = updateUser.updateAvatar(user.getId(), multipartFile);
+
+        assertTrue(result);
+
+        verify(userRepository).findById(eq(ID));
+        verify(fileService).saveAvatar(eq(ID), any());
+        verify(userRepository).save(user);
     }
 
     private User createUserBuild() {

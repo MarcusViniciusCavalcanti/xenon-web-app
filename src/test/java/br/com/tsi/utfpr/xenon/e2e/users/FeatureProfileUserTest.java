@@ -3,12 +3,21 @@ package br.com.tsi.utfpr.xenon.e2e.users;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import br.com.tsi.utfpr.xenon.domain.config.property.FilesProperty;
 import br.com.tsi.utfpr.xenon.e2e.AbstractEndToEndTest;
 import br.com.tsi.utfpr.xenon.e2e.utils.GetElementDom;
+import br.com.tsi.utfpr.xenon.e2e.utils.InsertFormDom;
 import br.com.tsi.utfpr.xenon.e2e.utils.StreamUtils;
+import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
+import com.gargoylesoftware.htmlunit.ScriptException;
 import com.gargoylesoftware.htmlunit.html.DomNode;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,9 +38,13 @@ class FeatureProfileUserTest extends AbstractEndToEndTest {
     private static final String SECTION = "section";
     private static final String url = "http://localhost:8080/perfil";
     private static final String ATTRIBUTE_ID = "id";
+    private static final String MESSAGE_ERROR = "message_error";
 
     @Autowired
     private WebApplicationContext webApplicationContext;
+
+    @Autowired
+    private FilesProperty filesProperty;
 
     @Test
     @DisplayName("Deve exibir sidebar com informações do usuário")
@@ -139,6 +152,43 @@ class FeatureProfileUserTest extends AbstractEndToEndTest {
             .getDiv(ATTRIBUTE_ID, "info_access_value")
             .executeAssertion(div -> assertEquals("Nenhum registro", div.getVisibleText()));
 
+    }
+
+    @Test
+    @DisplayName("Não Deve atualizar avatar")
+    @WithUserDetails(value = "beltrano_admin@admin.com", userDetailsServiceBeanName = "userDetailsServiceImpl")
+    void shouldNotUpdateAvatar() throws IOException {
+        try {
+            InsertFormDom.init(webClient, url)
+                .insertForm("avatar_upload")
+                .setInputValue("file",
+                    Files.createTempFile("testes", ".pdf").toFile().getAbsolutePath());
+
+        } catch (FailingHttpStatusCodeException | ScriptException e) {
+            assertTrue(e.getMessage().contains("422 Unprocessable Entity"));
+            assertTrue(e.getMessage().contains("/user/avatar/upload/"));
+        }
+    }
+
+    @Test
+    @DisplayName("Deve atualiar o avatar do usuário")
+    @WithUserDetails(value = "beltrano_admin@admin.com", userDetailsServiceBeanName = "userDetailsServiceImpl")
+    void shouldHaveUpdateAvatar() throws IOException {
+        var filePathTest = String.format("%s/153.png", filesProperty.getAvatarUrl());
+        Files.deleteIfExists(new File(filePathTest).toPath());
+
+        var tmpImage = Files.createTempFile("image", ".png");
+        Files.copy(
+            Objects.requireNonNull(
+                FeatureAllUserTest.class.getResourceAsStream("/test-file/avatar/0.png")),
+            tmpImage.toAbsolutePath(), StandardCopyOption.REPLACE_EXISTING);
+
+        InsertFormDom.init(webClient, url)
+            .insertForm("avatar_upload")
+            .setInputValue("file", tmpImage.toFile().getAbsolutePath());
+
+        var path = new File(filePathTest).toPath();
+        assertTrue(Files.exists(path));
     }
 
     @Override

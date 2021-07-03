@@ -22,7 +22,7 @@ import br.com.tsi.utfpr.xenon.domain.user.entity.User;
 import br.com.tsi.utfpr.xenon.structure.FactoryException;
 import br.com.tsi.utfpr.xenon.structure.dtos.TypeUserDto;
 import br.com.tsi.utfpr.xenon.structure.dtos.inputs.InputUserDto;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -45,7 +45,7 @@ class AccessCardFactoryTest {
 
     private static final String MOCK_USER_TEST = "Mock User Test";
     private static final long ID = 1L;
-    private static final LocalDate DATE = LocalDate.now();
+    private static final LocalDateTime DATE = LocalDateTime.now();
     private static final int NUMBER_ACCESS = 100;
     private static final String MOCK_USERNAME_COM_BR = "mock@username.com.br";
     private static final String PASSWORD = "1234567";
@@ -142,7 +142,7 @@ class AccessCardFactoryTest {
         var accessCard = createAccessCard(user);
         var roles = createListRoles();
 
-        when(roleService.verifyAndGetRoleBy(eq(input.getType()), eq(input.getAuthorities()))).thenReturn(roles);
+        when(roleService.verifyAndGetRoleBy(input)).thenReturn(roles);
 
         user.setAccessCard(accessCard);
 

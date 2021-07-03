@@ -2,7 +2,7 @@ package br.com.tsi.utfpr.xenon.domain.user.entity;
 
 import br.com.tsi.utfpr.xenon.domain.security.entity.AccessCard;
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -38,10 +38,10 @@ public class User implements Serializable {
     private AccessCard accessCard;
 
     @Column(name = "created_at")
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
-    private LocalDate updatedAt;
+    private LocalDateTime updatedAt;
 
     @Column(name = "type")
     @Enumerated(EnumType.STRING)
@@ -68,12 +68,12 @@ public class User implements Serializable {
 
     @PrePersist
     private void newAccessCard() {
-        createdAt = LocalDate.now();
-        updatedAt = LocalDate.now();
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
     }
 
     @PreUpdate
     private void updateAccessCard() {
-        updatedAt = LocalDate.now();
+        updatedAt = LocalDateTime.now();
     }
 }

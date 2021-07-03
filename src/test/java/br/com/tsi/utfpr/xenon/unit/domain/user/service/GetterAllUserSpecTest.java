@@ -10,7 +10,7 @@ import br.com.tsi.utfpr.xenon.domain.user.entity.TypeUser;
 import br.com.tsi.utfpr.xenon.domain.user.repository.UserRepository;
 import br.com.tsi.utfpr.xenon.domain.user.service.GetterAllUserSpec;
 import br.com.tsi.utfpr.xenon.domain.user.service.ParametersGetAllSpec;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.DisplayName;
@@ -58,12 +58,12 @@ class GetterAllUserSpecTest {
 
         assertEquals(1, users.size());
         assertEquals("beltrano_disable_account@user.com", user.getAccessCard().getUsername());
-        assertEquals(LocalDate.of(YEAR, MONTH, 27), user.getAccessCard().getCreatedAt());
+        assertEquals(LocalDateTime.of(YEAR, MONTH, 27, 0, 0), user.getAccessCard().getCreatedAt());
         assertNotNull(user.getAccessCard().getId());
-        assertEquals(LocalDate.of(YEAR, MONTH, DAY_OF_MONTH_23),
+        assertEquals(LocalDateTime.of(YEAR, MONTH, DAY_OF_MONTH_23, 0, 0),
             user.getAccessCard().getUpdatedAt());
-        assertEquals(LocalDate.of(YEAR, MONTH, 8), user.getCreatedAt());
-        assertEquals(LocalDate.of(YEAR, MONTH, DAY_OF_MONTH_23), user.getUpdatedAt());
+        assertEquals(LocalDateTime.of(YEAR, MONTH, 8, 0, 0), user.getCreatedAt());
+        assertEquals(LocalDateTime.of(YEAR, MONTH, DAY_OF_MONTH_23, 0, 0), user.getUpdatedAt());
         assertEquals("Beltrano conta desativada", user.getName());
         assertEquals(TypeUser.STUDENTS, user.getTypeUser());
         assertFalse(user.getAccessCard().isEnabled());
@@ -90,11 +90,11 @@ class GetterAllUserSpecTest {
 
         assertEquals(1, users.size());
         assertEquals("beltrano_expired_account@user.com", user.getAccessCard().getUsername());
-        assertEquals(LocalDate.of(YEAR, MONTH, DAY_OF_MONTH_28),
+        assertEquals(LocalDateTime.of(YEAR, MONTH, DAY_OF_MONTH_28, 0, 0),
             user.getAccessCard().getCreatedAt());
         assertNotNull(user.getAccessCard().getId());
-        assertEquals(LocalDate.of(YEAR, MONTH, DAY_OF_MONTH_05), user.getCreatedAt());
-        assertEquals(LocalDate.of(YEAR, MONTH, DAY_OF_MONTH_23), user.getUpdatedAt());
+        assertEquals(LocalDateTime.of(YEAR, MONTH, DAY_OF_MONTH_05, 0, 0), user.getCreatedAt());
+        assertEquals(LocalDateTime.of(YEAR, MONTH, DAY_OF_MONTH_23, 0, 0), user.getUpdatedAt());
         assertEquals("Beltrano conta exipirada", user.getName());
         assertEquals(TypeUser.STUDENTS, user.getTypeUser());
         assertFalse(user.getAccessCard().isAccountNonExpired());
@@ -116,11 +116,11 @@ class GetterAllUserSpecTest {
 
         assertEquals(1, users.size());
         assertEquals("beltrano_admin@admin.com", user.getAccessCard().getUsername());
-        assertEquals(LocalDate.of(YEAR, MONTH, DAY_OF_MONTH_02),
+        assertEquals(LocalDateTime.of(YEAR, MONTH, DAY_OF_MONTH_02, 0, 0),
             user.getAccessCard().getCreatedAt());
         assertNotNull(user.getAccessCard().getId());
-        assertEquals(LocalDate.of(YEAR, MONTH, DAY_OF_MONTH_02), user.getCreatedAt());
-        assertEquals(LocalDate.of(YEAR, MONTH, DAY_OF_MONTH_23), user.getUpdatedAt());
+        assertEquals(LocalDateTime.of(YEAR, MONTH, DAY_OF_MONTH_02, 0, 0), user.getCreatedAt());
+        assertEquals(LocalDateTime.of(YEAR, MONTH, DAY_OF_MONTH_23, 0, 0), user.getUpdatedAt());
         assertEquals("Beltrano Admin", user.getName());
         assertEquals(TypeUser.SERVICE, user.getTypeUser());
         assertLinesMatch(

@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import br.com.tsi.utfpr.xenon.domain.user.entity.Car;
 import br.com.tsi.utfpr.xenon.domain.user.entity.User;
 import br.com.tsi.utfpr.xenon.domain.user.factory.CarFactory;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,7 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 @DisplayName("Test - Unidade - CarFactory")
 class CarFactoryTest {
 
-    private static final LocalDate DATE = LocalDate.now();
+    private static final LocalDateTime DATE = LocalDateTime.now();
     private static final long ID = 1L;
     private static final LocalDateTime LOCAL_DATE_TIME = LocalDateTime.now();
     private static final String MODEL_CAR = "Model Car";

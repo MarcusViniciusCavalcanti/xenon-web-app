@@ -7,10 +7,11 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.eq;
 
 import br.com.tsi.utfpr.xenon.domain.user.aggregator.EmailSenderAdapter;
-import br.com.tsi.utfpr.xenon.domain.user.repository.UserRepository;
+import br.com.tsi.utfpr.xenon.domain.user.entity.TypeUser;
 import br.com.tsi.utfpr.xenon.e2e.AbstractEndToEndTest;
 import br.com.tsi.utfpr.xenon.e2e.utils.GetElementDom;
 import br.com.tsi.utfpr.xenon.e2e.utils.InsertFormDom;
+import br.com.tsi.utfpr.xenon.structure.dtos.TypeUserDto;
 import br.com.tsi.utfpr.xenon.structure.dtos.inputs.InputUserDto;
 import com.gargoylesoftware.htmlunit.html.DomNode;
 import java.io.IOException;
@@ -21,6 +22,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.EnumSource.Mode;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -35,6 +38,7 @@ import org.springframework.web.context.WebApplicationContext;
     "classpath:/sql/user_default_delete.sql"})
 class FeatureRegistryUserTest extends AbstractEndToEndTest {
 
+    private static final String MESSAGE_ERROR = "message_error";
     private static final String MODEL_CAR = "model car";
     private static final List<Long> AUTHORIZED_ADMIN = List.of(1L, 2L, 3L);
     private static final List<Long> AUTHORIZED_DRIVE = List.of(1L);
@@ -49,9 +53,6 @@ class FeatureRegistryUserTest extends AbstractEndToEndTest {
 
     @Autowired
     private WebApplicationContext webApplicationContext;
-
-    @Autowired
-    private UserRepository userRepository;
 
     @MockBean
     private EmailSenderAdapter emailSenderAdapter;
@@ -141,6 +142,39 @@ class FeatureRegistryUserTest extends AbstractEndToEndTest {
             });
     }
 
+    @ParameterizedTest
+    @EnumSource(value = TypeUserDto.class, mode = Mode.EXCLUDE, names = {"SERVICE"})
+    @DisplayName("Deve redirecionar para página de erro quando tipo de usuário não pode ser atribuido para admininstrador")
+    @WithUserDetails(value = "beltrano_admin@admin.com", userDetailsServiceBeanName = "userDetailsServiceImpl")
+    void shouldRedirectToPageErrorWhenValidationRole(TypeUserDto type) throws IOException {
+        webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
+        var input =
+            buildInput("User Name", "speaker@user.com", TypeUser.SERVICE.getAllowedProfiles());
+        input.setType(type);
+
+        InsertFormDom.init(webClient, URL_CREATE_NEW_USER)
+            .insertForm(FORM_NEW_USER)
+            .setInputValue("name", input.getName())
+            .setInputValue("username", input.getUsername())
+            .setInputValue("carModel", input.getCarModel())
+            .setInputValue("carPlate", input.getCarPlate())
+            .setSelectMultiple("authorities", input.getAuthorities())
+            .setSelect("type", type.ordinal())
+            .clickButton()
+            .navigate("body", ATTRIBUTE_CLASS, "page-body page-error-env")
+            .getDiv(ATTRIBUTE_CLASS, "page-error centered")
+            .getP(ATTRIBUTE_ID, MESSAGE_ERROR)
+            .executeAssertion(p ->
+                assertEquals(
+                    String.format(
+                        "O tipo de Usuário: [%s] não poderá ser atribuido o perfil Administrador",
+                        type.getTranslaterName()),
+                    p.getVisibleText()
+                )
+            );
+        webClient.getOptions().setThrowExceptionOnFailingStatusCode(true);
+    }
+
     @Test
     @DisplayName("Deve cadastrar usuário com sucesso")
     @WithUserDetails(value = "beltrano_admin@admin.com", userDetailsServiceBeanName = "userDetailsServiceImpl")
@@ -160,7 +194,6 @@ class FeatureRegistryUserTest extends AbstractEndToEndTest {
             .clickButton()
             .navigate(TABLE, ATTRIBUTE_CLASS,
                 "table table-small-font table-bordered table-striped")
-            .awaitPage(300)
             .getTbody(ATTRIBUTE_ID, "user_table_list")
             .executeAssertion(tbody -> {
                 var tbRow =

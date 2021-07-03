@@ -6,6 +6,7 @@ import br.com.tsi.utfpr.xenon.structure.dtos.inputs.ParamsSearchRequestDto;
 import java.io.File;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public interface UserApplicationService {
@@ -17,4 +18,8 @@ public interface UserApplicationService {
     void saveNewUser(InputUserDto userDto);
 
     InputUserDto findUserUpdate(Long id);
+
+    void updateUser(Long id, InputUserDto userDto);
+
+    Boolean saveAvatar(MultipartFile avatar);
 }

@@ -48,6 +48,7 @@ public abstract class AbstractEndToEndTest {
 
         webClient.getOptions().setWebSocketEnabled(true);
         webClient.getOptions().setRedirectEnabled(true);
+        webClient.getOptions().setJavaScriptEnabled(true);
         webClient.getOptions().setCssEnabled(true);
         webClient.waitForBackgroundJavaScript(TIMEOUT_MILLIS);
         webClient.setAjaxController(new NicelyResynchronizingAjaxController());

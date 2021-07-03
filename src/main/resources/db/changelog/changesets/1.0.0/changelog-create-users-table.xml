@@ -5,13 +5,13 @@
     <changeSet author="vinicius" id="1586309332904-1">
         <createTable tableName="users">
             <column name="authorised_access" type="BOOLEAN"/>
-            <column name="created_at" type="date"/>
+            <column name="created_at" type="datetime"/>
             <column name="name" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
             <column name="number_access" type="INTEGER"/>
             <column name="type" type="VARCHAR(255)"/>
-            <column name="updated_at" type="date"/>
+            <column name="updated_at" type="datetime"/>
             <column name="access_card_id" type="BIGINT">
                 <constraints primaryKey="true" primaryKeyName="users_pkey"/>
             </column>

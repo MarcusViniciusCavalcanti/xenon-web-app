@@ -123,11 +123,4 @@ public class StudentRegistryController {
         modelAndView.setViewName("/user/registry/complete.html");
         return modelAndView;
     }
-
-    @GetMapping("/error/usuario-cadastrado")
-    public ModelAndView userExist(ModelAndView modelAndView) {
-        log.info("Execute request to /error/usuario-cadastrado");
-        modelAndView.setViewName(ERROR_REGISTRY);
-        return modelAndView;
-    }
 }

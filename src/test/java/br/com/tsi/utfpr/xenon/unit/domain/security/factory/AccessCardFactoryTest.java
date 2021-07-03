@@ -11,7 +11,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -25,7 +24,7 @@ import br.com.tsi.utfpr.xenon.domain.user.entity.User;
 import br.com.tsi.utfpr.xenon.structure.FactoryException;
 import br.com.tsi.utfpr.xenon.structure.dtos.TypeUserDto;
 import br.com.tsi.utfpr.xenon.structure.dtos.inputs.InputUserDto;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -41,7 +40,7 @@ class AccessCardFactoryTest {
 
     private static final String MOCK_USER_TEST = "Mock User Test";
     private static final long ID = 1L;
-    private static final LocalDate DATE = LocalDate.now();
+    private static final LocalDateTime DATE = LocalDateTime.now();
     private static final TypeUser TYPE_USER = TypeUser.SERVICE;
     private static final int NUMBER_ACCESS = 100;
     private static final String MOCK_USERNAME_COM_BR = "mock@username.com.br";
@@ -103,8 +102,8 @@ class AccessCardFactoryTest {
     void shouldThrowsExceptionWhenAuthorizesIsInvalid() {
         var input = buildInputUserDto();
 
-        when(roleService.verifyAndGetRoleBy(any(), any()))
-            .thenThrow(new AuthoritiesNotAllowedException(input.getType().getTranslaterName()));
+        when(roleService.verifyAndGetRoleBy(any()))
+            .thenThrow(new AuthoritiesNotAllowedException(input));
 
         assertThrows(
             AuthoritiesNotAllowedException.class,
@@ -161,7 +160,7 @@ class AccessCardFactoryTest {
         var input = buildInputUserDto();
         var user = createUserBuild();
 
-        when(roleService.verifyAndGetRoleBy(eq(input.getType()), eq(input.getAuthorities())))
+        when(roleService.verifyAndGetRoleBy(input))
             .thenReturn(createListRoles());
         when(bCryptPasswordEncoder.encode(any())).thenReturn("encoder");
 
@@ -178,7 +177,7 @@ class AccessCardFactoryTest {
 
         var roles = accessCard.getRoles();
 
-        verify(roleService).verifyAndGetRoleBy(eq(input.getType()), eq(input.getAuthorities()));
+        verify(roleService).verifyAndGetRoleBy(input);
         assertThat(roles, hasSize(3));
         assertThat(roles, containsInAnyOrder(
             hasProperty(ID_PROPERTY_NAME, is(ID_ROLE_ADMIN)),

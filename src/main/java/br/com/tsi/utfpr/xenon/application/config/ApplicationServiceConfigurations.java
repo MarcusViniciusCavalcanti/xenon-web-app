@@ -4,6 +4,7 @@ import br.com.tsi.utfpr.xenon.application.service.RegistryStudentsApplicationSer
 import br.com.tsi.utfpr.xenon.application.service.UserApplicationService;
 import br.com.tsi.utfpr.xenon.application.service.impl.RegistryStudentsApplicationServiceImpl;
 import br.com.tsi.utfpr.xenon.application.service.impl.UserApplicationServiceImpl;
+import br.com.tsi.utfpr.xenon.domain.user.usecase.GetterCurrentUser;
 import br.com.tsi.utfpr.xenon.domain.user.usecase.GetterFiles;
 import br.com.tsi.utfpr.xenon.domain.user.usecase.GetterPageUser;
 import br.com.tsi.utfpr.xenon.domain.user.usecase.RegistryNewStudents;
@@ -24,13 +25,15 @@ public class ApplicationServiceConfigurations {
         GetterPageUser getterPageUser,
         GetterFiles getterFiles,
         RegistryUser registryUser,
-        UpdateUser updateUser) {
+        UpdateUser updateUser,
+        GetterCurrentUser getterCurrentUser) {
 
         return new UserApplicationServiceImpl(
             getterPageUser,
             getterFiles,
             registryUser,
-            updateUser
+            updateUser,
+            getterCurrentUser
         );
     }
 
