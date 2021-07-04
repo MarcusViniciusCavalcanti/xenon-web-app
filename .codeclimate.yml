@@ -2,6 +2,9 @@ checks:
   method-complexity:
     config:
       threshold: 15
+  argument-count:
+    config:
+      threshold: 5
 
 exclude_patterns:
   - ".gradle/"
