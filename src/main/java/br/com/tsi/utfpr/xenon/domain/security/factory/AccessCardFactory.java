@@ -5,7 +5,6 @@ import br.com.tsi.utfpr.xenon.domain.security.service.RoleService;
 import br.com.tsi.utfpr.xenon.domain.user.entity.User;
 import br.com.tsi.utfpr.xenon.structure.FactoryException;
 import br.com.tsi.utfpr.xenon.structure.dtos.AccessCardDto;
-import br.com.tsi.utfpr.xenon.structure.dtos.RoleDTO;
 import br.com.tsi.utfpr.xenon.structure.dtos.TypeUserDto;
 import br.com.tsi.utfpr.xenon.structure.dtos.inputs.InputUserDto;
 import java.util.List;
@@ -36,11 +35,7 @@ public class AccessCardFactory {
         }
 
         var rolesDto = accessCard.getRoles().stream()
-            .map(role -> RoleDTO.builder()
-                .id(role.getId())
-                .description(role.getDescription())
-                .name(role.getName())
-                .build())
+            .map(RoleService.buildRoleDto())
             .collect(Collectors.toList());
 
         return AccessCardDto.builder()

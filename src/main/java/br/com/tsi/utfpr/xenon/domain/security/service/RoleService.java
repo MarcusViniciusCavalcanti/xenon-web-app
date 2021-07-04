@@ -8,6 +8,7 @@ import br.com.tsi.utfpr.xenon.structure.dtos.RoleDTO;
 import br.com.tsi.utfpr.xenon.structure.dtos.TypeUserDto;
 import br.com.tsi.utfpr.xenon.structure.dtos.inputs.InputUserDto;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,11 +54,15 @@ public class RoleService {
 
     public List<RoleDTO> getAll() {
         return roleRepository.findAll().stream()
-            .map(role -> RoleDTO.builder()
-                .id(role.getId())
-                .name(role.getName())
-                .description(role.getDescription())
-                .build())
+            .map(buildRoleDto())
             .collect(Collectors.toList());
+    }
+
+    public static Function<Role, RoleDTO> buildRoleDto() {
+        return role -> RoleDTO.builder()
+            .id(role.getId())
+            .name(role.getName())
+            .description(role.getDescription())
+            .build();
     }
 }
