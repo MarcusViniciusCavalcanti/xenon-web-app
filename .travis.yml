@@ -16,8 +16,10 @@ before_script:
   - ./cc-test-reporter before-build
 script:
   - mvn test
+
 after_script:
   - ./cc-test-reporter format-coverage -d -t jacoco ./target/jacoco-ut/jacoco.xml
   - ./cc-test-reporter upload-coverage -d
+
 after_success:
   - bash <(curl -s https://codecov.io/bash)
