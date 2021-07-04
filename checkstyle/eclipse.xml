@@ -8,6 +8,7 @@
             value="insert"/>
         <setting id="org.eclipse.jdt.core.formatter.insert_space_before_comma_in_type_parameters"
             value="do not insert"/>
+
         <setting
             id="org.eclipse.jdt.core.formatter.insert_space_before_opening_brace_in_type_declaration"
             value="insert"/>
