@@ -17,29 +17,28 @@ public class LoggingAccessDeniedHandler implements AccessDeniedHandler {
     private static final String ERROR_WHEN_SEND_REDIRECT = "error when send redirect '{}'";
 
     @Override
-    public void handle(HttpServletRequest request, HttpServletResponse response,
-        AccessDeniedException e) {
+    public void handle(HttpServletRequest req, HttpServletResponse res, AccessDeniedException ex) {
         Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
             .ifPresentOrElse(
                 auth -> {
                     log.info(
                         "'{}' was trying to access protected resource: '{}' | exception message: '{}'",
                         auth.getName(),
-                        request.getRequestURI(),
-                        e.getMessage()
+                        req.getRequestURI(),
+                        ex.getMessage()
                     );
                     try {
-                        response.sendRedirect(request.getContextPath() + "/access-denied");
-                    } catch (IOException ex) {
-                        log.error(ERROR_WHEN_SEND_REDIRECT, ex.getMessage());
+                        res.sendRedirect(req.getContextPath() + "/access-denied");
+                    } catch (IOException exception) {
+                        log.error(ERROR_WHEN_SEND_REDIRECT, exception.getMessage());
                     }
                 },
                 () -> {
                     try {
                         SecurityContextHolder.clearContext();
-                        response.sendRedirect(request.getContextPath() + "/access-denied-public");
-                    } catch (IOException ex) {
-                        log.error(ERROR_WHEN_SEND_REDIRECT, ex.getMessage());
+                        res.sendRedirect(req.getContextPath() + "/access-denied-public");
+                    } catch (IOException exception) {
+                        log.error(ERROR_WHEN_SEND_REDIRECT, exception.getMessage());
                     }
                 }
             );

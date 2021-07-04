@@ -1,7 +1,7 @@
 package br.com.tsi.utfpr.xenon.domain.security.entity;
 
 import br.com.tsi.utfpr.xenon.domain.user.entity.User;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,6 +21,7 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import lombok.Data;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -52,6 +53,7 @@ public class AccessCard implements UserDetails {
     @Column(name = "enabled")
     private boolean enabled;
 
+    @ToString.Exclude
     @OneToOne(mappedBy = "accessCard", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private User user;
 
@@ -63,10 +65,10 @@ public class AccessCard implements UserDetails {
     private List<Role> roles;
 
     @Column(name = "created_at")
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
-    private LocalDate updatedAt;
+    private LocalDateTime updatedAt;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -83,12 +85,12 @@ public class AccessCard implements UserDetails {
         credentialsNonExpired = true;
         enabled = true;
 
-        createdAt = LocalDate.now();
-        updatedAt = LocalDate.now();
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
     }
 
     @PreUpdate
     private void updateAccessCard() {
-        updatedAt = LocalDate.now();
+        updatedAt = LocalDateTime.now();
     }
 }

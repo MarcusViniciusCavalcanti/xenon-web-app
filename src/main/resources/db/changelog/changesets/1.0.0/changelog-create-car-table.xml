@@ -7,15 +7,16 @@
             <column name="id" type="BIGINT">
                 <constraints primaryKey="true" primaryKeyName="cars_pkey"/>
             </column>
-            <column name="created_at" type="date"/>
+            <column name="created_at" type="datetime"/>
             <column name="last_access" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column defaultValue="0" name="document" type="boolean"/>
             <column name="model" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
             <column name="plate" type="VARCHAR(10)">
                 <constraints nullable="false"/>
             </column>
-            <column name="updated_at" type="date"/>
+            <column name="updated_at" type="datetime"/>
         </createTable>
     </changeSet>
     <changeSet author="vinicius" id="1586308927801-2">

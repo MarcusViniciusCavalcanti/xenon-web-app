@@ -9,13 +9,13 @@
             </column>
             <column name="account_non_expired" type="BOOLEAN"/>
             <column name="account_non_locked" type="BOOLEAN"/>
-            <column name="created_at" type="date"/>
+            <column name="created_at" type="datetime"/>
             <column name="credentials_non_expired" type="BOOLEAN"/>
             <column name="enabled" type="BOOLEAN"/>
             <column name="password" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="updated_at" type="date"/>
+            <column name="updated_at" type="datetime"/>
             <column name="username" type="VARCHAR(200)">
                 <constraints nullable="false"/>
             </column>

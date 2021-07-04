@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="pt-br"
+      layout:decorate="~{shared/layout}"
+      th:with="activeMenu='user-show'"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Todos Usuários</title>
+</head>
+<body>
+<div layout:fragment="content" th:remove="tag">
+  <div class="page-title">
+
+    <div class="title-env">
+      <h1 class="title">Usuários</h1>
+      <p class="description">Exibição uma lista de todos usuários.</p>
+    </div>
+    <div class="breadcrumb-env">
+      <th:block layout:fragment="bradcrumb">
+        <ol class="breadcrumb bc-2">
+          <li>
+            <a th:href="@{/home}"><i class="fa-home"></i>Home</a>
+          </li>
+          <li>
+            <a th:href="@{/usuarios/todos}">Usuários</a>
+          </li>
+          <li class="active">
+            <strong>Todos</strong>
+          </li>
+        </ol>
+      </th:block>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-sm-12">
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Filtro para consulta</h3>
+          <div class="panel-options">
+            <a data-toggle="panel" href="#">
+              <span class="collapse-icon">&ndash;</span>
+              <span class="expand-icon">+</span>
+            </a>
+          </div>
+        </div>
+        <div class="panel-body" id="search_panel">
+          <form name="filter" role="form">
+            <div class="row">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="control-label" for="search_name">Nome</label>
+                  <input class="form-control"
+                         id="search_name"
+                         name="search_name"
+                         placeholder="Nome do usuário"/>
+                </div>
+              </div>
+
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="control-label" for="search_type_user">Perfil do Usuário</label>
+                  <select class="form-control required"
+                          id="search_profile"
+                          name="search_profile">
+                    <option value="">Selecione o perfil</option>
+                    <!--/*@thymesVar id="roles" type="br.com.tsi.utfpr.xenon.structure.dtos.RoleDTO"*/-->
+                    <option
+                        th:each="role : ${roles}"
+                        th:text="${role.description}"
+                        th:value="${role.name}">
+                    </option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="control-label" for="search_type_user">Tipo do Usuário</label>
+                  <select class="form-control required" id="search_type_user"
+                          name="search_type_user">
+                    <!--/*@thymesVar id="typeUser" type="br.edu.utfpr.tsi.utfparking.web.constants.TypesUser"*/-->
+                    <option value="">Selecione o tipo</option>
+                    <option
+                        th:each="typeUser : ${T(br.com.tsi.utfpr.xenon.structure.dtos.TypeUserDto).values()}"
+                        th:text="${typeUser.translaterName}"
+                        th:value="${typeUser}">
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <label class="control-label" for="user_enabled">Conta Ativa</label>
+                <div class="form-block">
+                  <input class="iswitch iswitch-secondary" id="user_enabled" type="checkbox">
+                  <span
+                      class="text-gray">Marque para <strong>buscar penas contas ativas</strong></span>
+                </div>
+              </div>
+            </div>
+
+            <hr/>
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="el-align-right">
+                  <div class="form-group">
+                    <button class="btn btn-info" id="search" type="button">
+                      <span>Pesquisar</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Lista de todos usuários</h3>
+
+          <div class="panel-options">
+            <a href="#" data-toggle="reload">
+              <i class="fa-rotate-right"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="panel-body" id="users_list">
+          <div class="table-responsive"
+               data-pattern="priority-columns"
+               data-focus-btn-icon="fa-asterisk"
+               data-sticky-table-header="true"
+               data-add-display-all-btn="true"
+               data-add-focus-btn="true">
+            <table cellspacing="0" class="table table-small-font table-bordered table-striped">
+              <thead>
+              <tr>
+                <th>id</th>
+                <th data-priority="1">Nome</th>
+                <th data-priority="1">Login</th>
+                <th data-priority="1">Placa do carro</th>
+                <th data-priority="1">Modelo do carro</th>
+                <th data-priority="1">Tipo de usuário</th>
+                <th data-priority="1">Conta bloqueada?</th>
+                <th data-priority="1">Conta ativa?</th>
+                <th data-priority="1">Acesso autorizado?</th>
+                <th data-priority="1">Ação</th>
+              </tr>
+              </thead>
+              <tbody id="user_table_list">
+              </tbody>
+            </table>
+          </div>
+
+          <div class="col-md-2">
+            <div class="form-group">
+              <p>Quantidade de elementos exibidos</p>
+              <select class="form-control required" data-validate="required"
+                      id="size_element" name="size_element">
+                <!--/*@thymesVar id="typeUser" type="br.edu.utfpr.tsi.utfparking.web.constants.TypesUser"*/-->
+                <option value="5">5</option>
+                <option value="15">15</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+              </select>
+            </div>
+          </div>
+
+          <ul class="pagination"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<th:block layout:fragment="scripts">
+  <script th:src="@{/js/user/user.js}"></script>
+</th:block>
+</body>
+</html>

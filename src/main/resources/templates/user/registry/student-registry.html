@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-br"
+      layout:decorate="~{/user/registry/registry}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>UTFPR - Xenon</title>
+</head>
+<body>
+<div layout:fragment="content-registry" th:remove="tag">
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-8 col-md-offset-2">
+        <div class="panel panel-default panel-headerless">
+
+          <div class="panel-body layout-variants">
+            <div th:if="${errors}" class="errors-container">
+              <div class="alert alert-danger">
+                <ul class="error-list">
+                  <li th:if="${name}" th:text="'Nome - Campo contém error verifique'"></li>
+                  <li th:if="${modelCar}" th:text="'Modelo do carro - Campo contém error verifique'"></li>
+                  <li th:if="${plateCar}" th:text="'Placa do carro -  Campo contém error verifique'"></li>
+                  <li th:if="${email}" th:text="'E-mail - E-mail deve ser o institucional'"></li>
+                  <li th:if="${password}" th:text=" 'Senha -  Campo contém error verifique'"></li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="panel-form-registry">
+              <div class="panel panel-flat">
+                <div class="panel-heading">
+                  <h3 class="panel-title text-warning">Estamos quase acabando...</h3>
+                </div>
+
+                <div class="panel-body">
+                  <h3>Agora inclua as informações...</h3>
+
+                  <th:block th:include="user/form/registry :: registry" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

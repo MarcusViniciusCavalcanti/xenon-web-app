@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org"
+>
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<meta name="description" content="Gerenciador de acesso ao estacionado da utfpr"/>
+		<meta name="author" content="Vincius Cavalcanti"/>
+
+		<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Arimo:400,700,400italic">
+
+		<link rel="stylesheet" th:href="@{/vendor/css/fonts/linecons/css/linecons.css}" type="text/css">
+		<link rel="stylesheet" th:href="@{/vendor/css/fonts/fontawesome/css/font-awesome.min.css}"
+					type="text/css">
+		<link rel="stylesheet" th:href="@{/vendor/css/bootstrap.css}" type="text/css">
+		<link rel="stylesheet" th:href="@{/vendor/css/xenon-core.css}" type="text/css">
+		<link rel="stylesheet" th:href="@{/vendor/css/xenon-forms.css}" type="text/css">
+		<link rel="stylesheet" th:href="@{/vendor/css/xenon-components.css}" type="text/css">
+		<link rel="stylesheet" th:href="@{/vendor/css/xenon-skins.css}" type="text/css">
+
+		<script th:src="@{/vendor/js/jquery-1.11.1.min.js}"></script>
+
+		<title>UtfParking - 4xx</title>
+	</head>
+	<body class="page-body page-error-env">
+
+		<div class="page-error centered">
+
+			<div class="error-symbol">
+				<i class="fa-warning"></i>
+			</div>
+
+			<h2>
+				Error
+				<small>Cadastro não pode ser efetuado!</small>
+			</h2>
+
+			<p id="message_error" th:text="${reason}"></p>
+
+			<button class="btn btn-info btn-icon" onclick="history.back();">
+				<i class="fa-backward"></i>
+				<span>Voltar</span>
+			</button>
+		</div>
+
+		<script th:src="@{/vendor/js/bootstrap.min.js}"></script>
+		<script th:src="@{/vendor/js/resizeable.js}"></script>
+		<script th:src="@{/vendor/js/joinable.js}"></script>
+		<script th:src="@{/vendor/js/xenon-api.js}"></script>
+		<script th:src="@{/vendor/js/xenon-custom.js}"></script>
+
+	</body>
+</html>

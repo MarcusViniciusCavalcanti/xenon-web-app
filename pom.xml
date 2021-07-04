@@ -99,6 +99,28 @@
             <version>3.0.4.RELEASE</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
+        <dependency>
+            <artifactId>commons-lang3</artifactId>
+            <groupId>org.apache.commons</groupId>
+            <version>3.12.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis-reactive</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+
         <!--    testes    -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -108,6 +130,12 @@
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
+                </exclusion>
+            </exclusions>
             <scope>test</scope>
         </dependency>
 
@@ -115,6 +143,33 @@
             <groupId>org.springframework.test.htmlunit</groupId>
             <artifactId>spring-test-htmlunit</artifactId>
             <version>1.0.0.RC1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>it.ozimov</groupId>
+            <artifactId>embedded-redis</artifactId>
+            <version>0.7.2</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.icegreen</groupId>
+            <artifactId>greenmail-junit5</artifactId>
+            <version>1.6.1</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- junit 5 -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -169,6 +224,12 @@
                             <dataFile>target/jacoco.exec</dataFile>
                             <!-- Sets the output directory for the code coverage report. -->
                             <outputDirectory>target/jacoco-ut</outputDirectory>
+                            <excludes>
+                                <exclude>br/com/tsi/utfpr/xenon/domain/**/entity/*_.class</exclude>
+                                <exclude>br/com/tsi/utfpr/xenon/domain/**/config/**/*.class</exclude>
+                                <exclude>br/com/tsi/utfpr/xenon/config/**/*.class</exclude>
+                                <exclude>br/com/tsi/utfpr/xenon/XenonApplication.class</exclude>
+                            </excludes>
                         </configuration>
                     </execution>
                 </executions>

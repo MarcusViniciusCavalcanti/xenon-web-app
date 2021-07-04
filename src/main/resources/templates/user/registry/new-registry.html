@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-br"
+      layout:decorate="~{/user/registry/registry}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>UTFPR - Xenon</title>
+</head>
+<body>
+<div layout:fragment="content-registry" th:remove="tag">
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-8 col-md-offset-2">
+        <div class="panel panel-default panel-headerless">
+
+          <div class="panel-body layout-variants">
+            <div class="penal-form-registry">
+              <div class="panel panel-flat">
+                <div class="panel-heading">
+                  <h3 class="panel-title text-warning">Vamos começar?</h3>
+                </div>
+
+                <div class="panel-body">
+                  <h3>Certo Primeiro entre com seu e-mail institucional</h3>
+
+                  <!--/*@thymesVar id="inputEmail" type="br.com.tsi.utfpr.xenon.structure.dtos.inputs.InputEmailDto"*/-->
+                  <form name="email-registry"
+                        id="email_registry"
+                        method="post"
+                        th:action="@{/novo-registro}"
+                        novalidate
+                        th:object="${inputEmail}"
+                        role="form">
+                    <div class="form-group">
+
+                      <label class="control-label" for="input_email"></label>
+                      <input autocomplete="off"
+                             th:field="*{email}"
+                             class="form-control"
+                             id="input_email"
+                             type="text"/>
+                    </div>
+
+                    <div class="form-group">
+                      <button class="btn btn-success btn-icon" type="submit">
+                        <i class="fa-check"></i>
+                        <span>Quando tiver pronto clique</span>
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

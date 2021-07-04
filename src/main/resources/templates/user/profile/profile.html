@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="pt-br"
+      layout:decorate="~{shared/layout}"
+      th:with="activeMenu='user-show'"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Perfil</title>
+</head>
+<body>
+<div layout:fragment="content" th:remove="tag">
+  <div class="page-title">
+    <div class="title-env">
+      <h1 class="title">Perfil</h1>
+      <p class="description">Exibição os dados do usuário cadastrado.</p>
+    </div>
+  </div>
+
+  <!--/*@thymesVar id="user" type="br.com.tsi.utfpr.xenon.structure.dtos.UserDto"*/-->
+  <section class="profile-env">
+    <div class="row">
+      <div class="col-sm-3">
+        <div class="user-info-sidebar">
+          <div class="user-img" id="container-img">
+            <img alt="avatar do usuário"
+                 id="avatar_user"
+                 class="img-cirlce img-responsive img-thumbnail"
+                 th:src="@{/user/avatar/{id}(id=${#authentication.principal.user.id})}"/>
+            <div class="middle">
+              <form enctype="multipart/form-data"
+                    id="avatar_upload"
+                    name="avatar_upload"
+                    th:action="@{/user/avatar/upload/}"
+                    th:method="post">
+
+                <div class="edit-image">
+                  <label class="custom-file-upload">
+                    <input accept="image/png, image/jpeg" id="avatar" name="file" type="file"/>
+                    <i class="fa fa-cloud-upload"></i> Upload Avatar
+                  </label>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <div class="user-name" th:text="${user.name}">
+            <span
+                th:class="${user.authorisedAcces} ? 'user-status is-online' : 'user-status is-offiline'"></span>
+          </div>
+
+          <span class="user-title" th:text="${user.typeUser.getTranslaterName()}">
+            </span>
+          <hr/>
+
+          <ul class="list-unstyled user-info-list">
+            <li th:each="role : ${user.getAccessCard().getRoles()}"
+                th:text="${role.description}"></li>
+          </ul>
+
+          <hr/>
+
+          <div class="btn btn-success btn-block text-left"
+               th:text="${user.authorisedAcces ? 'Acesso Liberado' : 'Sem acesso'}"></div>
+        </div>
+      </div>
+
+      <div class="col-sm-9">
+        <section class="user-timeline-stories">
+          <!-- Cadastro -->
+          <article class="timeline-story" id="info_registry">
+            <i class="fa-archive block-icon"></i>
+
+            <header>
+              <h1>Status do cadastro</h1>
+            </header>
+
+            <div class="story-content" id="info_registry_value">
+
+              <div class="progress progress-striped active">
+                <div class="progress-bar progress-bar-success"
+                     th:style="'width:' + ${user.statusRegistry} + '%'">
+                  <span class="sr-only" th:text="${user.statusRegistry} + '%'"></span>
+                </div>
+              </div>
+
+              <div th:if="${user.statusRegistry != 100}">
+                <ul class="list-group list-group-minimal">
+                  <li class="list-group-item" th:if="${user.avatar == null}">
+                    <span class="badge badge-roundless badge-danger">Não Adicionado</span>
+                    Avatar
+                  </li>
+
+                  <li class="list-group-item" th:if="${user.car == null}">
+                    <span class="badge badge-roundless badge-danger">Não Adicionado</span>
+                    Dados do carro
+                  </li>
+
+                  <li class="list-group-item" th:if="${user.car?.document == false}">
+                    <span class="badge badge-roundless badge-danger">Não Adicionado</span>
+                    Documento do carro
+                  </li>
+                </ul>
+              </div>
+
+              <div id="info_registry_complete" th:if="${user.statusRegistry == 100}">
+                <h3 class="text-center">Cadastro Completo</h3>
+              </div>
+            </div>
+          </article>
+
+          <!-- Carro -->
+          <article class="timeline-story" id="info_car">
+            <i class="fa-car block-icon"></i>
+
+            <header>
+              <h1>Informações do carro</h1>
+            </header>
+
+            <div class="story-content" id="info_car_value">
+              <div id="car_info" th:if="${user.car != null}">
+                <table class="table table-condensed">
+                  <tbody id="tbody_info_car">
+                  <tr id="info_model">
+                    <td th:text="${user.car.model}"></td>
+                    <td class="middle-align">
+                      <div class="label label-success" th:if="${user.car.model != null}"><i
+                          class="fa fa-check"></i> Ok
+                      </div>
+                      <div class="label label-danger" th:if="${user.car.model == null}"><i
+                          class="fa fa-exclamation-triangle"></i> Não Adicionado
+                      </div>
+                    </td>
+                  </tr>
+
+                  <tr id="info_plate">
+                    <td th:text="${user.car.plate}"></td>
+                    <td class="middle-align">
+                      <div class="label label-success" th:if="${user.car.plate != null}"><i
+                          class="fa fa-check"></i> Ok
+                      </div>
+                      <div class="label label-danger" th:if="${user.car.plate == null}"><i
+                          class="fa fa-exclamation-triangle"></i> Não Adicionado
+                      </div>
+                    </td>
+                  </tr>
+
+                  <tr id="info_document">
+                    <td th:text="Documento"></td>
+                    <td class="middle-align">
+                      <div class="label label-success" th:if="${user.car.document == true}"><i
+                          class="fa fa-check"></i> Ok
+                      </div>
+                      <div class="label label-warning" th:if="${user.car.document == false}"><i
+                          class="fa fa-exclamation-triangle"></i> Procure Digrad
+                      </div>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <h3 class="text-center" th:if="${user.car == null}">Nenhum registro</h3>
+            </div>
+
+          </article>
+
+          <!-- Ultimos acessos -->
+          <article class="timeline-story" id="info_access">
+            <i class="fa-history block-icon"></i>
+
+            <header>
+              <h1>Acessos</h1>
+            </header>
+
+            <div class="story-content" id="info_access_value">
+              <h3 class="text-center">Nenhum registro</h3>
+            </div>
+
+          </article>
+        </section>
+      </div>
+    </div>
+  </section>
+</div>
+
+<th:block layout:fragment="scripts">
+  <script th:src="@{/js/user/profile.js}"></script>
+</th:block>
+</body>
+</html>

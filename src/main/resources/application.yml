@@ -1,25 +1,31 @@
-#logging:
-#  level:
-#    root: warn
-#    com.memorynotfound: INFO
-#    org.springframework.web: INFO
-#    org.springframework.security: INFO
-
 server:
   port: 8080
 
 # custom configuration app
 xenon:
   configurations:
-    themeleaf:
+    thymeleaf:
       cache: false
     datasource:
       driver: ~
       url: ~
       username: ~
       password: ~
-    avatar:
-      url: ~
+    file:
+      avatarUrl: ~
+    redis:
+      host: ~
+      port: 0
+    email:
+      host: ~
+      port: 0
+      protocol: ~
+      username: ~
+      password: ~
+      auth: false
+      tls:
+        enable: false
+        required: false
 
 # Base configuration app
 spring:
@@ -34,7 +40,7 @@ spring:
       max-request-size: 50MB
       file-size-threshold: 2KB
   thymeleaf:
-    cache: ${xenon.configurations.themeleaf.cache}
+    cache: ${xenon.configurations.thymeleaf.cache}
     check-template: true
     check-template-location: true
     enabled: true
@@ -57,3 +63,18 @@ spring:
     initialization-mode: always
     jpa:
       show-sql: true
+  mail:
+    host: ${xenon.configurations.email.host}
+    username: ${xenon.configurations.email.username}
+    password: ${xenon.configurations.email.password}
+    properties:
+      email:
+        transport:
+          protocol: ${xenon.configurations.email.protocol}
+        smtp:
+          port: ${xenon.configurations.email.port}
+          auth: ${xenon.configurations.email.auth}
+          starttls:
+            enable: ${xenon.configurations.email.tls.enable}
+            required: ${xenon.configurations.email.tls.required}
+

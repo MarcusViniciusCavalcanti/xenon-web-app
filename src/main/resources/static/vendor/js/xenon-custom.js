@@ -572,9 +572,6 @@ var public_vars = public_vars || {};
 			});
 		}
 
-
-
-
 		// Form Validation
 		if($.isFunction($.fn.validate))
 		{
@@ -621,42 +618,39 @@ var public_vars = public_vars || {};
 
 					for(var k in _validate)
 					{
-						var rule = _validate[k],
-							params,
-							message;
+            var rule = _validate[k],
+                params,
+                message;
 
-						if(typeof opts['rules'][name] == 'undefined')
-						{
-							opts['rules'][name] = {};
-							opts['messages'][name] = {};
-						}
+            if (typeof opts['rules'][name] == 'undefined') {
+              opts['rules'][name] = {};
+              opts['messages'][name] = {};
+            }
 
-						if($.inArray(rule, ['required', 'url', 'email', 'number', 'date', 'creditcard']) != -1)
-						{
-							opts['rules'][name][rule] = true;
+            if ($.inArray(rule,
+                ['required', 'url', 'email', 'number', 'date', 'creditcard',
+                  'email_institution']) != -1) {
+              opts['rules'][name][rule] = true;
 
-							message = $field.data('message-' + rule);
+              message = $field.data('message-' + rule);
 
-							if(message)
-							{
-								opts['messages'][name][rule] = message;
-							}
-						}
+              if (message) {
+                opts['messages'][name][rule] = message;
+              }
+            }
 						// Parameter Value (#1 parameter)
 						else
-						if(params = rule.match(/(\w+)\[(.*?)\]/i))
-						{
-							if($.inArray(params[1], ['min', 'max', 'minlength', 'maxlength', 'equalTo']) != -1)
-							{
-								opts['rules'][name][params[1]] = params[2];
+						if(params = rule.match(/(\w+)\[(.*?)\]/i)) {
+              if ($.inArray(params[1],
+                  ['min', 'max', 'minlength', 'maxlength', 'equalTo',
+                    'email_institution']) != -1) {
+                opts['rules'][name][params[1]] = params[2];
 
+                message = $field.data('message-' + params[1]);
 
-								message = $field.data('message-' + params[1]);
-
-								if(message)
-								{
-									opts['messages'][name][params[1]] = message;
-								}
+                if (message) {
+                  opts['messages'][name][params[1]] = message;
+                }
 							}
 						}
 					}

@@ -1,11 +1,25 @@
 xenon:
   configurations:
-    themeleaf:
+    thymeleaf:
       cache: false
     datasource:
       driver: org.postgresql.Driver
       url: jdbc:postgresql://localhost:5432/xenon
       username: xenon
       password: xenon
-    avatar:
-      url:
+    file:
+      avatarUrl: file/avatar
+    redis:
+      host: 127.0.0.1
+      port: 6379
+    email:
+      host: smtp.mailtrap.io
+      port: 2525
+      protocol: smtp
+      username: bf7ca5083ad731
+      password: 72fa20f0eeceb5
+      auth: false
+      tls:
+        enable: true
+        required: true
+

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<!--suppress ALL -->
+<html lang="pt-br"
+      layout:decorate="~{/user/registry/registry}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>UTFPR - Xenon</title>
+</head>
+<body>
+<div layout:fragment="content-registry" th:remove="tag">
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-10">
+        <div class="panel panel-default panel-headerless">
+
+          <div class="panel-body layout-variants">
+
+            <!--/*@thymesVar id="error" type="org.springframework.validation.FieldError"*/-->
+            <div th:if="${error}" class="errors-container">
+              <div class="alert alert-danger text-center">
+                <span id="message_error">Token inválido <strong>Verifique no seu e-mail o token e tente novamente ou clique em reenviar token</strong></span>
+              </div>
+            </div>
+
+            <div class="panel-form-registry">
+              <div class="panel panel-flat">
+                <div class="panel-heading">
+                  <h3 class="panel-title text-warning">OK... vamos confirmar.</h3>
+                </div>
+
+                <div class="panel-body">
+                  <h3>Adicione o token que você recebeu</h3>
+
+                  <p>Enviamos para o e-mail que você nos forneceu um token, verifiquei no seu
+                    e-mail, tente verificar na sua caixa de span também.</p>
+
+                  <form name="token-validate"
+                        id="token_validate"
+                        method="post"
+                        role="form"
+                        th:action="@{/valide-token}"
+                        novalidate
+                        th:object="${inputToken}"
+                  >
+                    <div class="form-group">
+                      <!--/*@thymesVar id="email" type="java.lang.String"*/-->
+                      <input hidden th:field="*{email}" th:value="${email}">
+
+                      <label class="control-label" for="input_token"></label>
+                      <input autocomplete="off"
+                             class="form-control"
+                             id="input_token"
+                             th:field="*{token}"
+                             type="text"/>
+                    </div>
+
+                    <div class="form-group">
+                      <button class="btn btn-success btn-icon" type="submit">
+                        <i class="fa-check"></i>
+                        <span>Validar</span>
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <span>Algo deu errado? <strong>Uma alternativa é:</strong></span>
+            <form name="renew-token"
+                  method="post"
+                  th:action="@{/incluir-registro}"
+                  novalidate
+                  th:object="${inputEmail}"
+                  role="form">
+              <div class="form-group">
+                <!--/*@thymesVar id="email" type="java.lang.String"*/-->
+                <input hidden id="registry_email" th:field="*{email}">
+              </div>
+
+              <div class="form-group">
+                <button class="btn btn-info" type="submit">
+                  <span>enviar um novo token</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

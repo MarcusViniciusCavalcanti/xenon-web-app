@@ -1,7 +1,6 @@
 package br.com.tsi.utfpr.xenon.web.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -14,10 +13,6 @@ public class SecurityController {
     @GetMapping("/login")
     public String login() {
         log.info("Execute request to /login");
-        if (isDiffAnonymousUser()) {
-            return "redirect:/home";
-        }
-
         return "security/login";
     }
 
@@ -33,8 +28,4 @@ public class SecurityController {
         return ERROR_ACCESS_DENIED;
     }
 
-    private boolean isDiffAnonymousUser() {
-        return !SecurityContextHolder.getContext().getAuthentication().getName()
-            .equals("anonymousUser");
-    }
 }
