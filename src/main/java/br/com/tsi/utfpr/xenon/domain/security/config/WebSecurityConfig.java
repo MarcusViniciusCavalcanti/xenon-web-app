@@ -91,13 +91,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private void configureSecurityGetUrl(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-            .antMatchers(HttpMethod.POST,
-                SEND_PLATE,
-                INCLUIR_REGISTRO,
-                VALIDE_TOKEN,
-                VALIDATE_PLATE,
-                CADASTRE_NOVO_ESTUDANTE,
-                REGISTRY_STUDENTS)
+            .antMatchers(HttpMethod.GET,
+                NOVO_REGISTRO,
+                CADASTRO_ESTUDANTE,
+                VALIDAR_TOKEN,
+                ACCESS_DENIED_PUBLIC,
+                ERROR_USUARIO_CADASTRADO,
+                CONCLUIDO)
             .permitAll();
     }
 
