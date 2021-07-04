@@ -126,13 +126,13 @@ public class UserController {
         modelAndView.setViewName("user/update/index");
         modelAndView.addObject("roles", roles);
         modelAndView.addObject("input", input);
+        modelAndView.addObject("userId", id);
         return modelAndView;
     }
 
     @IsAdmin
-    @PostMapping("/usuarios/atualizar/{id}")
-    public String updatedUser(@Valid InputUserDto userDto,
-        @PathVariable("id") Long id,
+    @PostMapping("/usuarios/editar/{id}")
+    public String updatedUser(@PathVariable("id") Long id, @Valid InputUserDto userDto,
         BindingResult result,
         RedirectAttributes redirectAttributes) {
 

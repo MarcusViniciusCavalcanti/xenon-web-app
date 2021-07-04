@@ -126,9 +126,9 @@ class UserFactoryTest {
         assertNull(user.getId());
         assertEquals(TYPE_USER_STUDENTS.name(), user.getTypeUser().name());
         assertNull(user.getNumberAccess());
-        assertNull(user.getStatusRegistry());
         assertNull(user.getAvatar());
         assertNull(user.getCar());
+        assertEquals(25, user.getStatusRegistry());
     }
 
     @Test
@@ -148,8 +148,8 @@ class UserFactoryTest {
         assertNull(user.getId());
         assertEquals(TYPE_USER_STUDENTS.name(), user.getTypeUser().name());
         assertNull(user.getNumberAccess());
-        assertNull(user.getStatusRegistry());
         assertNull(user.getAvatar());
+        assertEquals(50, user.getStatusRegistry());
 
         var car = user.getCar();
         assertEquals(MODEL_CAR, car.getModel());
@@ -180,7 +180,7 @@ class UserFactoryTest {
         assertNull(user.getId());
         assertEquals(TYPE_USER_STUDENTS.name(), user.getTypeUser().name());
         assertNull(user.getNumberAccess());
-        assertNull(user.getStatusRegistry());
+        assertEquals(25, user.getStatusRegistry());
         assertNull(user.getAvatar());
 
         var car = user.getCar();

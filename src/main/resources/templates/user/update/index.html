@@ -58,13 +58,14 @@
 
             <!--/*@thymesVar id="input" type="br.com.tsi.utfpr.xenon.structure.dtos.inputs.InputUserDto"*/-->
             <form id="form_update_user"
+                  name="form_update_user"
                   method="post"
                   novalidate
                   role="for1"
-                  th:action="@{/usuarios/editar}"
+                  th:action="@{/usuarios/editar/{id}(id=${userId})}"
                   th:object="${input}">
 
-              <th:block th:replace="user/form/user-form :: userForm"/>
+              <th:block th:replace="user/form/user-form :: userForm(true)"/>
             </form>
           </div>
         </div>

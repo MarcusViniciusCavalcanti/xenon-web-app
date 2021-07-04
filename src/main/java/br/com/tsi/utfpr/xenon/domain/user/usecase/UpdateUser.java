@@ -1,6 +1,7 @@
 package br.com.tsi.utfpr.xenon.domain.user.usecase;
 
 import br.com.tsi.utfpr.xenon.domain.security.entity.Role;
+import br.com.tsi.utfpr.xenon.domain.user.aggregator.UpdateDataUser;
 import br.com.tsi.utfpr.xenon.domain.user.repository.UserRepository;
 import br.com.tsi.utfpr.xenon.domain.user.service.FileService;
 import br.com.tsi.utfpr.xenon.structure.dtos.TypeUserDto;
@@ -10,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -25,6 +27,7 @@ public class UpdateUser {
 
     private final UserRepository userRepository;
     private final FileService fileService;
+    private final UpdateDataUser updateDataUser;
 
     public InputUserDto findUserUpdate(Long id) {
         log.info("Running get user to update by id {}", id);
@@ -55,8 +58,15 @@ public class UpdateUser {
                 () -> new EntityNotFoundException(String.format(MSG_NOT_FOUND_PATTER, id)));
     }
 
+    @Transactional(propagation = Propagation.MANDATORY)
     public void update(Long id, InputUserDto userDto) {
-
+        log.info("Running update user by id {}");
+        userRepository.findById(id).ifPresentOrElse(
+            updateDataUser.process(userDto).andThen(userRepository::save),
+            () -> {
+                throw new EntityNotFoundException(String.format(MSG_NOT_FOUND_PATTER, id));
+            }
+        );
     }
 
     @Transactional(propagation = Propagation.MANDATORY)
@@ -66,6 +76,12 @@ public class UpdateUser {
             () -> new EntityNotFoundException(String.format(MSG_NOT_FOUND_PATTER, id)));
 
         try {
+            if (StringUtils.isBlank(user.getAvatar())) {
+                var statusRegistry = user.getStatusRegistry();
+                var newStatusRegistry = statusRegistry + 25;
+                user.setStatusRegistry(newStatusRegistry);
+            }
+
             var pathAvatar = fileService.saveAvatar(id, avatar.getInputStream());
             user.setAvatar(pathAvatar.toFile().getCanonicalPath());
 

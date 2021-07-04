@@ -4,6 +4,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import br.com.tsi.utfpr.xenon.domain.config.property.FilesProperty;
 import br.com.tsi.utfpr.xenon.e2e.AbstractEndToEndTest;
@@ -22,6 +25,7 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.web.context.WebApplicationContext;
@@ -49,7 +53,7 @@ class FeatureProfileUserTest extends AbstractEndToEndTest {
     @Test
     @DisplayName("Deve exibir sidebar com informações do usuário")
     @WithUserDetails(value = "beltrano_with_car@user.com", userDetailsServiceBeanName = "userDetailsServiceImpl")
-    void shouldReturnAvatar() throws IOException {
+    void shouldReturnSidebarInformationUser() throws IOException {
         GetElementDom.start(webClient, url)
             .navigation(SECTION, ATTRIBUTE_CLASS, "profile-env")
             .getDiv(ATTRIBUTE_CLASS, "user-info-sidebar")
@@ -69,6 +73,22 @@ class FeatureProfileUserTest extends AbstractEndToEndTest {
                     GetElementDom.getUl(div, ATTRIBUTE_CLASS, "list-unstyled user-info-list");
                 assertEquals("Perfil Motorista", ulRoles.getVisibleText());
             });
+    }
+
+    @Test
+    @DisplayName("Deve retornar avatar do usuário")
+    @WithUserDetails(value = "beltrano_admin@admin.com", userDetailsServiceBeanName = "userDetailsServiceImpl")
+    void shouldReturnAvatar() throws Exception {
+        var tmp = Files.createTempFile("teste", ".png");
+        Files.copy(
+            Objects.requireNonNull(
+                FeatureAllUserTest.class.getResourceAsStream("/test-file/avatar/0.png")),
+            tmp.toAbsolutePath(), StandardCopyOption.REPLACE_EXISTING);
+        var responseByte = Files.readAllBytes(tmp);
+
+        mockMvc.perform(get("/user/avatar/200").contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(content().bytes(responseByte));
     }
 
     @Test
@@ -100,10 +120,9 @@ class FeatureProfileUserTest extends AbstractEndToEndTest {
                 var liList = StreamUtils.asStream(ulItemsMissing.getChildElements().iterator())
                     .map(DomNode::getVisibleText)
                     .collect(Collectors.toList());
-                assertEquals(3, ulItemsMissing.getChildElementCount());
+                assertEquals(2, ulItemsMissing.getChildElementCount());
                 assertThat(liList,
-                    containsInAnyOrder("Não Adicionado Avatar", "Não Adicionado Dados do carro",
-                        "Não Adicionado Documento do carro"));
+                    containsInAnyOrder("Não Adicionado Avatar", "Não Adicionado Dados do carro"));
             });
     }
 

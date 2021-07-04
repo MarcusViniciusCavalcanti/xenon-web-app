@@ -63,5 +63,5 @@ INSERT INTO users (authorised_access, created_at, name, number_access, type, upd
 VALUES (false, '2019-10-23', 'Beltrano sem carro', 144412489, 'STUDENTS', '2019-10-23', 201, 40);
 
 INSERT INTO cars (id, created_at, last_access, document, model, plate, updated_at)
-VALUES (200, '2019-10-23', '2019-10-04', 'src/test/resources/test-file/doc/200.jpg', 'Gol',
+VALUES (200, '2019-10-23', '2019-10-04', true, 'Gol',
         'ABC9801', '2019-10-23');

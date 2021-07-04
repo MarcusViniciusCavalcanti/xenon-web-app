@@ -29,7 +29,7 @@ public class Car {
     private String model;
 
     @Column(name = "document")
-    private String document;
+    private Boolean document;
 
     @OneToOne(cascade = CascadeType.REMOVE)
     @MapsId

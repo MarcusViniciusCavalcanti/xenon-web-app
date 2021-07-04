@@ -75,6 +75,7 @@ public class UserFactory {
         user.setName(name);
         user.setTypeUser(TypeUser.valueOf(type));
         user.setAuthorisedAccess(authorisedAccess);
+        user.setStatusRegistry(25);
 
         return user;
     }
@@ -83,6 +84,9 @@ public class UserFactory {
         if (isNotEmpty(carModel) && isNotEmpty(carPlate)) {
             var car = carFactory.createCarToUser(carPlate, carModel, user);
             user.setCar(car);
+            var actual = user.getStatusRegistry();
+            var next = actual + 25;
+            user.setStatusRegistry(next);
         }
     }
 }

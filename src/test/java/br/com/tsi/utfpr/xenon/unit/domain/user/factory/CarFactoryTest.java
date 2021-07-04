@@ -1,6 +1,7 @@
 package br.com.tsi.utfpr.xenon.unit.domain.user.factory;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import br.com.tsi.utfpr.xenon.domain.user.entity.Car;
@@ -21,7 +22,7 @@ class CarFactoryTest {
     private static final LocalDateTime LOCAL_DATE_TIME = LocalDateTime.now();
     private static final String MODEL_CAR = "Model Car";
     private static final String PLATE_CAR = "Plate Car";
-    public static final String DOCUMENT = "document";
+    public static final Boolean DOCUMENT = Boolean.TRUE;
 
     @Autowired
     private CarFactory carFactory;
@@ -51,7 +52,19 @@ class CarFactoryTest {
         assertNull(carDto);
     }
 
+    @Test
+    @DisplayName("Deve criar um novo carro")
+    void shouldHaveCreateNewInstance() {
+        var user = new User();
 
+        var car = carFactory.createCarToUser(PLATE_CAR, MODEL_CAR, user);
+
+        assertEquals(MODEL_CAR, car.getModel());
+        assertEquals(PLATE_CAR, car.getPlate());
+        assertNull(car.getLastAccess());
+        assertFalse(car.getDocument());
+        assertNull(car.getId());
+    }
 
     private Car createCar(User user) {
         var car = new Car();

@@ -13,7 +13,6 @@ xenon:
       password: ~
     file:
       avatarUrl: ~
-      documentCarUrl: ~
     redis:
       host: ~
       port: 0

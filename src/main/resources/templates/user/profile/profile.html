@@ -96,7 +96,7 @@
                     Dados do carro
                   </li>
 
-                  <li class="list-group-item" th:if="${user.car?.document == null}">
+                  <li class="list-group-item" th:if="${user.car?.document == false}">
                     <span class="badge badge-roundless badge-danger">Não Adicionado</span>
                     Documento do carro
                   </li>
@@ -148,10 +148,10 @@
                   <tr id="info_document">
                     <td th:text="Documento"></td>
                     <td class="middle-align">
-                      <div class="label label-success" th:if="${user.car.document != null}"><i
+                      <div class="label label-success" th:if="${user.car.document == true}"><i
                           class="fa fa-check"></i> Ok
                       </div>
-                      <div class="label label-warning" th:if="${user.car.document == null}"><i
+                      <div class="label label-warning" th:if="${user.car.document == false}"><i
                           class="fa fa-exclamation-triangle"></i> Procure Digrad
                       </div>
                     </td>

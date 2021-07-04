@@ -9,7 +9,7 @@
             </column>
             <column name="created_at" type="datetime"/>
             <column name="last_access" type="TIMESTAMP WITHOUT TIME ZONE"/>
-            <column name="document" type="VARCHAR(255)"/>
+            <column defaultValue="0" name="document" type="boolean"/>
             <column name="model" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>

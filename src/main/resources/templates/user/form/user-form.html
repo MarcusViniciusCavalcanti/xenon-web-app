@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
 <body>
-<th:block th:fragment="userForm">
+<th:block th:fragment="userForm(hiddeUsername)">
   <div class="row">
     <div class="col-md-6">
       <div class="form-group">
@@ -19,6 +19,7 @@
       <div class="form-group">
         <label class="control-label" for="email">E-mail</label>
         <input class="form-control"
+               th:readonly="hiddeUsername"
                data-message-required="Campo inválido"
                data-validate="required,email"
                id="email"

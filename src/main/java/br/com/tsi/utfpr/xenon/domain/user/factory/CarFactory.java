@@ -24,6 +24,7 @@ public class CarFactory {
         car.setUser(user);
         car.setPlate(plate);
         car.setModel(model);
+        car.setDocument(Boolean.FALSE);
 
         return car;
     }

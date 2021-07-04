@@ -44,10 +44,41 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        configureSecurityCsrf(http);
+        configureSecurityPostUrl(http);
+        configureSecurityGetUrl(http);
+        configureSecurityResource(http);
+        configureLoginAndSesseionSecurity(http);
+    }
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+    }
+
+    private void configureLoginAndSesseionSecurity(HttpSecurity http) throws Exception {
+        http.authorizeRequests().anyRequest().authenticated()
+            .and()
+            .formLogin().loginPage("/login").permitAll().defaultSuccessUrl("/home")
+            .and()
+            .logout()
+            .invalidateHttpSession(true)
+            .clearAuthentication(true)
+            .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+            .logoutSuccessUrl("/login?logout")
+            .permitAll()
+            .and()
+            .exceptionHandling().accessDeniedHandler(accessDeniedHandler);
+    }
+
+    private void configureSecurityCsrf(HttpSecurity http) throws Exception {
         http.csrf().ignoringAntMatchers(SEND_PLATE)
             .and().headers().frameOptions().sameOrigin()
-            .and()
-            .authorizeRequests()
+            .and();
+    }
+
+    private void configureSecurityPostUrl(HttpSecurity http) throws Exception {
+        http.authorizeRequests()
             .antMatchers(HttpMethod.POST,
                 SEND_PLATE,
                 INCLUIR_REGISTRO,
@@ -55,36 +86,24 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 VALIDATE_PLATE,
                 CADASTRE_NOVO_ESTUDANTE,
                 REGISTRY_STUDENTS)
-            .permitAll()
-            .antMatchers(HttpMethod.GET,
-                NOVO_REGISTRO,
-                CADASTRO_ESTUDANTE,
-                VALIDAR_TOKEN,
-                ACCESS_DENIED_PUBLIC,
-                ERROR_USUARIO_CADASTRADO,
-                CONCLUIDO)
-            .permitAll()
-                .and()
-                .authorizeRequests()
-                .antMatchers("/js/**", "/css/**", "/images/**", "/headless-content.js.map",
-                        "/avatar/**", "/vendor/**").permitAll()
-                .and()
-                .authorizeRequests().anyRequest().authenticated()
-                .and()
-                .formLogin().loginPage("/login").permitAll().defaultSuccessUrl("/home")
-                .and()
-                .logout()
-                .invalidateHttpSession(true)
-                .clearAuthentication(true)
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutSuccessUrl("/login?logout")
-                .permitAll()
-                .and()
-                .exceptionHandling().accessDeniedHandler(accessDeniedHandler);
+            .permitAll();
     }
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+    private void configureSecurityGetUrl(HttpSecurity http) throws Exception {
+        http.authorizeRequests()
+            .antMatchers(HttpMethod.POST,
+                SEND_PLATE,
+                INCLUIR_REGISTRO,
+                VALIDE_TOKEN,
+                VALIDATE_PLATE,
+                CADASTRE_NOVO_ESTUDANTE,
+                REGISTRY_STUDENTS)
+            .permitAll();
+    }
+
+    private void configureSecurityResource(HttpSecurity http) throws Exception {
+        http.authorizeRequests()
+            .antMatchers("/js/**", "/css/**", "/images/**", "/headless-content.js.map",
+                "/avatar/**", "/vendor/**").permitAll();
     }
 }

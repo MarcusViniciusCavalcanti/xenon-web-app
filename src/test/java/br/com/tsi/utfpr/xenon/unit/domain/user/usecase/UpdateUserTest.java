@@ -9,24 +9,30 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import br.com.tsi.utfpr.xenon.domain.security.entity.AccessCard;
 import br.com.tsi.utfpr.xenon.domain.security.entity.Role;
+import br.com.tsi.utfpr.xenon.domain.user.aggregator.UpdateDataUser;
 import br.com.tsi.utfpr.xenon.domain.user.entity.Car;
 import br.com.tsi.utfpr.xenon.domain.user.entity.TypeUser;
 import br.com.tsi.utfpr.xenon.domain.user.entity.User;
 import br.com.tsi.utfpr.xenon.domain.user.repository.UserRepository;
 import br.com.tsi.utfpr.xenon.domain.user.service.FileService;
 import br.com.tsi.utfpr.xenon.domain.user.usecase.UpdateUser;
+import br.com.tsi.utfpr.xenon.structure.dtos.inputs.InputUserDto;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 import javax.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -38,6 +44,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
 
 @ExtendWith(MockitoExtension.class)
+@DisplayName("Test - Unidade - UpdateUser")
 class UpdateUserTest {
 
     public static final String AVATAR = "avatar";
@@ -67,6 +74,9 @@ class UpdateUserTest {
 
     @Mock
     private FileService fileService;
+
+    @Mock
+    private UpdateDataUser updateDataUser;
 
     @InjectMocks
     private UpdateUser updateUser;
@@ -177,6 +187,60 @@ class UpdateUserTest {
         verify(fileService).saveAvatar(eq(ID), any());
         verify(userRepository).save(user);
     }
+
+    @Test
+    @DisplayName("Não deve adicionar taxa de status registry quando usuário já tiver cadastrado avatar anteriormente")
+    void shouldNotIncrementStatusRegistry() throws IOException {
+        var mockUser = mock(User.class);
+
+        lenient().when(mockUser.getAvatar()).thenReturn("avatar_content");
+        lenient().when(mockUser.getStatusRegistry()).thenReturn(50);
+
+        when(userRepository.findById(any())).thenReturn(Optional.of(mockUser));
+        when(fileService.saveAvatar(any(), any())).thenReturn(Path.of("file"));
+
+        var multipartFile = new MockMultipartFile("file", InputStream.nullInputStream());
+
+        updateUser.updateAvatar(1L, multipartFile);
+
+        verify(mockUser, never()).setStatusRegistry(any());
+    }
+
+    @Test
+    @DisplayName("Deve atualizar dados do usuário")
+    void shouldHaveUpdateUser() {
+        var input = new InputUserDto();
+        var user = new User();
+        Consumer<User> consumer = actual -> Assertions.assertEquals(actual, user);
+
+        when(userRepository.findById(ID)).thenReturn(Optional.of(user));
+        when(updateDataUser.process(input)).thenReturn(consumer);
+
+        updateUser.update(ID, input);
+
+        verify(userRepository).findById(ID);
+        verify(updateDataUser).process(input);
+
+    }
+
+    @Test
+    @DisplayName("Deve lançar EntityNotFoundException quando usuário não encontrado")
+    void shouldThrowEntityNotFoundExceptionWhenUserNotFound() {
+        doReturn(Optional.empty())
+            .when(userRepository)
+            .findById(ID);
+        doReturn((Consumer<User>) user -> System.out.println("testes"))
+            .when(updateDataUser)
+            .process(any());
+
+        var exception = assertThrows(EntityNotFoundException.class,
+            () -> updateUser.update(ID, new InputUserDto()));
+
+        assertEquals("User by id 1 not found", exception.getMessage());
+
+        verify(userRepository, never()).save(any());
+    }
+
 
     private User createUserBuild() {
         var mockUser = new User();

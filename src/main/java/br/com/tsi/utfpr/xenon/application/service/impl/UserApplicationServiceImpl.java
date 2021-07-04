@@ -48,6 +48,7 @@ public class UserApplicationServiceImpl implements UserApplicationService {
     }
 
     @Override
+    @Transactional
     public void updateUser(Long id, InputUserDto userDto) {
         updateUser.update(id, userDto);
     }
