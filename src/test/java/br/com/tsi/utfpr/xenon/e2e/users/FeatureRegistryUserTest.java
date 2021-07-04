@@ -195,6 +195,7 @@ class FeatureRegistryUserTest extends AbstractEndToEndTest {
             .navigate(TABLE, ATTRIBUTE_CLASS,
                 "table table-small-font table-bordered table-striped")
             .getTbody(ATTRIBUTE_ID, "user_table_list")
+            .awaitPage(300)
             .executeAssertion(tbody -> {
                 var tbRow =
                     GetElementDom.tbRowByIndex(tbody, ATTRIBUTE_CLASS, "user_item", 0);
