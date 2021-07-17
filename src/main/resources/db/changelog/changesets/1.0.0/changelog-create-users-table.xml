@@ -17,6 +17,7 @@
             </column>
             <column defaultValue="0" name="status_registry" type="INTEGER"/>
             <column name="avatar" type="VARCHAR(255)"/>
+            <column defaultValue="false" name="confirm_document" type="BOOLEAN"/>
         </createTable>
     </changeSet>
     <changeSet author="vinicius" id="1586309332904-2">

@@ -3,9 +3,11 @@ package br.com.tsi.utfpr.xenon.e2e.users;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import br.com.tsi.utfpr.xenon.domain.user.repository.UserRepository;
 import br.com.tsi.utfpr.xenon.e2e.AbstractEndToEndTest;
+import br.com.tsi.utfpr.xenon.e2e.utils.GetElementDom;
 import br.com.tsi.utfpr.xenon.e2e.utils.InsertFormDom;
 import br.com.tsi.utfpr.xenon.structure.dtos.inputs.InputUserDto;
 import com.gargoylesoftware.htmlunit.html.DomNode;
@@ -143,6 +145,36 @@ class FeatureUpdateUserTest extends AbstractEndToEndTest {
         assertEquals("new Model Car", userUpdated.getCar().getModel());
         assertEquals("abc7676", userUpdated.getCar().getPlate());
         assertNotEquals(lastUpdate, userUpdated.getUpdatedAt());
+    }
+
+    @Test
+    @DisplayName("Deve atualizar usuário com a informação de documento confirmado")
+    @WithUserDetails(value = "beltrano_admin@admin.com", userDetailsServiceBeanName = "userDetailsServiceImpl")
+    void shouldUpdateUserWhitConfirmDoc() throws IOException {
+        var user = userRepository.findById(200L).get();
+        var page = InsertFormDom.init(webClient, "http://localhost:8080/usuarios/todos")
+            .insertForm("filter")
+            .setInputValue("search_name", user.getName())
+            .clickButtonType()
+            .navigate("tbody", "id", "user_table_list")
+            .awaitPage(300)
+            .getTr("id", "200")
+            .getButton("class", "btn btn-info btn-sm")
+            .redirectOnClick();
+
+        GetElementDom.start(page)
+            .awaitPage(300)
+            .navigation("tbody", "id", "user_table_list")
+            .getTr("id", "200")
+            .executeAssertion(tr -> {
+                var firstElement = tr.getFirstChild();
+                assertEquals("Confirmado", firstElement.asText());
+            });
+
+        user = userRepository.findById(200L).get();
+
+        assertTrue(user.getConfirmDocument());
+        assertTrue(user.getCar().getDocument());
     }
 
     private static Stream<Arguments> providerArgsAlertError() {

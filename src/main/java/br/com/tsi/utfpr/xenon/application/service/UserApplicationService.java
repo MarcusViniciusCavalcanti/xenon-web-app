@@ -22,4 +22,6 @@ public interface UserApplicationService {
     void updateUser(Long id, InputUserDto userDto);
 
     Boolean saveAvatar(MultipartFile avatar);
+
+    Boolean confirmDocument(Long id);
 }

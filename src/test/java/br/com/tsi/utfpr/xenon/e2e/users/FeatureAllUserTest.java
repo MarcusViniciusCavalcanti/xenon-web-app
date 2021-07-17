@@ -218,11 +218,11 @@ class FeatureAllUserTest extends AbstractEndToEndTest {
         assertListContent(
             "first page",
             domElements,
-            "1 Beltrano beltrano_user@alunos.utfpr.edu.br Não informado Não informado Estudante Não Sim Sim \nAtualizar\nDesativar",
-            "153 Beltrano Admin beltrano_admin@admin.com Não informado Não informado Servidor Não Sim Sim \nAtualizar\nDesativar",
-            "154 Beltrano Operador beltrano_operator@operator.com Não informado Não informado Servidor Não Sim Sim \nAtualizar\nDesativar",
-            "200 Beltrano com carro beltrano_with_car@user.com ABC9801 Gol Estudante Não Sim Sim \nAtualizar\nDesativar",
-            "201 Beltrano sem carro beltrano_without_car@user.com Não informado Não informado Estudante Não Sim Não \nAtualizar\nDesativar"
+            "Sem cadastro Beltrano beltrano_user@alunos.utfpr.edu.br Não informado Não informado Estudante Não Sim Sim \nAtualizar\nDesativar",
+            "Sem cadastro Beltrano Admin beltrano_admin@admin.com Não informado Não informado Servidor Não Sim Sim \nAtualizar\nDesativar",
+            "Sem cadastro Beltrano Operador beltrano_operator@operator.com Não informado Não informado Servidor Não Sim Sim \nAtualizar\nDesativar",
+            "Confirmar? Beltrano com carro beltrano_with_car@user.com ABC9801 Gol Estudante Não Sim Sim \nAtualizar\nDesativar",
+            "Sem cadastro Beltrano sem carro beltrano_without_car@user.com Não informado Não informado Estudante Não Sim Não \nAtualizar\nDesativar"
         );
     }
 
@@ -258,9 +258,9 @@ class FeatureAllUserTest extends AbstractEndToEndTest {
                         .getListElement(ATTRIBUTE_CLASS, "user_item");
 
                     assertListContent("first page", domElements,
-                        "154 Beltrano Operador beltrano_operator@operator.com Não informado Não informado Servidor Não Sim Sim \nAtualizar\nDesativar",
-                        "153 Beltrano Admin beltrano_admin@admin.com Não informado Não informado Servidor Não Sim Sim \nAtualizar\nDesativar",
-                        "1 Beltrano beltrano_user@alunos.utfpr.edu.br Não informado Não informado Estudante Não Sim Sim \nAtualizar\nDesativar");
+                        "Sem cadastro Beltrano Operador beltrano_operator@operator.com Não informado Não informado Servidor Não Sim Sim \nAtualizar\nDesativar",
+                        "Sem cadastro Beltrano Admin beltrano_admin@admin.com Não informado Não informado Servidor Não Sim Sim \nAtualizar\nDesativar",
+                        "Sem cadastro Beltrano beltrano_user@alunos.utfpr.edu.br Não informado Não informado Estudante Não Sim Sim \nAtualizar\nDesativar");
 
                     nextPage = liList.get(0).getFirstElementChild().click();
                     nextPage.getWebClient().waitForBackgroundJavaScript(300);
@@ -273,11 +273,11 @@ class FeatureAllUserTest extends AbstractEndToEndTest {
                         .getListElement(ATTRIBUTE_CLASS, "user_item");
 
                     assertListContent("second page", domElements,
-                        "201 Beltrano sem carro beltrano_without_car@user.com Não informado Não informado Estudante Não Sim Não \nAtualizar\nDesativar",
-                        "200 Beltrano com carro beltrano_with_car@user.com ABC9801 Gol Estudante Não Sim Sim \nAtualizar\nDesativar",
-                        "157 Beltrano credenciais expiradas beltrano_expired_credentials@user.com Não informado Não informado Estudante Não Sim Sim \nAtualizar\nDesativar",
-                        "155 Beltrano conta exipirada beltrano_expired_account@user.com Não informado Não informado Estudante Não Sim Sim \nAtualizar\nDesativar",
-                        "156 Beltrano conta bloqueada beltrano_locked_account@user.com Não informado Não informado Estudante Sim Sim Sim \nAtualizar\nDesativar");
+                        "Sem cadastro Beltrano sem carro beltrano_without_car@user.com Não informado Não informado Estudante Não Sim Não \nAtualizar\nDesativar",
+                        "Confirmar? Beltrano com carro beltrano_with_car@user.com ABC9801 Gol Estudante Não Sim Sim \nAtualizar\nDesativar",
+                        "Sem cadastro Beltrano credenciais expiradas beltrano_expired_credentials@user.com Não informado Não informado Estudante Não Sim Sim \nAtualizar\nDesativar",
+                        "Sem cadastro Beltrano conta exipirada beltrano_expired_account@user.com Não informado Não informado Estudante Não Sim Sim \nAtualizar\nDesativar",
+                        "Sem cadastro Beltrano conta bloqueada beltrano_locked_account@user.com Não informado Não informado Estudante Sim Sim Sim \nAtualizar\nDesativar");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

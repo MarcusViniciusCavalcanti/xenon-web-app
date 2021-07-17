@@ -5,6 +5,8 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
+  <meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
+  <meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
   <title>Todos Usuários</title>
 </head>
 <body>
@@ -138,7 +140,7 @@
         </div>
 
         <div class="panel-body" id="users_list">
-          <div class="table-responsive"
+          <div class="table-responsive table-condensed"
                data-pattern="priority-columns"
                data-focus-btn-icon="fa-asterisk"
                data-sticky-table-header="true"
@@ -153,9 +155,9 @@
                 <th data-priority="1">Placa do carro</th>
                 <th data-priority="1">Modelo do carro</th>
                 <th data-priority="1">Tipo de usuário</th>
-                <th data-priority="1">Conta bloqueada?</th>
-                <th data-priority="1">Conta ativa?</th>
-                <th data-priority="1">Acesso autorizado?</th>
+                <th data-priority="1">Bloqueada?</th>
+                <th data-priority="1">Ativa?</th>
+                <th data-priority="1">Autorizado?</th>
                 <th data-priority="1">Ação</th>
               </tr>
               </thead>

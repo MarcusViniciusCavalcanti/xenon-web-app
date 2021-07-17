@@ -3,6 +3,7 @@ package br.com.tsi.utfpr.xenon.e2e.utils;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.DomNodeList;
+import com.gargoylesoftware.htmlunit.html.HtmlButton;
 import com.gargoylesoftware.htmlunit.html.HtmlDivision;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlImage;
@@ -32,6 +33,8 @@ public class GetElementDom {
     private static final String LIST_ITEM = "//li[@%s='%s']";
     private static final String ANCHOR = "//a[@%s='%s']";
     private static final String SELECT = "//select[@%s='%s']";
+    private static final String BUTTON = "//button[@%s='%s']";
+
     private static GetElementDom instance;
 
     @Setter
@@ -86,6 +89,15 @@ public class GetElementDom {
 
     public GetElementDom getSection(String attribute, String valueAttribute) {
         return getGetElementDom(attribute, valueAttribute, SECTION);
+    }
+
+    public GetElementDom getButton(String attribute, String valueAttribute) {
+        return getGetElementDom(attribute, valueAttribute, BUTTON);
+    }
+
+    public GetElementDom getTh() {
+        element = element.getFirstByXPath("//th");
+        return instance;
     }
 
     public List<DomElement> listAllTh() {
@@ -194,5 +206,10 @@ public class GetElementDom {
 
         return tbody.<HtmlTableRow>getByXPath(getXpath(attribute, valueAttribute, TABLE_ROW))
             .get(index);
+    }
+
+    public static HtmlButton getButton(HtmlElement element, String attribute,
+        String valueAttribute) {
+        return element.getFirstByXPath(getXpath(attribute, valueAttribute, BUTTON));
     }
 }

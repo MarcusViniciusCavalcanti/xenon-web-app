@@ -2,6 +2,7 @@ package br.com.tsi.utfpr.xenon.domain.user.usecase;
 
 import br.com.tsi.utfpr.xenon.domain.security.entity.Role;
 import br.com.tsi.utfpr.xenon.domain.user.aggregator.UpdateDataUser;
+import br.com.tsi.utfpr.xenon.domain.user.entity.User;
 import br.com.tsi.utfpr.xenon.domain.user.repository.UserRepository;
 import br.com.tsi.utfpr.xenon.domain.user.service.FileService;
 import br.com.tsi.utfpr.xenon.structure.dtos.TypeUserDto;
@@ -24,6 +25,8 @@ import org.springframework.web.multipart.MultipartFile;
 public class UpdateUser {
 
     private static final String MSG_NOT_FOUND_PATTER = "User by id %d not found";
+    private static final String MSG_NOT_FOUND_PATTER_TO_CONFIRM_DOC =
+        "Not confirm document, because user by id %d not found";
 
     private final UserRepository userRepository;
     private final FileService fileService;
@@ -60,7 +63,7 @@ public class UpdateUser {
 
     @Transactional(propagation = Propagation.MANDATORY)
     public void update(Long id, InputUserDto userDto) {
-        log.info("Running update user by id {}");
+        log.info("Running update user by id {}", id);
         userRepository.findById(id).ifPresentOrElse(
             updateDataUser.process(userDto).andThen(userRepository::save),
             () -> {
@@ -77,9 +80,7 @@ public class UpdateUser {
 
         try {
             if (StringUtils.isBlank(user.getAvatar())) {
-                var statusRegistry = user.getStatusRegistry();
-                var newStatusRegistry = statusRegistry + 25;
-                user.setStatusRegistry(newStatusRegistry);
+                incrementStateStatus(user);
             }
 
             var pathAvatar = fileService.saveAvatar(id, avatar.getInputStream());
@@ -92,5 +93,25 @@ public class UpdateUser {
             log.error("Error in save disk avatar to id {}", id, e);
             return Boolean.FALSE;
         }
+    }
+
+    @Transactional(propagation = Propagation.MANDATORY)
+    public Boolean confirmDocument(Long id) {
+        var user = userRepository.findById(id).orElseThrow(
+            () -> new EntityNotFoundException(
+                String.format(MSG_NOT_FOUND_PATTER_TO_CONFIRM_DOC, id)));
+
+        var car = user.car().orElseThrow(() -> new EntityNotFoundException(
+            "Não é possível confirmar entrega de documentos da conta informada"));
+        car.setDocument(Boolean.TRUE);
+        user.setConfirmDocument(Boolean.TRUE);
+        incrementStateStatus(user);
+        return user.getConfirmDocument();
+    }
+
+    private void incrementStateStatus(User user) {
+        var statusRegistry = user.getStatusRegistry();
+        var newStatusRegistry = statusRegistry + 25;
+        user.setStatusRegistry(newStatusRegistry);
     }
 }

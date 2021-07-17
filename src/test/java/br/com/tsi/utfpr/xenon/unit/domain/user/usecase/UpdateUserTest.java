@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
@@ -241,6 +242,67 @@ class UpdateUserTest {
         verify(userRepository, never()).save(any());
     }
 
+    @Test
+    @DisplayName("Deve lançar EntityNotFoundException na tentativa de corfirmar documento quando o usuário não encontrado")
+    void shouldThrowsEntityNotFoundExceptionInConfirmDoc() {
+        when(userRepository.findById(any())).thenReturn(Optional.empty());
+
+        EntityNotFoundException entityNotFoundException =
+            assertThrows(EntityNotFoundException.class, () -> updateUser.confirmDocument(1L));
+
+        assertEquals("Not confirm document, because user by id 1 not found",
+            entityNotFoundException.getMessage());
+
+        verify(userRepository).findById(any());
+    }
+
+    @Test
+    @DisplayName("Deve retornar EntityNotFoundException quando usuário não tem carro cadastrado")
+    void shouldThrowEntityNotFoundExceptionInCofirmDocButNotCarRegister() {
+        var user = createUserBuild();
+
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+
+        EntityNotFoundException entityNotFoundException =
+            assertThrows(EntityNotFoundException.class, () -> updateUser.confirmDocument(1L));
+
+        assertEquals("Não é possível confirmar entrega de documentos da conta informada",
+            entityNotFoundException.getMessage());
+
+        verify(userRepository).findById(1L);
+    }
+
+    @Test
+    @DisplayName("Deve atualizar o usuário com a informação de documento confirmado")
+    void shouldHaveUpdateUserConfirmDoc() {
+        var userMock = mock(User.class);
+        var carMock = mock(Car.class);
+
+        when(userRepository.findById(1L)).thenReturn(Optional.of(userMock));
+        when(userMock.car()).thenReturn(Optional.of(carMock));
+        when(userMock.getStatusRegistry()).thenReturn(75);
+        when(userMock.getConfirmDocument()).thenReturn(Boolean.TRUE);
+
+        doNothing()
+            .when(userMock)
+            .setConfirmDocument(Boolean.TRUE);
+        doNothing()
+            .when(userMock)
+            .setStatusRegistry(100);
+        doNothing()
+            .when(carMock)
+            .setDocument(Boolean.TRUE);
+
+        updateUser.confirmDocument(1L);
+
+        verify(userRepository).findById(1L);
+        verify(userMock).car();
+        verify(carMock).setDocument(Boolean.TRUE);
+        verify(userMock).setConfirmDocument(Boolean.TRUE);
+        verify(userMock).getStatusRegistry();
+        verify(userMock).setStatusRegistry(100);
+
+    }
 
     private User createUserBuild() {
         var mockUser = new User();

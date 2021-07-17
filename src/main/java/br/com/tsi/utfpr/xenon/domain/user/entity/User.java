@@ -59,6 +59,9 @@ public class User implements Serializable {
     @Column(name = "avatar")
     private String avatar;
 
+    @Column(name = "confirm_document")
+    private Boolean confirmDocument;
+
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Car car;
 

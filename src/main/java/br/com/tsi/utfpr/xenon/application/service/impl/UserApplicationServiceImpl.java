@@ -59,4 +59,10 @@ public class UserApplicationServiceImpl implements UserApplicationService {
         var currentUser = getterCurrentUser.currentUser();
         return updateUser.updateAvatar(currentUser.getId(), avatar);
     }
+
+    @Override
+    @Transactional
+    public Boolean confirmDocument(Long id) {
+        return updateUser.confirmDocument(id);
+    }
 }

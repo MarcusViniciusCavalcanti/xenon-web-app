@@ -110,4 +110,14 @@ class UserApplicationServiceTest {
         verify(getterCurrentUser).currentUser();
         verify(updateUser).updateAvatar(any(), any());
     }
+
+    @Test
+    @DisplayName("Dever retonar um objeto boolean quando confirmar documento")
+    void shouldReturnBooleanObjectWhenConfirmDocument() {
+        when(updateUser.confirmDocument(1L)).thenReturn(Boolean.TRUE);
+
+        userApplicationService.confirmDocument(1L);
+
+        verify(updateUser).confirmDocument(1L);
+    }
 }

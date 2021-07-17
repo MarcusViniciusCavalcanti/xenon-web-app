@@ -33,6 +33,7 @@ public class UserFactory {
             .authorisedAcces(user.getAuthorisedAccess())
             .statusRegistry(user.getStatusRegistry())
             .avatar(user.getAvatar())
+            .confirmDocument(user.getConfirmDocument())
             .build();
     }
 

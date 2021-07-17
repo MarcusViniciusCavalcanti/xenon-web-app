@@ -58,7 +58,7 @@ function renderItems(users) {
   let $thTag = '';
 
   users.content.forEach(function (value) {
-    let $tr = '<tr class="user_item">';
+    let $tr = '<tr class="user_item" id="' + value.id + '">';
     let plate = 'Não informado'
     let model = 'Não informado'
 
@@ -71,7 +71,18 @@ function renderItems(users) {
     const enabled = value.accessCard.enabled ? 'Sim' : 'Não';
     const authorisedAccess = value.authorisedAcces ? 'Sim' : 'Não';
 
-    $tr += '<th>' + value.id + '</th>';
+    if (value.confirmDocument) {
+      const label = '<p class="bg-success">Confirmado</p>';
+      $tr += '<th>' + label + '</th>';
+    } else if (!value.confirmDocumet && value.car) {
+      const action = 'onclick="confirmDoc(' + value.id + ')" '
+      const confirm = '<button ' + action
+          + 'class="btn btn-info btn-sm">Confirmar?</button>'
+      $tr += '<th>' + confirm + '</th>';
+    } else {
+      $tr += '<th>Sem cadastro</th>';
+    }
+
     $tr += '<td>' + value.name + '</td>';
     $tr += '<td>' + value.accessCard.username + '</td>';
     $tr += '<td>' + plate + '</td>';
@@ -159,6 +170,31 @@ function pagination(page) {
 function nextPage(page) {
   state.page = page;
   executeGetAllUser();
+}
+
+function confirmDoc(id) {
+  const token = $("meta[name='_csrf']").attr("content");
+  const header = $("meta[name='_csrf_header']").attr("content");
+
+  $.ajax({
+    async: true,
+    url: '/users/confirm/doc/' + id,
+    dataType: 'json',
+    type: 'patch',
+    beforeSend: function (xhr) {
+      xhr.setRequestHeader(header, token);
+    },
+    success: function (result) {
+      disablePanel();
+      executeGetAllUser();
+    },
+    error: function (error) {
+      console.error(error.responseText)
+    },
+    complete: function () {
+      enablePanel();
+    }
+  })
 }
 
 $("#size_element").change(function () {
